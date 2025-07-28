@@ -1,0 +1,3 @@
+class IconAssets {}
+
+class ImageAssets {}
