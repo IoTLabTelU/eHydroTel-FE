@@ -11,7 +11,25 @@ class AppThemeData {
       brightness: Brightness.light,
       scaffoldBackgroundColor: ColorValues.whiteColor,
       textTheme: GoogleFonts.dmSansTextTheme(Typography.blackCupertino),
-      colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.whiteColor),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: ColorValues.whiteColor,
+        brightness: Brightness.light,
+      ),
+    );
+  }
+
+  static ThemeData getDarkTheme() {
+    return ThemeData(
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      useMaterial3: true,
+      primaryColor: ColorValues.iotMainColor,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: ColorValues.blackColor,
+      textTheme: GoogleFonts.dmSansTextTheme(Typography.whiteCupertino),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: ColorValues.blackColor,
+        brightness: Brightness.dark,
+      ),
     );
   }
 }
