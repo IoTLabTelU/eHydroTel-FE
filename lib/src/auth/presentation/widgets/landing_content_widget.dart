@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hydro_iot/core/components/components.dart';
 
-import '../../../../../res/res.dart';
+import '../../../../res/res.dart';
 
 SliverChildListDelegate contentWidget(BuildContext context) {
   return SliverChildListDelegate([
@@ -10,10 +11,7 @@ SliverChildListDelegate contentWidget(BuildContext context) {
       padding: EdgeInsets.symmetric(vertical: 20.h),
       child: Text(
         'Hydroponic IoT \nPlatform',
-        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-          color: ColorValues.blackColor,
-          fontWeight: FontWeight.bold,
-        ),
+        style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     ),
@@ -21,9 +19,7 @@ SliverChildListDelegate contentWidget(BuildContext context) {
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Text(
         'Hydro IoT is a platform that allows you to monitor and control your hydroponic system from anywhere in the world.',
-        style: Theme.of(
-          context,
-        ).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor),
         textAlign: TextAlign.center,
       ),
     ),
@@ -31,7 +27,9 @@ SliverChildListDelegate contentWidget(BuildContext context) {
       padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
       child: primaryButton(
         text: 'GET STARTED',
-        onPressed: () {},
+        onPressed: () {
+          context.pushReplacement('/login');
+        },
         context: context,
       ),
     ),

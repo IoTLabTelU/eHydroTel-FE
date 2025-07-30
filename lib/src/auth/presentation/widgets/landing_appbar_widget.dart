@@ -12,26 +12,15 @@ Widget appBarWidget(BuildContext context) {
         Container(
           margin: const EdgeInsets.only(bottom: 15.0),
           padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: ColorValues.iotMainColor,
-            borderRadius: BorderRadius.circular(20),
-          ),
+          decoration: BoxDecoration(color: ColorValues.iotMainColor, borderRadius: BorderRadius.circular(20)),
           child: SvgPicture.asset(
             IconAssets.logo,
             height: 80.h,
             width: 80.w,
-            colorFilter: ColorFilter.mode(
-              ColorValues.whiteColor,
-              BlendMode.srcIn,
-            ),
+            colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
           ),
         ),
-        Text(
-          'Hydro IoT',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor),
-        ),
+        Text('Hydro IoT', style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor)),
       ],
     ),
   );

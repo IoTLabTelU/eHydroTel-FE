@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
-import '../widgets/appbar_widget.dart';
-import '../widgets/content_widget.dart';
+import '../widgets/landing_appbar_widget.dart';
+import '../widgets/landing_content_widget.dart';
 
 class LandingScreen extends StatelessWidget {
   static const String path = 'landing';
@@ -18,10 +18,7 @@ class LandingScreen extends StatelessWidget {
             SliverAppBar(
               backgroundColor: ColorValues.blackColor,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                ),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
               ),
               flexibleSpace: appBarWidget(context),
               floating: true,
