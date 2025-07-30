@@ -41,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           context,
                         ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
                       ),
+                      SizedBox(height: 20.h),
                       Text(
                         'Looks like you don\'t have an account! Please fill the form to create an account.',
                         style: Theme.of(context).textTheme.bodyLarge,

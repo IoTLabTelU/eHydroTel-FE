@@ -40,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           context,
                         ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
                       ),
+                      SizedBox(height: 20.h),
                       Text('Welcome back! Please sign in to continue.', style: Theme.of(context).textTheme.bodyLarge),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
@@ -69,7 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: double.infinity,
-                        child: primaryButton(text: 'LOGIN', onPressed: () {}, context: context),
+                        child: primaryButton(
+                          text: 'LOGIN',
+                          onPressed: () {
+                            context.pushReplacement('/dashboard');
+                          },
+                          context: context,
+                        ),
                       ),
                       SizedBox(height: 20.h),
                       Row(

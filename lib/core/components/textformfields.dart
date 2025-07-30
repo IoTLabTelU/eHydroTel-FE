@@ -28,12 +28,19 @@ class TextFormFieldComponent extends StatefulWidget {
 }
 
 class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
+  late bool isObscured;
+
+  @override
+  void initState() {
+    isObscured = widget.obscureText;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isObscured = widget.obscureText;
     return TextFormField(
       controller: widget.controller,
-      obscureText: widget.obscureText,
+      obscureText: isObscured,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,

@@ -39,6 +39,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           context,
                         ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
                       ),
+                      SizedBox(height: 20.h),
                       Text(
                         'Forgot your password? Don\'t worry, enter your email to reset your current password.',
                         style: Theme.of(context).textTheme.bodyLarge,
@@ -55,7 +56,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       SizedBox(height: 150.h),
                       SizedBox(
                         width: double.infinity,
-                        child: primaryButton(text: 'SUBMIT', onPressed: () {}, context: context),
+                        child: primaryButton(
+                          text: 'SUBMIT',
+                          onPressed: () {
+                            context.push('/change-password');
+                          },
+                          context: context,
+                        ),
                       ),
                       SizedBox(height: 20.h),
                       Row(
