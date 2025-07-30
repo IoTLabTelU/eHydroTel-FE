@@ -11,26 +11,28 @@ class ErrorScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Error!',
-                style: jetBrainsMonoHeadText(color: ColorValues.danger600),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                errorMessage ?? 'Unknown error. Please contact support.',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: ColorValues.blackColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10.sp,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error_outline, color: ColorValues.danger600, size: 40.sp),
+                Text(
+                  'Error!',
+                  style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 14.sp),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+                Text(
+                  errorMessage ?? 'Unknown error. Please contact support.',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold, fontSize: 7.sp),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),
