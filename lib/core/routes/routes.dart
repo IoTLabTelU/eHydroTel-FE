@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydro_iot/src/auth/landing/presentation/screens/landing_screen.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/landing_screen.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/login_screen.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/register_screen.dart';
 import 'package:hydro_iot/src/common/error_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -12,7 +15,47 @@ final router = GoRouter(
     GoRoute(
       path: '/${LandingScreen.path}',
       name: LandingScreen.path,
-      builder: (context, state) => const LandingScreen(),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const LandingScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/${LoginScreen.path}',
+      name: LoginScreen.path,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const LoginScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/${RegisterScreen.path}',
+      name: RegisterScreen.path,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const RegisterScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/${ForgotPasswordScreen.path}',
+      name: ForgotPasswordScreen.path,
+      builder: (context, state) => const ForgotPasswordScreen(),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const ForgotPasswordScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     ),
   ],
   observers: [routeObserver],
