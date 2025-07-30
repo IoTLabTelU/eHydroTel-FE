@@ -11,10 +11,7 @@ class AppThemeData {
       brightness: Brightness.light,
       scaffoldBackgroundColor: ColorValues.whiteColor,
       textTheme: GoogleFonts.dmSansTextTheme(Typography.blackCupertino),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: ColorValues.whiteColor,
-        brightness: Brightness.light,
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.whiteColor, brightness: Brightness.light),
     );
   }
 
@@ -26,10 +23,7 @@ class AppThemeData {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: ColorValues.blackColor,
       textTheme: GoogleFonts.dmSansTextTheme(Typography.whiteCupertino),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: ColorValues.blackColor,
-        brightness: Brightness.dark,
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.blackColor, brightness: Brightness.dark),
     );
   }
 }
