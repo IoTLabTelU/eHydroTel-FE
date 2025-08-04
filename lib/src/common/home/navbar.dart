@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/common/home/widgets/nav_button_list.dart';
 import 'package:hydro_iot/src/common/home/widgets/nav_button_widget.dart';
 import 'package:hydro_iot/utils/custom_clipper.dart';
 import 'package:hydro_iot/utils/utils.dart';
@@ -24,14 +25,12 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
       child: Scaffold(
+        backgroundColor: ColorValues.whiteColor,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: AnimatedSwitcher(duration: const Duration(milliseconds: 300), child: widget.navigationShell),
-            ),
-            Positioned(bottom: -20, left: 0, right: 0, child: bottomNav(context)),
+            Positioned.fill(child: widget.navigationShell),
+            Positioned(bottom: 0, left: 0, right: 0, child: bottomNav(context)),
           ],
         ),
       ),
@@ -40,75 +39,51 @@ class _NavbarState extends State<Navbar> {
 
   Widget bottomNav(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(widthQuery(context) / 100 * 4.5, 0, widthQuery(context) / 100 * 4.5, 100),
+      padding: EdgeInsets.fromLTRB(
+        widthQuery(context) / 100 * 4.5,
+        0,
+        widthQuery(context) / 100 * 4.5,
+        heightQuery(context) * 0.05,
+      ),
       child: Material(
         borderRadius: BorderRadius.circular(30),
         color: Colors.transparent,
         elevation: 6,
         child: Container(
-          height: widthQuery(context) / 100 * 18,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          height: heightQuery(context) * 0.13,
+          width: widthQuery(context),
+          decoration: BoxDecoration(
+            color: ColorValues.iotMainColor.withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(30.r),
+          ),
           child: Stack(
             children: [
               Positioned(
                 top: 0,
-                bottom: 0,
+                bottom: -10,
                 left: widthQuery(context) / 100 * 3,
                 right: widthQuery(context) / 100 * 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    NavButtonWidget(
+                  children: navButtonList.map((data) {
+                    return NavButtonWidget(
                       onPressed: (val) {
                         widget.navigationShell.goBranch(val);
                         setState(() {
                           currentIndex = val;
                         });
                       },
-                      icon: IconAssets.dashboardIcon,
+                      icon: data['icon']!,
                       currentIndex: currentIndex,
-                      index: 0,
-                    ),
-                    NavButtonWidget(
-                      onPressed: (val) {
-                        widget.navigationShell.goBranch(val);
-                        setState(() {
-                          currentIndex = val;
-                        });
-                      },
-                      icon: IconAssets.deviceIcon,
-                      currentIndex: currentIndex,
-                      index: 1,
-                    ),
-                    NavButtonWidget(
-                      onPressed: (val) {
-                        widget.navigationShell.goBranch(val);
-                        setState(() {
-                          currentIndex = val;
-                        });
-                      },
-                      icon: IconAssets.historyIcon,
-                      currentIndex: currentIndex,
-                      index: 2,
-                    ),
-                    NavButtonWidget(
-                      onPressed: (val) {
-                        widget.navigationShell.goBranch(val);
-                        setState(() {
-                          currentIndex = val;
-                        });
-                      },
-                      icon: IconAssets.profileIcon,
-                      currentIndex: currentIndex,
-                      index: 3,
-                    ),
-                  ],
+                      index: navButtonList.indexOf(data),
+                      text: data['text']!,
+                    );
+                  }).toList(),
                 ),
               ),
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 600),
                 curve: Curves.decelerate,
                 top: 0,
                 left: animatedPositioned(currentIndex),
@@ -122,13 +97,17 @@ class _NavbarState extends State<Navbar> {
                     ClipPath(
                       clipper: MyCustomClipper(context),
                       child: Container(
-                        height: widthQuery(context) / 100 * 15,
+                        height: widthQuery(context) / 100 * 14,
                         width: widthQuery(context) / 100 * 12,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.teal.withOpacity(0.8), Colors.teal.withOpacity(0.5), Colors.transparent],
+                            colors: [
+                              ColorValues.whiteColor.withValues(alpha: 0.8),
+                              ColorValues.whiteColor.withValues(alpha: 0.5),
+                              Colors.transparent,
+                            ],
                           ),
                         ),
                       ),
@@ -146,13 +125,13 @@ class _NavbarState extends State<Navbar> {
   double animatedPositioned(int currentIndex) {
     switch (currentIndex) {
       case 0:
-        return widthQuery(context) / 100 * 8;
+        return widthQuery(context) / 100 * 7.8;
       case 1:
         return widthQuery(context) / 100 * 29;
       case 2:
-        return widthQuery(context) / 100 * 51;
+        return widthQuery(context) / 100 * 50.5;
       case 3:
-        return widthQuery(context) / 100 * 71;
+        return widthQuery(context) / 100 * 71.5;
       default:
         return 0;
     }

@@ -8,6 +8,7 @@ class NavButtonWidget extends StatelessWidget {
   final String icon;
   final int index;
   final int currentIndex;
+  final String text;
 
   const NavButtonWidget({
     super.key,
@@ -15,6 +16,7 @@ class NavButtonWidget extends StatelessWidget {
     required this.onPressed,
     required this.index,
     required this.currentIndex,
+    required this.text,
   });
 
   @override
@@ -23,24 +25,27 @@ class NavButtonWidget extends StatelessWidget {
       onTap: () {
         onPressed(index);
       },
-      child: Container(
-        height: widthQuery(context) / 100 * 13,
-        width: widthQuery(context) / 100 * 17,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 600),
+        height: currentIndex == index ? widthQuery(context) / 100 * 18 : widthQuery(context) / 100 * 13,
+        width: widthQuery(context) / 100 * 18,
         decoration: const BoxDecoration(color: Colors.transparent),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
           children: [
             AnimatedOpacity(
-              opacity: (currentIndex == index) ? 1 : 0.2,
-              duration: const Duration(milliseconds: 300),
+              opacity: (currentIndex == index) ? 1 : 0.4,
+              duration: const Duration(milliseconds: 600),
               curve: Curves.easeIn,
               child: SvgPicture.asset(
                 icon,
                 colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
-                width: widthQuery(context) / 100 * 8,
-                height: heightQuery(context) / 100 * 8,
+                width: widthQuery(context) / 100 * 5,
+                height: heightQuery(context) / 100 * 5,
               ),
             ),
+            if (currentIndex == index) const SizedBox(height: 5),
+            if (currentIndex == index)
+              Text(text, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.whiteColor)),
           ],
         ),
       ),
