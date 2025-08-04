@@ -40,3 +40,17 @@ Widget secondaryButton({required String text, required VoidCallback onPressed, r
     ),
   );
 }
+
+Widget searchButton({required VoidCallback onPressed, required BuildContext context, required String text}) {
+  return GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: BoxDecoration(color: ColorValues.neutral200, borderRadius: BorderRadius.circular(20.r)),
+      child: TextField(
+        enabled: false,
+        decoration: InputDecoration(labelText: text, border: InputBorder.none, prefixIcon: const Icon(Icons.search)),
+      ),
+    ),
+  );
+}
