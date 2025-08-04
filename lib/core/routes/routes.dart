@@ -54,7 +54,6 @@ final router = GoRouter(
     GoRoute(
       path: '/${ForgotPasswordScreen.path}',
       name: ForgotPasswordScreen.path,
-      builder: (context, state) => const ForgotPasswordScreen(),
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ForgotPasswordScreen(),
@@ -66,7 +65,6 @@ final router = GoRouter(
     GoRoute(
       path: '/${ChangePasswordScreen.path}',
       name: ChangePasswordScreen.path,
-      builder: (context, state) => const ChangePasswordScreen(),
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ChangePasswordScreen(),
@@ -77,14 +75,26 @@ final router = GoRouter(
     ),
 
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => Navbar(navigationShell: navigationShell),
+      pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
+        key: state.pageKey,
+        child: Navbar(navigationShell: navigationShell),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
       branches: [
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/${DashboardScreen.path}',
               name: DashboardScreen.path,
-              builder: (context, state) => const DashboardScreen(),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const DashboardScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
             ),
           ],
         ),
@@ -93,18 +103,44 @@ final router = GoRouter(
             GoRoute(
               path: '/${DeviceDetailScreen.path}',
               name: DeviceDetailScreen.path,
-              builder: (context, state) => const DeviceDetailScreen(),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const DeviceDetailScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/${HistoryScreen.path}', name: HistoryScreen.path, builder: (context, state) => const HistoryScreen()),
+            GoRoute(
+              path: '/${HistoryScreen.path}',
+              name: HistoryScreen.path,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const HistoryScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/${ProfileScreen.path}', name: ProfileScreen.path, builder: (context, state) => const ProfileScreen()),
+            GoRoute(
+              path: '/${ProfileScreen.path}',
+              name: ProfileScreen.path,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const ProfileScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            ),
           ],
         ),
       ],
