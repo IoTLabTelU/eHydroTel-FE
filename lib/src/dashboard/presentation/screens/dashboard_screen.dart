@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -32,17 +33,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 20),
           // Add your dashboard widgets here
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: Text('Analytics', style: Theme.of(context).textTheme.bodyLarge),
+              ),
+              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+            ],
+          ),
+          const SizedBox(height: 20),
           DevicesStatusChartWidget(),
           const SizedBox(height: 20),
-          Text('All Devices', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 10),
-          searchButton(onPressed: () {}, context: context, text: 'Search devices...'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: Text('Devices', style: Theme.of(context).textTheme.bodyLarge),
+              ),
+              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+            ],
+          ),
+          const SizedBox(height: 20),
+          searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search devices...'),
+          const SizedBox(height: 20),
+          Text('Abnormal Devices', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 10),
           DeviceCard(
             deviceName: 'Meja 1',
             deviceId: 'HWTX883',
             isOnline: true,
-            ph: 6.5,
+            ph: 2.2,
             ppm: 850,
             lastUpdated: DateTime.now(),
             ringChart: null,
