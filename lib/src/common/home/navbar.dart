@@ -26,7 +26,7 @@ class _NavbarState extends State<Navbar> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorValues.whiteColor,
+        backgroundColor: ColorValues.neutral100.withValues(alpha: 0.99),
         body: Stack(
           children: [
             Positioned.fill(child: widget.navigationShell),
