@@ -8,7 +8,11 @@ import 'package:hydro_iot/src/auth/presentation/screens/register_screen.dart';
 import 'package:hydro_iot/src/common/error_screen.dart';
 import 'package:hydro_iot/src/common/home/navbar.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:hydro_iot/src/device_detail/presentation/screens/device_detail_screen.dart';
+import 'package:hydro_iot/src/dashboard/presentation/screens/search_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/view_all_device_screen.dart';
 import 'package:hydro_iot/src/history/presentation/screens/history_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 
@@ -95,21 +99,78 @@ final router = GoRouter(
                   return FadeTransition(opacity: animation, child: child);
                 },
               ),
+              routes: [
+                GoRoute(
+                  path: '/${SearchScreen.path}',
+                  name: SearchScreen.path,
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const SearchScreen(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/${DeviceDetailScreen.path}',
-              name: DeviceDetailScreen.path,
+              path: '/${DevicesScreen.path}',
+              name: DevicesScreen.path,
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const DeviceDetailScreen(),
+                child: const DevicesScreen(),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   return FadeTransition(opacity: animation, child: child);
                 },
               ),
+              routes: [
+                GoRoute(
+                  path: '/${AddDeviceScreen.path}',
+                  name: AddDeviceScreen.path,
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const AddDeviceScreen(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                  ),
+                ),
+                GoRoute(
+                  path: '/${ViewAllDeviceScreen.path}',
+                  name: ViewAllDeviceScreen.path,
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const ViewAllDeviceScreen(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                  ),
+                ),
+                GoRoute(
+                  path: '/:deviceId',
+                  name: 'deviceDetail',
+                  pageBuilder: (context, state) {
+                    final deviceId = state.pathParameters['deviceId']!;
+                    final extra = state.extra as Map<String, dynamic>;
+                    return CustomTransitionPage(
+                      key: state.pageKey,
+                      child: DetailDeviceScreen(
+                        deviceId: deviceId,
+                        deviceName: extra['deviceName'] as String,
+                        pH: extra['pH'] as double,
+                        ppm: extra['ppm'] as int,
+                      ),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
