@@ -35,8 +35,8 @@ class DeviceCard extends StatelessWidget {
 
   String _getStatusText() {
     if (!isOnline) return 'Offline';
-    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return 'Error';
-    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return 'Warning';
+    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return 'Critical';
+    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return 'Unstable';
     return 'Normal';
   }
 
@@ -52,7 +52,7 @@ class DeviceCard extends StatelessWidget {
     return Card(
       color: ColorValues.whiteColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
+      elevation: 7,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

@@ -12,6 +12,7 @@ class TextFormFieldComponent extends StatefulWidget {
     this.readOnly,
     this.onChanged,
     this.validator,
+    this.suffixIcon,
   });
 
   final String label;
@@ -22,6 +23,7 @@ class TextFormFieldComponent extends StatefulWidget {
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
   final bool? readOnly;
+  final Widget? suffixIcon;
 
   @override
   State<TextFormFieldComponent> createState() => _TextFormFieldComponentState();
@@ -62,9 +64,8 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
         ),
         hintText: widget.hintText,
         hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
-        errorText: widget.validator != null ? widget.validator!(widget.controller.text) : null,
         suffixIcon: !widget.obscureText
-            ? null
+            ? widget.suffixIcon
             : isObscured
             ? IconButton(
                 icon: const Icon(Icons.visibility_off),
@@ -86,6 +87,7 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       onChanged: widget.onChanged,
       readOnly: widget.readOnly ?? false,
       validator: widget.validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
