@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/crud_device_list.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -20,10 +21,10 @@ class _DevicesScreenState extends State<DevicesScreen> {
         Text('Devices Operation', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 20),
         SizedBox(
-          height: heightQuery(context) * 0.5,
+          height: heightQuery(context) * 0.8,
           child: GridView.custom(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 1,
               crossAxisSpacing: 8.w,
               mainAxisSpacing: 8.h,
             ),
@@ -40,17 +41,22 @@ class _DevicesScreenState extends State<DevicesScreen> {
                   });
                 },
                 child: Card(
+                  color: operation['color'] as Color,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(operation['icon'] as IconData, size: 10.sp, color: operation['color'] as Color),
+                        Icon(operation['icon'] as IconData, size: 10.sp, color: ColorValues.whiteColor),
                         const SizedBox(height: 8),
                         Text(
                           operation['title'] as String,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: ColorValues.whiteColor,
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],

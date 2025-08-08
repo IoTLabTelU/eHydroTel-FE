@@ -35,7 +35,12 @@ class _ViewAllDeviceScreenState extends State<ViewAllDeviceScreen> {
               ringChart: null,
               onTapDetail: () => context.push(
                 '/devices/HWTX88${index + 1}',
-                extra: {'deviceId': 'HWTX88${index + 1}', 'deviceName': 'Meja ${index + 1}', 'pH': 2.2, 'ppm': 850},
+                extra: {
+                  'deviceName': 'Meja ${index + 1}',
+                  'pH': 2.2,
+                  'ppm': 850,
+                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                },
               ),
               onTapSetting: () => context.push('/devices/HWTX88${index + 1}/settings'),
             ),

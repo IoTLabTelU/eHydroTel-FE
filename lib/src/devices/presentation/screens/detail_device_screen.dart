@@ -1,13 +1,24 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 class DetailDeviceScreen extends StatefulWidget {
-  const DetailDeviceScreen({super.key, required this.deviceId, required this.deviceName, required this.pH, required this.ppm});
+  const DetailDeviceScreen({
+    super.key,
+    required this.deviceId,
+    required this.deviceName,
+    required this.pH,
+    required this.ppm,
+    this.deviceDescription,
+  });
 
   final String deviceId;
   final String deviceName;
   final double pH;
   final int ppm;
+  final String? deviceDescription;
 
   @override
   State<DetailDeviceScreen> createState() => _DetailDeviceScreenState();
@@ -18,22 +29,40 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
   String get deviceName => widget.deviceName;
   double get ph => widget.pH;
   int get ppm => widget.ppm;
+  String? get deviceDescription => widget.deviceDescription;
+
+  int random = Random().nextInt(5);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeaderCard(),
-          SizedBox(height: 16.h),
-          _buildSensorInfo(),
-          SizedBox(height: 16.h),
-          _buildActionButtons(context),
-          SizedBox(height: 16.h),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar.medium(
+          automaticallyImplyLeading: false,
+          title: Text(deviceName),
+          expandedHeight: heightQuery(context) * 0.3,
+          floating: true,
+          snap: true,
+          flexibleSpace: FlexibleSpaceBar(background: Image.asset('assets/img/detail_image_$random.jpg', fit: BoxFit.cover)),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildHeaderCard(),
+                SizedBox(height: 16.h),
+                _buildSensorInfo(),
+                SizedBox(height: 16.h),
+                _buildActionButtons(context),
+                SizedBox(height: 16.h),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -43,7 +72,7 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
       decoration: BoxDecoration(
         color: Colors.green.shade50,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,6 +80,10 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
           Text(deviceName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text('ID: $deviceId', style: const TextStyle(fontSize: 16, color: Colors.grey)),
+          if (deviceDescription != null) ...[
+            const SizedBox(height: 8),
+            Text(deviceDescription!, style: const TextStyle(fontSize: 16, color: Colors.black54)),
+          ],
         ],
       ),
     );
@@ -70,7 +103,7 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
     return Container(
       width: 150,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [
           Icon(icon, color: color, size: 40),
@@ -97,8 +130,8 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           onPressed: () {},
-          icon: const Icon(Icons.refresh),
-          label: const Text('Refresh'),
+          icon: Icon(Icons.refresh, color: ColorValues.whiteColor),
+          label: Text('Refresh', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.whiteColor)),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
@@ -107,8 +140,8 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           onPressed: () {},
-          icon: const Icon(Icons.delete),
-          label: const Text('Delete'),
+          icon: Icon(Icons.delete, color: ColorValues.whiteColor),
+          label: Text('Delete', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.whiteColor)),
         ),
       ],
     );
