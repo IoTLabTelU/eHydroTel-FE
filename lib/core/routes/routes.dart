@@ -163,6 +163,7 @@ final router = GoRouter(
                         deviceName: extra['deviceName'] as String,
                         pH: extra['pH'] as double,
                         ppm: extra['ppm'] as int,
+                        deviceDescription: extra['deviceDescription'] as String?,
                       ),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
                         return FadeTransition(opacity: animation, child: child);
