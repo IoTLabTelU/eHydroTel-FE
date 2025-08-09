@@ -133,7 +133,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           Step(
             title: const Text(''),
             content: SizedBox(
-              height: heightQuery(context) * 0.5,
+              height: heightQuery(context) * 0.6,
               child: AddDeviceConnectingScreen(
                 isDeviceConnected: isDeviceConnected,
                 isDeviceConnecting: isDeviceConnecting,
@@ -146,7 +146,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           Step(
             title: const Text(''),
             content: SizedBox(
-              height: heightQuery(context) * 0.5,
+              height: heightQuery(context) * 0.6,
               child: AddDeviceFormScreen(
                 deviceNameController: _deviceNameController,
                 deviceDescriptionController: _deviceDescriptionController,
@@ -160,7 +160,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           Step(
             title: const Text(''),
             content: SizedBox(
-              height: heightQuery(context) * 0.5,
+              height: heightQuery(context) * 0.6,
               child: AddDeviceSensorSetupScreen(
                 phValues: _phValues,
                 ppmValues: _ppmValues,
@@ -178,7 +178,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           Step(
             title: const Text(''),
             content: SizedBox(
-              height: heightQuery(context) * 0.5,
+              height: heightQuery(context) * 0.6,
               child: buildAddDeviceSummaryWidget(
                 context: context,
                 deviceName: _deviceNameController.text,

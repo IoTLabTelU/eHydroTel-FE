@@ -52,9 +52,18 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                   }
                   return null;
                 },
-                suffixIcon: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.qr_code_scanner, color: ColorValues.iotMainColor),
+                suffixIcon: InkWell(
+                  onTap: () {
+                    // Handle QR code scanner tap
+                    // This could be a function that opens a QR code scanner
+                    // For example, you might use a package like ai_barcode_scanner
+                    // to scan a QR code and retrieve the device ID.
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => QRCodeScannerScreen()));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.qr_code_scanner, color: ColorValues.iotMainColor),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
