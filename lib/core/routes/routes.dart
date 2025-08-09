@@ -12,6 +12,7 @@ import 'package:hydro_iot/src/dashboard/presentation/screens/search_screen.dart'
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_device_screen.dart';
 import 'package:hydro_iot/src/history/presentation/screens/history_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
@@ -170,6 +171,30 @@ final router = GoRouter(
                       },
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      path: '/${SettingDeviceScreen.path}',
+                      name: SettingDeviceScreen.path,
+                      pageBuilder: (context, state) {
+                        final deviceId = state.pathParameters['deviceId']!;
+                        final extra = state.extra as Map<String, dynamic>;
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: SettingDeviceScreen(
+                            deviceId: deviceId,
+                            deviceName: extra['deviceName'] as String,
+                            initialMinPh: extra['initialMinPh'] as double,
+                            initialMaxPh: extra['initialMaxPh'] as double,
+                            initialMinPPM: extra['initialMinPPM'] as double,
+                            initialMaxPPM: extra['initialMaxPPM'] as double,
+                          ),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(opacity: animation, child: child);
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
