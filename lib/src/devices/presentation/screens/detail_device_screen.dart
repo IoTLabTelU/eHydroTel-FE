@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -43,7 +44,13 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
           expandedHeight: heightQuery(context) * 0.3,
           floating: true,
           snap: true,
-          flexibleSpace: FlexibleSpaceBar(background: Image.asset('assets/img/detail_image_$random.jpg', fit: BoxFit.cover)),
+          flexibleSpace: FlexibleSpaceBar(
+            background: Image.asset(
+              'assets/img/detail_image_$random.jpg',
+              fit: BoxFit.cover,
+              opacity: AlwaysStoppedAnimation(0.5),
+            ),
+          ),
         ),
         SliverToBoxAdapter(
           child: Padding(
@@ -94,7 +101,12 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildSensorCard(icon: Icons.opacity, label: 'pH', value: ph.toStringAsFixed(2), color: Colors.blueAccent),
-        _buildSensorCard(icon: Icons.bubble_chart, label: 'PPM', value: ppm.toStringAsFixed(2), color: Colors.deepPurpleAccent),
+        _buildSensorCard(
+          icon: Icons.bubble_chart,
+          label: 'PPM',
+          value: ppm.toStringAsFixed(2),
+          color: Colors.deepPurpleAccent,
+        ),
       ],
     );
   }
