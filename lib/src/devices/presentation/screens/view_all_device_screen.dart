@@ -42,7 +42,16 @@ class _ViewAllDeviceScreenState extends State<ViewAllDeviceScreen> {
                   'deviceDescription': 'This is the Description of Meja ${index + 1}',
                 },
               ),
-              onTapSetting: () => context.push('/devices/HWTX88${index + 1}/settings'),
+              onTapSetting: () => context.push(
+                '/devices/HWTX88${index + 1}/settings',
+                extra: {
+                  'deviceName': 'Meja ${index + 1}',
+                  'initialMinPh': 2.2,
+                  'initialMaxPh': 7.0,
+                  'initialMinPPM': 850.0,
+                  'initialMaxPPM': 1000.0,
+                },
+              ),
             ),
           );
         }),
