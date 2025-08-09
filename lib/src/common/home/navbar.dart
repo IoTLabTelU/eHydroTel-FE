@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/common/home/widgets/nav_button_list.dart';
@@ -16,10 +18,28 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar> {
   late int currentIndex;
+  bool isCollapsed = false;
+  Timer? _collapseTimer;
+
+  void _startCollapseTimer() {
+    _collapseTimer?.cancel();
+    _collapseTimer = Timer(Duration(seconds: 5), () {
+      setState(() {
+        isCollapsed = true;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     currentIndex = widget.navigationShell.currentIndex;
+  }
+
+  @override
+  void dispose() {
+    _collapseTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -30,7 +50,31 @@ class _NavbarState extends State<Navbar> {
         body: Stack(
           children: [
             Positioned.fill(child: widget.navigationShell),
-            Positioned(bottom: 0, left: 0, right: 0, child: bottomNav(context)),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.decelerate,
+              bottom: isCollapsed ? -heightQuery(context) * 0.15 : 0,
+              left: 0,
+              right: 0,
+              child: bottomNav(context),
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.decelerate,
+              bottom: 16,
+              right: isCollapsed ? 16 : -widthQuery(context) * 0.15,
+              child: FloatingActionButton(
+                backgroundColor: ColorValues.iotMainColor,
+                mini: true,
+                onPressed: () {
+                  setState(() {
+                    isCollapsed = false;
+                  });
+                  _startCollapseTimer();
+                },
+                child: Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 8.sp),
+              ),
+            ),
           ],
         ),
       ),
@@ -72,7 +116,9 @@ class _NavbarState extends State<Navbar> {
                         widget.navigationShell.goBranch(val);
                         setState(() {
                           currentIndex = val;
+                          isCollapsed = false;
                         });
+                        _startCollapseTimer();
                       },
                       icon: data['icon']!,
                       currentIndex: currentIndex,
