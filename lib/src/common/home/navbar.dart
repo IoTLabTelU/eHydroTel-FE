@@ -72,7 +72,11 @@ class _NavbarState extends State<Navbar> {
                   });
                   _startCollapseTimer();
                 },
-                child: Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 8.sp),
+                child: Icon(
+                  Icons.keyboard_arrow_up,
+                  color: Colors.white,
+                  size: 8.sp,
+                ),
               ),
             ),
           ],
@@ -138,7 +142,10 @@ class _NavbarState extends State<Navbar> {
                     Container(
                       height: widthQuery(context) / 100 * 1.0,
                       width: widthQuery(context) / 100 * 12,
-                      decoration: BoxDecoration(color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(
+                        color: Colors.yellow,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     ClipPath(
                       clipper: MyCustomClipper(context),

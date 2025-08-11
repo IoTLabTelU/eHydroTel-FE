@@ -22,7 +22,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: ListView(
         children: [
           const SizedBox(height: 20),
-          Text('Welcome, Alex Marnocha', style: Theme.of(context).textTheme.bodyLarge),
+          Text(
+            'Welcome, Alex Marnocha',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,12 +39,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Expanded(
+                child: Divider(color: ColorValues.neutral300, thickness: 5),
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2.w),
-                child: Text('Analytics', style: Theme.of(context).textTheme.bodyLarge),
+                child: Text(
+                  'Analytics',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Expanded(
+                child: Divider(color: ColorValues.neutral300, thickness: 5),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -50,18 +60,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Expanded(
+                child: Divider(color: ColorValues.neutral300, thickness: 5),
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2.w),
-                child: Text('Devices', style: Theme.of(context).textTheme.bodyLarge),
+                child: Text(
+                  'Devices',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+              Expanded(
+                child: Divider(color: ColorValues.neutral300, thickness: 5),
+              ),
             ],
           ),
           const SizedBox(height: 20),
-          searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search devices...'),
+          searchButton(
+            onPressed: () => context.push('/dashboard/search'),
+            context: context,
+            text: 'Search devices...',
+          ),
           const SizedBox(height: 20),
-          Text('Abnormal Devices', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'Abnormal Devices',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 10),
           DeviceCard(
             deviceName: 'Meja 1',

@@ -27,7 +27,9 @@ class NavButtonWidget extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 600),
-        height: currentIndex == index ? widthQuery(context) / 100 * 18 : widthQuery(context) / 100 * 13,
+        height: currentIndex == index
+            ? widthQuery(context) / 100 * 18
+            : widthQuery(context) / 100 * 13,
         width: widthQuery(context) / 100 * 18,
         decoration: const BoxDecoration(color: Colors.transparent),
         child: Column(
@@ -38,14 +40,22 @@ class NavButtonWidget extends StatelessWidget {
               curve: Curves.easeIn,
               child: SvgPicture.asset(
                 icon,
-                colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
-                width: widthQuery(context) / 100 * 5,
+                colorFilter: ColorFilter.mode(
+                  ColorValues.whiteColor,
+                  BlendMode.srcIn,
+                ),
+                width: widthQuery(context) / 100 * 2,
                 height: heightQuery(context) / 100 * 5,
               ),
             ),
             if (currentIndex == index) const SizedBox(height: 5),
             if (currentIndex == index)
-              Text(text, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.whiteColor)),
+              Text(
+                text,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: ColorValues.whiteColor),
+              ),
           ],
         ),
       ),
