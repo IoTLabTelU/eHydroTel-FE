@@ -29,7 +29,7 @@ class _ViewAllDeviceScreenState extends State<ViewAllDeviceScreen> {
               deviceName: 'Meja ${index + 1}',
               deviceId: 'HWTX88${index + 1}',
               isOnline: true,
-              ph: 2.2,
+              ph: 10.0,
               ppm: 850,
               lastUpdated: DateTime.now(),
               ringChart: null,
@@ -37,7 +37,7 @@ class _ViewAllDeviceScreenState extends State<ViewAllDeviceScreen> {
                 '/devices/HWTX88${index + 1}',
                 extra: {
                   'deviceName': 'Meja ${index + 1}',
-                  'pH': 2.2,
+                  'pH': 10.0,
                   'ppm': 850,
                   'deviceDescription': 'This is the Description of Meja ${index + 1}',
                 },
