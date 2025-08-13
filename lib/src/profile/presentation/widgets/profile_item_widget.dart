@@ -4,56 +4,47 @@ import 'package:hydro_iot/res/colors.dart';
 import 'package:hydro_iot/res/text_styles.dart';
 
 class ProfileItemWidget extends StatelessWidget {
-  final void Function()? onPressed;
+  final void Function()? onTap;
   final String title;
   final String icon;
-  final int currentIndex;
 
   const ProfileItemWidget({
     super.key,
     required this.title,
-    required this.onPressed,
+    required this.onTap,
     required this.icon,
-    required this.currentIndex,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: onPressed,
-        child: Ink(
-          decoration: BoxDecoration(
-            color: ColorValues.neutral300,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Material(
+          color: ColorValues.neutral200,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: ColorValues.neutral100,
-                    child: SvgPicture.asset(icon),
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    title,
-                    style: dmSansNormalText(size: 20),
-                    overflow: TextOverflow.ellipsis,
+                  Text(title, style: dmSansNormalText()),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: SvgPicture.asset(
+                      icon,
+                      colorFilter: ColorFilter.mode(
+                        ColorValues.blackColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-                color: Colors.black,
-              ),
-            ],
+            ),
           ),
         ),
       ),

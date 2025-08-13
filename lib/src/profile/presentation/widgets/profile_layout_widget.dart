@@ -22,7 +22,7 @@ class ProfileLayoutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double stackingHeight = 6;
+    double stackingHeight = 8;
     double spaceHeight = MediaQuery.of(context).size.height / stackingHeight;
 
     return Stack(
@@ -56,28 +56,34 @@ class ProfileLayoutWidget extends StatelessWidget {
                 ),
 
                 ///ini usernamenya bg
-                child: Column(
-                  children: [
-                    SizedBox(height: 50.h),
-                    Text(userName ?? 'User Name', style: dmSansHeadText()),
-                    SizedBox(height: 1.h),
-                    Text(userEmail ?? 'User Email', style: dmSansNormalText()),
-                    SizedBox(height: 10.h),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 55.h),
+                      Text(
+                        userName ?? 'User Name',
+                        style: dmSansHeadText(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 1.h),
+                      Text(
+                        userEmail ?? 'User Email',
+                        style: dmSansNormalText(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 10.h),
 
-                    Expanded(
-                      child: SizedBox(
-                        width: double.infinity,
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
 
-                        ///ini CHILD contentnya bg
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: child,
-                          ),
+                          ///ini CHILD contentnya bg
+                          child: SingleChildScrollView(child: child),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -99,6 +105,7 @@ class ProfileLayoutWidget extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.bottomRight,
                 children: [
+                  ///PROFILE
                   Container(
                     width: 120,
                     height: 120,

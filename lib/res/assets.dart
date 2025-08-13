@@ -5,6 +5,8 @@ class IconAssets {
   static const String historyIcon = 'assets/icons/HistoryPageIcon.svg';
   static const String profileIcon = 'assets/icons/ProfilePageIcon.svg';
   static const String pencilIcon = 'assets/icons/Pencil.svg';
+  static const String profileSettingIcon = 'assets/icons/ProfileSetting.svg';
+  static const String logout = 'assets/icons/Logout.svg';
 }
 
 class ImageAssets {}
