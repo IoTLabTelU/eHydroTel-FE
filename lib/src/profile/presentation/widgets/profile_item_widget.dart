@@ -22,7 +22,7 @@ class ProfileItemWidget extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Material(
-          color: ColorValues.neutral200,
+          color: ColorValues.neutral100,
           child: InkWell(
             onTap: onTap,
             child: Padding(

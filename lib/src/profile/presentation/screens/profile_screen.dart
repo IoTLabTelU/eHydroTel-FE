@@ -36,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: ColorValues.neutral300,
+              color: ColorValues.neutral300.withAlpha(150),
             ),
             child: Column(
               children: profileItemList
@@ -66,7 +66,7 @@ class ProfileScreen extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: ColorValues.neutral300,
+              color: ColorValues.neutral300.withAlpha(150),
             ),
             child: ProfileItemWidget(
               title: 'Logout',
