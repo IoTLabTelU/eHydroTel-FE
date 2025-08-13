@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hydro_iot/res/assets.dart';
 import 'package:hydro_iot/res/colors.dart';
+import 'package:hydro_iot/res/text_styles.dart';
 
 class ProfileLayoutWidget extends StatelessWidget {
-  const ProfileLayoutWidget({super.key});
+  final Widget? child;
+  final String? namePage;
+  final String? userName;
+  final String? userEmail;
+  final String? imgUrl;
+  const ProfileLayoutWidget({
+    super.key,
+    this.child,
+    this.namePage,
+    this.userName,
+    this.userEmail,
+    this.imgUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +27,23 @@ class ProfileLayoutWidget extends StatelessWidget {
 
     return Stack(
       children: [
+        ///Background
+        Container(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height / stackingHeight + 100,
+          color: ColorValues.neutral300,
+        ),
         Column(
           children: [
+            ///Name Page
             Container(
-              // color: Colors.yellow,
+              padding: const EdgeInsets.all(10),
+              width: double.infinity,
               height: MediaQuery.of(context).size.height / stackingHeight,
+              child: Text(
+                namePage ?? 'Name Page',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
 
             /// CONTENT
@@ -26,16 +52,32 @@ class ProfileLayoutWidget extends StatelessWidget {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
-                  color: Colors.green,
+                  color: ColorValues.neutral100,
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 50),
-                      for (int i = 0; i < 100; i++) Text("${i + 1}"),
-                    ],
-                  ),
+
+                ///ini usernamenya bg
+                child: Column(
+                  children: [
+                    SizedBox(height: 50.h),
+                    Text(userName ?? 'User Name', style: dmSansHeadText()),
+                    SizedBox(height: 1.h),
+                    Text(userEmail ?? 'User Email', style: dmSansNormalText()),
+                    SizedBox(height: 10.h),
+
+                    Expanded(
+                      child: SizedBox(
+                        width: double.infinity,
+
+                        ///ini CHILD contentnya bg
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: child,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -66,8 +108,8 @@ class ProfileLayoutWidget extends StatelessWidget {
                         color: ColorValues.iotMainColor,
                         width: 3,
                       ),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/img/detail_image_1.jpg'),
+                      image: DecorationImage(
+                        image: AssetImage(imgUrl ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -95,23 +137,6 @@ class ProfileLayoutWidget extends StatelessWidget {
             ),
           ],
         ),
-
-        // Column(
-        //   mainAxisAlignment: MainAxisAlignment.start,
-        //   children: [
-        //     SizedBox(
-        //       height: MediaQuery.of(context).size.height / stackingHeight - 100,
-        //     ),
-        //     Container(
-        //       margin: const EdgeInsets.symmetric(horizontal: 10),
-        //       height: 300,
-        //       decoration: BoxDecoration(
-        //         borderRadius: BorderRadius.circular(20),
-        //         color: Colors.purple,
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
