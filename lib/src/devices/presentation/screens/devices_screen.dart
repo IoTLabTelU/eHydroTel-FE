@@ -17,7 +17,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
       children: [
-        Text('Devices Operation', style: Theme.of(context).textTheme.titleLarge),
+        Text('Devices Management', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 20),
         SizedBox(
           height: heightQuery(context) * 0.8,

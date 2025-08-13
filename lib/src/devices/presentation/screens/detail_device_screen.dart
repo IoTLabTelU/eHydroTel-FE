@@ -46,7 +46,8 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> with SingleTick
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 3))
       ..addListener(() {
         setState(() {});
-      });
+      })
+      ..forward();
   }
 
   @override

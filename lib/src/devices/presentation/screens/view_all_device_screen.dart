@@ -52,6 +52,15 @@ class _ViewAllDeviceScreenState extends State<ViewAllDeviceScreen> {
                   'initialMaxPPM': 1000.0,
                 },
               ),
+              onTapHistory: () => context.push(
+                '/devices/HWTX88${index + 1}/history',
+                extra: {
+                  'deviceName': 'Meja ${index + 1}',
+                  'pH': 10.0,
+                  'ppm': 850,
+                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                },
+              ),
             ),
           );
         }),
