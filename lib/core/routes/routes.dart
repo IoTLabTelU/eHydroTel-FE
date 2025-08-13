@@ -12,9 +12,10 @@ import 'package:hydro_iot/src/dashboard/presentation/screens/search_screen.dart'
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/history/sensor_history_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_device_screen.dart';
-import 'package:hydro_iot/src/history/presentation/screens/history_screen.dart';
+import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -194,6 +195,21 @@ final router = GoRouter(
                         );
                       },
                     ),
+                    GoRoute(
+                      path: '/${SensorHistoryScreen.path}',
+                      name: SensorHistoryScreen.path,
+                      pageBuilder: (context, state) {
+                        final deviceId = state.pathParameters['deviceId']!;
+                        final extra = state.extra as Map<String, dynamic>;
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: SensorHistoryScreen(deviceId: deviceId, deviceName: extra['deviceName'] as String),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(opacity: animation, child: child);
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -203,11 +219,11 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/${HistoryScreen.path}',
-              name: HistoryScreen.path,
+              path: '/${NotificationCenterScreen.path}',
+              name: NotificationCenterScreen.path,
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const HistoryScreen(),
+                child: const NotificationCenterScreen(),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   return FadeTransition(opacity: animation, child: child);
                 },

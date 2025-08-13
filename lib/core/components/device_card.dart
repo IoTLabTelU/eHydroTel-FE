@@ -11,6 +11,7 @@ class DeviceCard extends StatelessWidget {
   final DateTime lastUpdated;
   final VoidCallback onTapDetail;
   final VoidCallback onTapSetting;
+  final VoidCallback onTapHistory;
   final Widget? ringChart; // jika sudah ada
 
   const DeviceCard({
@@ -24,6 +25,7 @@ class DeviceCard extends StatelessWidget {
     required this.onTapDetail,
     required this.onTapSetting,
     this.ringChart,
+    required this.onTapHistory,
   });
 
   Color _getStatusColor() {
@@ -122,6 +124,8 @@ class DeviceCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                TextButton.icon(onPressed: onTapHistory, icon: const Icon(Icons.history), label: const Text('')),
+                const Spacer(),
                 TextButton.icon(
                   onPressed: onTapDetail,
                   icon: const Icon(Icons.remove_red_eye),
