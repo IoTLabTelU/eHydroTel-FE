@@ -71,9 +71,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ppm: 850,
             lastUpdated: DateTime.now(),
             ringChart: null,
-            onTapDetail: () => context.push('/devices/HWTX883'),
-            onTapSetting: () => context.push('/devices/HWTX883/settings'),
-            onTapHistory: () => context.push('/devices/HWTX883/history'),
+            onTapDetail: () => context.push(
+              '/devices/HWTX883',
+              extra: {
+                'deviceName': 'Meja 1',
+                'pH': 2.2,
+                'ppm': 700,
+                'deviceDescription': 'This is the Description of Meja 1',
+              },
+            ),
+            onTapSetting: () => context.push(
+              '/devices/HWTX883/settings',
+              extra: {
+                'deviceName': 'Meja 1',
+                'initialMinPh': 2.2,
+                'initialMaxPh': 7.0,
+                'initialMinPPM': 850.0,
+                'initialMaxPPM': 1000.0,
+              },
+            ),
+            onTapHistory: () => context.push(
+              '/devices/HWTX883/history',
+              extra: {
+                'deviceName': 'Meja 1',
+                'pH': 2.2,
+                'ppm': 700,
+                'deviceDescription': 'This is the Description of Meja 1',
+              },
+            ),
           ),
 
           SizedBox(height: heightQuery(context) * 0.3),

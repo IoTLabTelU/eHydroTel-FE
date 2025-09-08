@@ -1,5 +1,5 @@
 class AppStrings {
-  static const String appName = 'Hydro IoT';
+  static const String appName = 'eHydrotel';
   static const String errorMessage = 'An error has occurred. Please try again.';
   static const String loadingMessage = 'Loading, please wait...';
   static const String successMessage = 'Operation completed successfully!';

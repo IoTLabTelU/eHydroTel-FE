@@ -43,8 +43,8 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
               const SizedBox(height: 20),
               TextFormFieldComponent(
                 controller: _deviceIdController,
-                hintText: 'Enter device ID',
-                label: 'Device ID',
+                hintText: 'Enter Serial Number',
+                label: 'Serial Number',
                 obscureText: false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
