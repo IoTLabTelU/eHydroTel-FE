@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/core/components/plant_session_card.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
@@ -31,60 +32,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
               IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
             ],
           ),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
           // Add your dashboard widgets here
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.w),
-                child: Text('Analytics', style: Theme.of(context).textTheme.bodyLarge),
-              ),
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+          //     Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: 2.w),
+          //       child: Text('Analytics', style: Theme.of(context).textTheme.bodyLarge),
+          //     ),
+          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+          //   ],
+          // ),
+          // const SizedBox(height: 20),
+          // const DevicesStatusChartWidget(),
+          // const SizedBox(height: 20),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+          //     Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: 2.w),
+          //       child: Text('Plant Session', style: Theme.of(context).textTheme.bodyLarge),
+          //     ),
+          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
+          //   ],
+          // ),
           const SizedBox(height: 20),
-          DevicesStatusChartWidget(),
+          searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search sessions...'),
           const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.w),
-                child: Text('Devices', style: Theme.of(context).textTheme.bodyLarge),
-              ),
-              Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-            ],
-          ),
-          const SizedBox(height: 20),
-          searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search devices...'),
-          const SizedBox(height: 20),
-          Text('Abnormal Devices', style: Theme.of(context).textTheme.titleLarge),
+          Text('Plant Sessions', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 10),
-          DeviceCard(
+          PlantSessionCard(
             deviceName: 'Meja 1',
             deviceId: 'HWTX883',
             isOnline: true,
-            ph: 2.2,
+            ph: 5.7,
             ppm: 850,
             lastUpdated: DateTime.now(),
             ringChart: null,
             onTapDetail: () => context.push(
               '/devices/HWTX883',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 2.2,
-                'ppm': 700,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
+              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
             ),
             onTapSetting: () => context.push(
               '/devices/HWTX883/settings',
               extra: {
                 'deviceName': 'Meja 1',
-                'initialMinPh': 2.2,
+                'initialMinPh': 5.7,
                 'initialMaxPh': 7.0,
                 'initialMinPPM': 850.0,
                 'initialMaxPPM': 1000.0,
@@ -92,13 +88,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             onTapHistory: () => context.push(
               '/devices/HWTX883/history',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 2.2,
-                'ppm': 700,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
+              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
             ),
+            plantType: 'Brocholli',
           ),
 
           SizedBox(height: heightQuery(context) * 0.3),

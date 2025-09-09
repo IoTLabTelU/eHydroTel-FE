@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:intl/intl.dart';
 
-class DeviceCard extends StatelessWidget {
+class PlantSessionCard extends StatelessWidget {
   final String deviceName;
   final String deviceId;
+  final String plantType;
   final bool isOnline;
   final double ph;
   final int ppm;
@@ -14,7 +15,7 @@ class DeviceCard extends StatelessWidget {
   final VoidCallback onTapHistory;
   final Widget? ringChart; // jika sudah ada
 
-  const DeviceCard({
+  const PlantSessionCard({
     super.key,
     required this.deviceName,
     required this.deviceId,
@@ -26,29 +27,25 @@ class DeviceCard extends StatelessWidget {
     required this.onTapSetting,
     this.ringChart,
     required this.onTapHistory,
+    required this.plantType,
   });
 
   Color _getStatusColor() {
     if (!isOnline) return ColorValues.neutral500;
     if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return ColorValues.danger600;
-    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return ColorValues.warning600;
     return ColorValues.success600;
   }
 
   String _getStatusText() {
-    if (!isOnline) return 'Offline';
+    if (!isOnline) return 'Idle';
     if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return 'Critical';
-    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return 'Unstable';
-    return 'Normal';
+    return 'Active';
   }
-
-  Color _getConnectionColor() => isOnline ? ColorValues.success600 : ColorValues.neutral500;
 
   @override
   Widget build(BuildContext context) {
     final statusColor = _getStatusColor();
     final statusText = _getStatusText();
-    final connectionColor = _getConnectionColor();
     final formattedTime = DateFormat.Hm().format(lastUpdated);
 
     return Card(
@@ -59,30 +56,22 @@ class DeviceCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Top Row: Title + Online Status
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Text(deviceName, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                 Text(
-                  deviceName,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: ColorValues.blackColor),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.circle, size: 10, color: connectionColor),
-                    const SizedBox(width: 6),
-                    Text(
-                      isOnline ? 'Online' : 'Offline',
-                      style: TextStyle(color: connectionColor, fontWeight: FontWeight.w500),
-                    ),
-                  ],
+                  plantType,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: ColorValues.success700),
                 ),
               ],
             ),
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Serial: $deviceId', style: TextStyle(fontSize: 12, color: ColorValues.neutral500)),
+              child: Text('Serial: $deviceId', style: Theme.of(context).textTheme.bodySmall),
             ),
             const SizedBox(height: 12),
 
@@ -92,9 +81,9 @@ class DeviceCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildSensorTile('pH', ph.toStringAsFixed(2)),
+                      _buildSensorTile(context, 'pH', ph.toStringAsFixed(2)),
                       const SizedBox(height: 8),
-                      _buildSensorTile('ppm', ppm.toString()),
+                      _buildSensorTile(context, 'ppm', ppm.toString()),
                     ],
                   ),
                 ),
@@ -114,7 +103,7 @@ class DeviceCard extends StatelessWidget {
                     Text('Status: $statusText', style: TextStyle(color: statusColor)),
                   ],
                 ),
-                Text('⏱ $formattedTime', style: TextStyle(fontSize: 12, color: ColorValues.neutral500)),
+                Text('⏱ $formattedTime', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500)),
               ],
             ),
 
@@ -132,13 +121,6 @@ class DeviceCard extends StatelessWidget {
                   label: const Text('Detail'),
                   style: TextButton.styleFrom(foregroundColor: ColorValues.iotMainColor),
                 ),
-                const SizedBox(width: 8),
-                TextButton.icon(
-                  onPressed: onTapSetting,
-                  icon: const Icon(Icons.settings),
-                  label: const Text('Setting'),
-                  style: TextButton.styleFrom(foregroundColor: ColorValues.iotArduinoColor),
-                ),
               ],
             ),
           ],
@@ -147,17 +129,14 @@ class DeviceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSensorTile(String label, String value) {
+  Widget _buildSensorTile(BuildContext context, String label, String value) {
     return Row(
       children: [
-        Text(
-          '$label:',
-          style: TextStyle(fontWeight: FontWeight.w500, color: ColorValues.neutral700),
-        ),
+        Text('$label:', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral700)),
         const SizedBox(width: 6),
         Text(
           value,
-          style: TextStyle(fontSize: 16, color: ColorValues.blackColor, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
         ),
       ],
     );

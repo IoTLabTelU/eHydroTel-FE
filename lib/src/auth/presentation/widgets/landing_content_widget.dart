@@ -18,7 +18,7 @@ SliverChildListDelegate contentWidget(BuildContext context) {
     Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Text(
-        'Hydro IoT is a platform that allows you to monitor and control your hydroponic system from anywhere in the world.',
+        '${AppStrings.appName} is a platform that allows you to monitor and control your hydroponic system seamlessly.',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor),
         textAlign: TextAlign.center,
       ),

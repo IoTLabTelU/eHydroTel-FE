@@ -26,7 +26,7 @@ SliverAppBar appBarWidget(BuildContext context) {
           ),
           SizedBox(width: 4.w),
           Text(
-            'Hydro IoT',
+            AppStrings.appName,
             style: Theme.of(
               context,
             ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),

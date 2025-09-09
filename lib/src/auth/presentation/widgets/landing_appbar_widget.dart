@@ -20,7 +20,7 @@ Widget appBarWidget(BuildContext context) {
             colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
           ),
         ),
-        Text('Hydro IoT', style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor)),
+        Text(AppStrings.appName, style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor)),
       ],
     ),
   );

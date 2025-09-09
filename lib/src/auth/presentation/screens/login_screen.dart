@@ -4,6 +4,8 @@ import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
+import '../widgets/oauth_button_widget.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -96,6 +98,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 20.h),
+                      oAuthButtonWidget(
+                        context: context,
+                        assetName: IconAssets.googleIcon,
+                        label: 'Sign In with Google',
+                        onPressed: () {
+                          // Handle Google sign-in
+                        },
                       ),
                       SizedBox(height: 20.h),
                       Center(
