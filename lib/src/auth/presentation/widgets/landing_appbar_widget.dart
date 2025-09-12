@@ -11,18 +11,21 @@ Widget appBarWidget(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          margin: const EdgeInsets.only(bottom: 15.0),
+          margin: const EdgeInsets.only(top: 15.0),
           padding: const EdgeInsets.all(16.0),
           child: Lottie.asset(
             LottieAssets.landingPlant,
             width: 60.w,
-            height: 100.h,
+            height: 60.h,
             repeat: true,
             fit: BoxFit.cover,
             frameRate: FrameRate.max,
           ),
         ),
-        Text(AppStrings.appName, style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor)),
+        Text(
+          AppStrings.appName,
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w700),
+        ),
       ],
     ),
   );

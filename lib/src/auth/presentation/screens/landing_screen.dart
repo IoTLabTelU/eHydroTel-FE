@@ -17,7 +17,7 @@ class LandingScreen extends StatelessWidget {
           slivers: [
             SliverAppBar(
               backgroundColor: ColorValues.blackColor,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
               ),
               flexibleSpace: appBarWidget(context),
