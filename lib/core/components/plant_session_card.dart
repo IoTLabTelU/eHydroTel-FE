@@ -9,7 +9,7 @@ class PlantSessionCard extends StatelessWidget {
   final bool isOnline;
   final double ph;
   final int ppm;
-  final DateTime lastUpdated;
+  final DateTime plantedAt;
   final VoidCallback onTapDetail;
   final VoidCallback onTapSetting;
   final VoidCallback onTapHistory;
@@ -22,7 +22,7 @@ class PlantSessionCard extends StatelessWidget {
     required this.isOnline,
     required this.ph,
     required this.ppm,
-    required this.lastUpdated,
+    required this.plantedAt,
     required this.onTapDetail,
     required this.onTapSetting,
     this.ringChart,
@@ -46,7 +46,7 @@ class PlantSessionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = _getStatusColor();
     final statusText = _getStatusText();
-    final formattedTime = DateFormat.Hm().format(lastUpdated);
+    final daysSincePlanted = DateTime.now().difference(plantedAt).inDays;
 
     return Card(
       color: ColorValues.whiteColor,
@@ -94,19 +94,30 @@ class PlantSessionCard extends StatelessWidget {
 
             // Status + Last updated
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.info_outline, color: statusColor, size: 18),
-                    const SizedBox(width: 6),
-                    Text('Status: $statusText', style: TextStyle(color: statusColor)),
-                  ],
-                ),
-                Text('⏱ $formattedTime', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500)),
+                Icon(Icons.info_outline, color: statusColor, size: 18),
+                const SizedBox(width: 6),
+                Text('Status: $statusText', style: TextStyle(color: statusColor)),
               ],
             ),
-
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  '🌱 $daysSincePlanted day since planted',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  ' Planted at: ${DateFormat.yMMMd().format(plantedAt)}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500),
+                ),
+              ],
+            ),
             const Divider(height: 24, color: ColorValues.neutral200),
 
             // Bottom Row: Buttons
@@ -136,7 +147,9 @@ class PlantSessionCard extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
         ),
       ],
     );

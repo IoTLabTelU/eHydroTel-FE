@@ -8,6 +8,15 @@ class IconAssets {
   static const String profileSettingIcon = 'assets/icons/ProfileSetting.svg';
   static const String logout = 'assets/icons/Logout.svg';
   static const String googleIcon = 'assets/icons/GoogleIcon.svg';
+  static const String plantIcon = 'assets/icons/PlantIcon.svg';
 }
 
 class ImageAssets {}
+
+class LottieAssets {
+  static const String landingPlant = 'assets/lottie/Plant_1.json';
+  static const String plantSessionSeed = 'assets/lottie/Plant 1.lottie';
+  static const String plantSessionSprout = 'assets/lottie/Plant 2.lottie';
+  static const String plantSessionGrowth = 'assets/lottie/Plant 3.lottie';
+  static const String plantSessionFlower = 'assets/lottie/Plant 4.lottie';
+}
