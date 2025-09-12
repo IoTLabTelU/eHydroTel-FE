@@ -14,7 +14,7 @@ import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.
 import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/history/sensor_history_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen.dart';
-import 'package:hydro_iot/src/devices/presentation/screens/view_all_device_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/view_all_session_screen.dart';
 import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 
@@ -141,17 +141,7 @@ final router = GoRouter(
                     },
                   ),
                 ),
-                GoRoute(
-                  path: '/${ViewAllDeviceScreen.path}',
-                  name: ViewAllDeviceScreen.path,
-                  pageBuilder: (context, state) => CustomTransitionPage(
-                    key: state.pageKey,
-                    child: const ViewAllDeviceScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                  ),
-                ),
+
                 GoRoute(
                   path: '/:deviceId',
                   name: 'deviceDetail',
@@ -189,6 +179,21 @@ final router = GoRouter(
                             initialMinPPM: extra['initialMinPPM'] as double,
                             initialMaxPPM: extra['initialMaxPPM'] as double,
                           ),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(opacity: animation, child: child);
+                          },
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: '/${ViewAllPlantSessionScreen.path}',
+                      name: ViewAllPlantSessionScreen.path,
+                      pageBuilder: (context, state) {
+                        final deviceId = state.pathParameters['deviceId']!;
+                        final extra = state.extra as Map<String, dynamic>;
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: ViewAllPlantSessionScreen(deviceName: extra['deviceName'] as String, serialNumber: deviceId),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);
                           },

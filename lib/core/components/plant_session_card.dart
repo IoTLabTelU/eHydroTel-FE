@@ -1,155 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/core/components/buttons.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/utils/utils.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class PlantSessionCard extends StatelessWidget {
+  final bool onDashboard;
+  final bool isStopped;
   final String deviceName;
-  final String deviceId;
-  final String plantType;
-  final bool isOnline;
-  final double ph;
-  final int ppm;
-  final DateTime plantedAt;
-  final VoidCallback onTapDetail;
-  final VoidCallback onTapSetting;
-  final VoidCallback onTapHistory;
-  final Widget? ringChart; // jika sudah ada
+  final String plantName;
+  final DateTime startDate;
+  final int totalDays;
+  final double minPh;
+  final double maxPh;
+  final double minPpm;
+  final double maxPpm;
+  final VoidCallback onHistoryTap;
+  final VoidCallback onStopSession;
+  final VoidCallback onRestartSession;
+  final VoidCallback onTap;
 
   const PlantSessionCard({
     super.key,
     required this.deviceName,
-    required this.deviceId,
-    required this.isOnline,
-    required this.ph,
-    required this.ppm,
-    required this.plantedAt,
-    required this.onTapDetail,
-    required this.onTapSetting,
-    this.ringChart,
-    required this.onTapHistory,
-    required this.plantType,
+    required this.plantName,
+    required this.startDate,
+    required this.totalDays,
+    required this.minPh,
+    required this.maxPh,
+    required this.minPpm,
+    required this.maxPpm,
+    required this.onHistoryTap,
+    required this.onStopSession,
+    required this.onTap,
+    required this.onDashboard,
+    required this.isStopped,
+    required this.onRestartSession,
   });
 
-  Color _getStatusColor() {
-    if (!isOnline) return ColorValues.neutral500;
-    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return ColorValues.danger600;
-    return ColorValues.success600;
-  }
-
-  String _getStatusText() {
-    if (!isOnline) return 'Idle';
-    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return 'Critical';
-    return 'Active';
-  }
+  int get daysElapsed => DateTime.now().difference(startDate).inDays;
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor();
-    final statusText = _getStatusText();
-    final daysSincePlanted = DateTime.now().difference(plantedAt).inDays;
+    final progress = (daysElapsed / totalDays).clamp(0.0, 1.0);
 
-    return Card(
-      color: ColorValues.whiteColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 7,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(deviceName, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
-                Text(
-                  plantType,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: ColorValues.success700),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Serial: $deviceId', style: Theme.of(context).textTheme.bodySmall),
-            ),
-            const SizedBox(height: 12),
-
-            // Center Row: pH, ppm, chart
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        color: ColorValues.whiteColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 6,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSensorTile(context, 'pH', ph.toStringAsFixed(2)),
-                      const SizedBox(height: 8),
-                      _buildSensorTile(context, 'ppm', ppm.toString()),
+                      Text(
+                        plantName,
+                        style: dmSansNormalText(size: 20, color: Colors.black, weight: FontWeight.bold),
+                      ),
+                      if (onDashboard) Text('Device: $deviceName', style: dmSansNormalText(size: 14, color: Colors.grey)),
                     ],
                   ),
-                ),
-                if (ringChart != null) ringChart!,
-              ],
-            ),
-            const SizedBox(height: 12),
+                  // Animasi Rive
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        String asset;
+                        switch (progress) {
+                          case >= 0.0 && < 0.2:
+                            asset = LottieAssets.plantSessionSeed;
+                            break;
+                          case >= 0.2 && < 0.4:
+                            asset = LottieAssets.plantSessionSprout;
+                            break;
+                          case >= 0.4 && < 0.6:
+                            asset = LottieAssets.plantSessionGrowth;
+                            break;
+                          case >= 0.6 && <= 1.0:
+                            asset = LottieAssets.plantSessionFlower;
+                            break;
+                          default:
+                            asset = LottieAssets.plantSessionFlower;
+                        }
+                        return Container(
+                          margin: EdgeInsets.only(left: 20.w),
+                          decoration: BoxDecoration(
+                            color: ColorValues.iotMainColor.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Lottie.asset(asset, fit: BoxFit.cover, frameRate: FrameRate.max, repeat: true),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-            // Status + Last updated
-            Row(
-              children: [
-                Icon(Icons.info_outline, color: statusColor, size: 18),
-                const SizedBox(width: 6),
-                Text('Status: $statusText', style: TextStyle(color: statusColor)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  '🌱 $daysSincePlanted day since planted',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  ' Planted at: ${DateFormat.yMMMd().format(plantedAt)}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500),
-                ),
-              ],
-            ),
-            const Divider(height: 24, color: ColorValues.neutral200),
+              /// Progress timeline
+              LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Colors.grey.shade200,
+                color: Colors.green,
+                minHeight: 10,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              const SizedBox(height: 8),
+              Text('Day $daysElapsed of $totalDays', style: const TextStyle(fontSize: 14, color: Colors.black54)),
 
-            // Bottom Row: Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(onPressed: onTapHistory, icon: const Icon(Icons.history), label: const Text('')),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: onTapDetail,
-                  icon: const Icon(Icons.remove_red_eye),
-                  label: const Text('Detail'),
-                  style: TextButton.styleFrom(foregroundColor: ColorValues.iotMainColor),
-                ),
-              ],
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              /// Detail Info
+              _buildInfoBox('🧪 pH Threshold', '$minPh – $maxPh'),
+              const SizedBox(height: 12),
+              _buildInfoBox('💧 PPM Threshold', '$minPpm – $maxPpm'),
+              const SizedBox(height: 12),
+              _buildInfoBox('🌱 Planted at', DateFormat.yMMMd().format(startDate)),
+              const SizedBox(height: 20),
+
+              /// Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: iconTextButtonWidget(
+                      context: context,
+                      icon: const Icon(Icons.history, size: 20),
+                      label: 'History',
+                      onPressed: onHistoryTap,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: progress == 1.0
+                        ? iconTextButtonWidget(
+                            context: context,
+                            icon: const Icon(Icons.check),
+                            label: 'Harvest',
+                            onPressed: () {},
+                            backgroundColor: Colors.green.shade200,
+                            foregroundColor: Colors.green.shade800,
+                          )
+                        : isStopped
+                        ? iconTextButtonWidget(
+                            context: context,
+                            icon: const Icon(Icons.play_circle, size: 20),
+                            label: 'Restart',
+                            onPressed: onRestartSession,
+                            backgroundColor: Colors.blue.shade100,
+                            foregroundColor: Colors.black54,
+                          )
+                        : iconTextButtonWidget(
+                            context: context,
+                            icon: const Icon(Icons.stop_circle, size: 20),
+                            label: 'Stop',
+                            onPressed: onStopSession,
+                            backgroundColor: Colors.red.shade600,
+                            foregroundColor: ColorValues.whiteColor,
+                          ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSensorTile(BuildContext context, String label, String value) {
-    return Row(
+  Widget _buildInfoBox(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('$label:', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral700)),
-        const SizedBox(width: 6),
+        Text(title, style: const TextStyle(fontSize: 14, color: Colors.black54)),
+        const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
         ),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_iot/src/devices/presentation/widgets/crud_device_list.dart';
+import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 class DevicesScreen extends StatefulWidget {
@@ -12,64 +13,71 @@ class DevicesScreen extends StatefulWidget {
 }
 
 class _DevicesScreenState extends State<DevicesScreen> {
+  bool isOn = true;
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
       children: [
-        Text('Devices Management', style: Theme.of(context).textTheme.titleLarge),
+        searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search devices...'),
         const SizedBox(height: 20),
-        SizedBox(
-          height: heightQuery(context) * 0.8,
-          child: GridView.custom(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8.w,
-              mainAxisSpacing: 8.h,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('All Devices', style: Theme.of(context).textTheme.headlineSmall),
+            ElevatedButton.icon(
+              onPressed: () => context.push('/devices/create'),
+              label: const Text('Add Device'),
+              icon: const Icon(Icons.add),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorValues.iotMainColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
             ),
-            childrenDelegate: SliverChildBuilderDelegate((context, index) {
-              final operation = crudOperationList[index];
-              return InkWell(
-                borderRadius: BorderRadius.circular(12.r),
-                splashColor: operation['color'].withValues(alpha: 0.2) as Color,
-                onTap: () {
-                  Future.delayed(Duration(milliseconds: 650), () {
-                    if (context.mounted) {
-                      context.push(operation['route'] as String);
-                    }
+          ],
+        ),
+        // Add your device list or other widgets here
+        const SizedBox(height: 20),
+        ...List.generate(2, (index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: GestureDetector(
+              onTap: () => context.push('/devices/HWTX88${index + 1}/view', extra: {'deviceName': 'Meja ${index + 1}'}),
+              child: DeviceCard(
+                deviceName: 'Meja ${index + 1}',
+                deviceId: 'HWTX88${index + 1}',
+                isOnline: isOn,
+                ssid: 'HydroNet',
+                lastUpdated: DateTime.now(),
+                onTapDetail: () => context.push(
+                  '/devices/HWTX88${index + 1}',
+                  extra: {
+                    'deviceName': 'Meja ${index + 1}',
+                    'pH': 10.0,
+                    'ppm': 850,
+                    'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                  },
+                ),
+                onTapSetting: () => context.push(
+                  '/devices/HWTX88${index + 1}/settings',
+                  extra: {
+                    'deviceName': 'Meja ${index + 1}',
+                    'initialMinPh': 2.2,
+                    'initialMaxPh': 7.0,
+                    'initialMinPPM': 850.0,
+                    'initialMaxPPM': 1000.0,
+                  },
+                ),
+                onTapPower: () {
+                  setState(() {
+                    isOn = !isOn;
                   });
                 },
-                child: Card(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: operation['color'] as Color, width: 3.w),
-                    borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(operation['icon'] as IconData, size: 10.sp, color: operation['color'] as Color),
-                        const SizedBox(height: 8),
-                        Text(
-                          operation['title'] as String,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: operation['color'] as Color,
-                            fontSize: 4.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }, childCount: 3),
-          ),
-        ),
+              ),
+            ),
+          );
+        }),
       ],
     );
   }

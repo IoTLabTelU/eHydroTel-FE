@@ -1,55 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/utils/utils.dart';
 import 'package:intl/intl.dart';
 
 class DeviceCard extends StatelessWidget {
   final String deviceName;
   final String deviceId;
   final bool isOnline;
-  final double ph;
-  final int ppm;
+  final String ssid;
   final DateTime lastUpdated;
   final VoidCallback onTapDetail;
   final VoidCallback onTapSetting;
-  final VoidCallback onTapHistory;
-  final Widget? ringChart; // jika sudah ada
+  final VoidCallback onTapPower;
 
   const DeviceCard({
     super.key,
     required this.deviceName,
     required this.deviceId,
     required this.isOnline,
-    required this.ph,
-    required this.ppm,
+    required this.ssid,
     required this.lastUpdated,
     required this.onTapDetail,
     required this.onTapSetting,
-    this.ringChart,
-    required this.onTapHistory,
+    required this.onTapPower,
   });
 
-  Color _getStatusColor() {
+  String _getStatusText() {
+    if (!isOnline) return getDeviceStatusText(DeviceStatus.idle);
+    if (ssid.isEmpty) return getDeviceStatusText(DeviceStatus.critical);
+    return getDeviceStatusText(DeviceStatus.active);
+  }
+
+  Color get statusColor {
     if (!isOnline) return ColorValues.neutral500;
-    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return ColorValues.danger600;
-    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return ColorValues.warning600;
+    if (ssid.isEmpty) return ColorValues.danger600;
     return ColorValues.success600;
   }
 
-  String _getStatusText() {
-    if (!isOnline) return 'Offline';
-    if (ph < 5.5 || ph > 7.5 || ppm < 700 || ppm > 1200) return 'Critical';
-    if ((ph >= 5.5 && ph < 6) || (ph > 7 && ph <= 7.5)) return 'Unstable';
-    return 'Normal';
-  }
-
-  Color _getConnectionColor() => isOnline ? ColorValues.success600 : ColorValues.neutral500;
-
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor();
     final statusText = _getStatusText();
-    final connectionColor = _getConnectionColor();
-    final formattedTime = DateFormat.Hm().format(lastUpdated);
+    final formattedTime = DateFormat.yMMMd().format(lastUpdated);
 
     return Card(
       color: ColorValues.whiteColor,
@@ -60,85 +51,55 @@ class DeviceCard extends StatelessWidget {
         child: Column(
           children: [
             // Top Row: Title + Online Status
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  deviceName,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: ColorValues.blackColor),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.circle, size: 10, color: connectionColor),
-                    const SizedBox(width: 6),
-                    Text(
-                      isOnline ? 'Online' : 'Offline',
-                      style: TextStyle(color: connectionColor, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                deviceName,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: ColorValues.blackColor),
+              ),
             ),
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Serial: $deviceId', style: TextStyle(fontSize: 12, color: ColorValues.neutral500)),
+              child: Text('Serial: $deviceId', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
             ),
             const SizedBox(height: 12),
 
             // Center Row: pH, ppm, chart
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      _buildSensorTile('pH', ph.toStringAsFixed(2)),
-                      const SizedBox(height: 8),
-                      _buildSensorTile('ppm', ppm.toString()),
-                    ],
-                  ),
-                ),
-                if (ringChart != null) ringChart!,
-              ],
-            ),
+            _buildSensorTile('SSID', ssid),
             const SizedBox(height: 12),
 
             // Status + Last updated
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.info_outline, color: statusColor, size: 18),
-                    const SizedBox(width: 6),
-                    Text('Status: $statusText', style: TextStyle(color: statusColor)),
-                  ],
-                ),
-                Text('⏱ $formattedTime', style: TextStyle(fontSize: 12, color: ColorValues.neutral500)),
+                Icon(Icons.info_outline, color: statusColor, size: 18),
+                const SizedBox(width: 6),
+                Text('Status: $statusText', style: dmSansSmallText(size: 14, color: statusColor)),
               ],
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Added at: $formattedTime', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
             ),
 
             const Divider(height: 24, color: ColorValues.neutral200),
 
             // Bottom Row: Buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton.icon(onPressed: onTapHistory, icon: const Icon(Icons.history), label: const Text('')),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: onTapDetail,
-                  icon: const Icon(Icons.remove_red_eye),
-                  label: const Text('Detail'),
-                  style: TextButton.styleFrom(foregroundColor: ColorValues.iotMainColor),
-                ),
                 const SizedBox(width: 8),
                 TextButton.icon(
                   onPressed: onTapSetting,
                   icon: const Icon(Icons.settings),
                   label: const Text('Setting'),
-                  style: TextButton.styleFrom(foregroundColor: ColorValues.iotArduinoColor),
+                  style: TextButton.styleFrom(
+                    foregroundColor: ColorValues.iotNodeMCUColor,
+                    textStyle: dmSansNormalText(weight: FontWeight.w700),
+                  ),
                 ),
+                _buildPowerButton(context, onTapPower, isOnline),
               ],
             ),
           ],
@@ -152,14 +113,40 @@ class DeviceCard extends StatelessWidget {
       children: [
         Text(
           '$label:',
-          style: TextStyle(fontWeight: FontWeight.w500, color: ColorValues.neutral700),
+          style: dmSansNormalText(weight: FontWeight.w500, color: ColorValues.neutral700),
         ),
         const SizedBox(width: 6),
         Text(
           value,
-          style: TextStyle(fontSize: 16, color: ColorValues.blackColor, fontWeight: FontWeight.bold),
+          style: dmSansNormalText(weight: FontWeight.bold, color: ColorValues.blackColor, size: 16),
         ),
       ],
+    );
+  }
+
+  Widget _buildPowerButton(BuildContext context, VoidCallback onPressed, bool isOn) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: widthQuery(context) * 0.1),
+        child: AnimatedContainer(
+          padding: EdgeInsets.all(6.r),
+          height: 50.h,
+          duration: const Duration(milliseconds: 100),
+          decoration: BoxDecoration(
+            color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: isOn ? ColorValues.iotMainColor.withValues(alpha: 0.6) : ColorValues.neutral500.withValues(alpha: 0.6),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(Icons.power_settings_new, color: isOn ? ColorValues.whiteColor : ColorValues.neutral100, size: 30.r),
+        ),
+      ),
     );
   }
 }

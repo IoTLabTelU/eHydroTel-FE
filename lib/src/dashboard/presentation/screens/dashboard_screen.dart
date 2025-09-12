@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_iot/core/components/plant_session_card.dart';
+import 'package:hydro_iot/core/components/dialogs.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 // import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,6 +17,13 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  var items = [
+    DropdownItem(label: 'All', value: 'All'),
+    DropdownItem(label: 'Active Only', value: 'Active'),
+    DropdownItem(label: 'Inactive Only', value: 'Inactive'),
+  ];
+  final controller = MultiSelectController<String>();
+  bool isStopped = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,15 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: ListView(
         children: [
           const SizedBox(height: 20),
-          Text('Welcome, Alex Marnocha', style: Theme.of(context).textTheme.bodyLarge),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Dashboard', style: Theme.of(context).textTheme.titleLarge),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-            ],
-          ),
+          const DashboardHeaderWidget(),
           // const SizedBox(height: 20),
           // Add your dashboard widgets here
           // Row(
@@ -59,7 +60,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
           //   ],
           // ),
           const SizedBox(height: 20),
-          searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search sessions...'),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: searchButton(
+                  onPressed: () => context.push('/dashboard/search'),
+                  context: context,
+                  text: 'Find Sessions...',
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 1,
+                child: MultiDropdown<String>(
+                  items: items,
+                  controller: controller,
+                  enabled: true,
+                  singleSelect: true,
+                  fieldDecoration: FieldDecoration(
+                    hintText: 'Filter',
+                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.neutral700),
+                    showClearIcon: false,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: ColorValues.iotMainColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                    ),
+                  ),
+                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
+                  dropdownItemDecoration: DropdownItemDecoration(
+                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+                    disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,42 +119,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 10),
           PlantSessionCard(
+            onDashboard: true,
             deviceName: 'Meja 1',
-            deviceId: 'HWTX883',
-            isOnline: true,
-            ph: 5.7,
-            ppm: 850,
-            plantedAt: DateTime.utc(2025, 5, 25),
-            ringChart: null,
-            onTapDetail: () => context.push(
-              '/devices/HWTX883',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 5.7,
-                'ppm': 800,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
-            ),
-            onTapSetting: () => context.push(
-              '/devices/HWTX883/settings',
-              extra: {
-                'deviceName': 'Meja 1',
-                'initialMinPh': 5.7,
-                'initialMaxPh': 7.0,
-                'initialMinPPM': 850.0,
-                'initialMaxPPM': 1000.0,
-              },
-            ),
-            onTapHistory: () => context.push(
+            plantName: 'Broccoli',
+            startDate: DateTime.utc(2025, 8, 30),
+            totalDays: 30,
+            minPh: 5.5,
+            maxPh: 7.0,
+            minPpm: 800,
+            maxPpm: 1200,
+            onHistoryTap: () => context.push(
               '/devices/HWTX883/history',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 5.7,
-                'ppm': 800,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
+              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
             ),
-            plantType: 'Brocholli',
+            onStopSession: () {
+              showAdaptiveDialog(
+                context: context,
+                builder: (context) {
+                  return alertDialog(
+                    context: context,
+                    title: 'Stop Session',
+                    content: 'Are you sure you want to stop this session?',
+                    onConfirm: () => setState(() {
+                      isStopped = true;
+                    }),
+                  );
+                },
+              );
+            },
+            onTap: () => context.push(
+              '/devices/HWTX883',
+              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
+            ),
+            isStopped: isStopped,
+            onRestartSession: () {
+              setState(() {
+                isStopped = false;
+              });
+            },
           ),
 
           SizedBox(height: heightQuery(context) * 0.3),

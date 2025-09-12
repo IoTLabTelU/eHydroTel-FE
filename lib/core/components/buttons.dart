@@ -54,3 +54,33 @@ Widget searchButton({required VoidCallback onPressed, required BuildContext cont
     ),
   );
 }
+
+Widget iconTextButtonWidget({
+  required BuildContext context,
+  required Widget icon,
+  required String label,
+  required VoidCallback onPressed,
+  Color? backgroundColor,
+  Color? foregroundColor,
+}) {
+  return ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: backgroundColor ?? Colors.white,
+      foregroundColor: foregroundColor ?? Colors.black,
+      minimumSize: const Size(double.infinity, 50),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        side: const BorderSide(color: ColorValues.neutral200),
+      ),
+    ),
+    icon: icon,
+    label: Text(
+      label,
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold),
+      textAlign: TextAlign.center,
+    ),
+    onPressed: onPressed,
+  );
+}

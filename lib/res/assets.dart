@@ -14,9 +14,18 @@ class IconAssets {
 class ImageAssets {}
 
 class LottieAssets {
-  static const String landingPlant = 'assets/lottie/Plant_1.json';
-  static const String plantSessionSeed = 'assets/lottie/Plant 1.lottie';
-  static const String plantSessionSprout = 'assets/lottie/Plant 2.lottie';
-  static const String plantSessionGrowth = 'assets/lottie/Plant 3.lottie';
-  static const String plantSessionFlower = 'assets/lottie/Plant 4.lottie';
+  static const String iotDevice = 'assets/lottie/iotDevice.json';
+  static const String landingPlant = 'assets/lottie/Plant_1_fixed.json';
+  static const String plantSessionSeed = 'assets/lottie/Plant 1.json';
+  static const String plantSessionSprout = 'assets/lottie/Plant 2.json';
+  static const String plantSessionGrowth = 'assets/lottie/Plant 3.json';
+  static const String plantSessionFlower = 'assets/lottie/Plant 4.json';
+}
+
+class RiveAssets {
+  static const String iotDevice = 'assets/rive/HydroIoTDevices.riv';
+  static const String sessionSeeding = 'assets/rive/SessionSeeding.riv';
+  static const String sessionSprouting = 'assets/rive/SessionSprouting.riv';
+  static const String sessionFirstLeaf = 'assets/rive/SessionFirstLeaf.riv';
+  static const String sessionNewBranch = 'assets/rive/SessionNewBranch.riv';
 }

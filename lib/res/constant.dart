@@ -13,3 +13,29 @@ class AppStrings {
 }
 
 class EndpointStrings {}
+
+enum DeviceStatus { active, idle, critical }
+
+String getDeviceStatusText(DeviceStatus status) {
+  switch (status) {
+    case DeviceStatus.active:
+      return 'Active';
+    case DeviceStatus.idle:
+      return 'Idle';
+    case DeviceStatus.critical:
+      return 'Critical';
+  }
+}
+
+enum PlantSessionStatus { active, completed, stopped }
+
+String getPlantSessionStatusText(PlantSessionStatus status) {
+  switch (status) {
+    case PlantSessionStatus.active:
+      return 'Active';
+    case PlantSessionStatus.completed:
+      return 'Completed';
+    case PlantSessionStatus.stopped:
+      return 'Stopped';
+  }
+}
