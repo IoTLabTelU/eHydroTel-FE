@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_iot/core/components/dialogs.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/dashboard/data/models/session_data.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
 // import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
@@ -18,6 +18,16 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  List<SessionData> addedSessions = [];
+  List<bool> addedSessionsStoppedStates = [];
+
+  void _onSessionAdded(SessionData sessionData) {
+    setState(() {
+      addedSessions.add(sessionData);
+      addedSessionsStoppedStates.add(false);
+    });
+  }
+
   var items = [
     DropdownItem(label: 'All', value: 'All'),
     DropdownItem(label: 'Active Only', value: 'Active'),
@@ -25,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ];
   final controller = MultiSelectController<String>();
   bool isStopped = false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -125,8 +136,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onPressed: () {
                   showModalBottomSheet(
                     useRootNavigator: true,
+                    isScrollControlled: true,
                     context: context,
-                    builder: (context) => const SessionModal(),
+                    builder: (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: SessionModal(onSessionAdded: _onSessionAdded),
+                    ),
                   );
                 },
                 label: const Text('Add Session'),
@@ -142,6 +159,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           const SizedBox(height: 10),
+
+          ///INI SESSIONS
+          ...addedSessions.asMap().entries.map((entry) {
+            int index = entry.key;
+            SessionData session = entry.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: PlantSessionCard(
+                onDashboard: true,
+                deviceName: session.deviceName,
+                plantName: session.plantName,
+                startDate: session.startDate,
+                totalDays: session.totalDays,
+                minPh: session.minPh,
+                maxPh: session.maxPh,
+                minPpm: session.minPpm.toDouble(),
+                maxPpm: session.maxPpm.toDouble(),
+                onHistoryTap: () => context.push(
+                  '/devices/HWTX883/history',
+                  extra: {
+                    'deviceName': session.deviceName,
+                    'pH': (session.minPh + session.maxPh) / 2,
+                    'ppm': session.minPpm,
+                    'deviceDescription':
+                        'This is the Description of ${session.deviceName}',
+                  },
+                ),
+                onStopSession: () {
+                  showAdaptiveDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      return alertDialog(
+                        context: context,
+                        title: 'Stop Session',
+                        content: 'Are you sure you want to stop this session?',
+                        onConfirm: () => setState(() {
+                          addedSessionsStoppedStates[index] = true;
+                        }),
+                      );
+                    },
+                  );
+                },
+                onTap: () => context.push(
+                  '/devices/HWTX883',
+                  extra: {
+                    'deviceName': session.deviceName,
+                    'pH': (session.minPh + session.maxPh) / 2,
+                    'ppm': session.minPpm,
+                    'deviceDescription':
+                        'This is the Description of ${session.deviceName}',
+                  },
+                ),
+                isStopped: addedSessionsStoppedStates[index],
+                onRestartSession: () {
+                  setState(() {
+                    addedSessionsStoppedStates[index] = false;
+                  });
+                },
+              ),
+            );
+          }),
           PlantSessionCard(
             onDashboard: true,
             deviceName: 'Meja 1',

@@ -37,7 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
               context.pop();
             }
           },
-          backgroundColor: WidgetStateColor.fromMap({
+          backgroundColor: const WidgetStateColor.fromMap({
             WidgetState.any: ColorValues.neutral200,
             WidgetState.focused: ColorValues.neutral100,
             WidgetState.hovered: ColorValues.neutral300,
