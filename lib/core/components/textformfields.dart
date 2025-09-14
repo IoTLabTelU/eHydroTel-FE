@@ -46,7 +46,9 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral600),
+        labelStyle: Theme.of(
+          context,
+        ).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral600),
         filled: true,
         fillColor: ColorValues.neutral200,
         border: InputBorder.none,
@@ -58,12 +60,18 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
           borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2.0),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.neutral300, width: 0.0, style: BorderStyle.none),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: ColorValues.neutral300,
+            width: 0.0,
+            style: BorderStyle.none,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
+        hintStyle: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
         suffixIcon: !widget.obscureText
             ? widget.suffixIcon
             : isObscured

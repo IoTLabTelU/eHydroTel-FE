@@ -80,7 +80,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   singleSelect: true,
                   fieldDecoration: FieldDecoration(
                     hintText: 'Filter',
-                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.neutral700),
+                    hintStyle: dmSansSmallText(
+                      size: 12,
+                      color: ColorValues.neutral700,
+                    ),
                     showClearIcon: false,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -88,12 +91,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                      borderSide: BorderSide(
+                        color: ColorValues.iotMainColor,
+                        width: 3,
+                      ),
                     ),
                   ),
-                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
+                  dropdownDecoration: const DropdownDecoration(
+                    marginTop: 2,
+                    maxHeight: 500,
+                  ),
                   dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+                    selectedIcon: const Icon(
+                      Icons.check_box,
+                      color: Colors.green,
+                    ),
                     disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
                   ),
                 ),
@@ -104,7 +116,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Plant Sessions', style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                'Plant Sessions',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               ElevatedButton.icon(
                 onPressed: () {},
                 label: const Text('Add Session'),
@@ -112,7 +127,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorValues.iotMainColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ],
@@ -130,10 +147,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             maxPpm: 1200,
             onHistoryTap: () => context.push(
               '/devices/HWTX883/history',
-              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
+              extra: {
+                'deviceName': 'Meja 1',
+                'pH': 5.7,
+                'ppm': 800,
+                'deviceDescription': 'This is the Description of Meja 1',
+              },
             ),
             onStopSession: () {
               showAdaptiveDialog(
+                barrierDismissible: true,
                 context: context,
                 builder: (context) {
                   return alertDialog(
@@ -149,7 +172,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             onTap: () => context.push(
               '/devices/HWTX883',
-              extra: {'deviceName': 'Meja 1', 'pH': 5.7, 'ppm': 800, 'deviceDescription': 'This is the Description of Meja 1'},
+              extra: {
+                'deviceName': 'Meja 1',
+                'pH': 5.7,
+                'ppm': 800,
+                'deviceDescription': 'This is the Description of Meja 1',
+              },
             ),
             isStopped: isStopped,
             onRestartSession: () {

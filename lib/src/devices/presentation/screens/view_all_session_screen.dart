@@ -7,12 +7,17 @@ class ViewAllPlantSessionScreen extends StatefulWidget {
   final String deviceName;
   final String serialNumber;
 
-  const ViewAllPlantSessionScreen({super.key, required this.deviceName, required this.serialNumber});
+  const ViewAllPlantSessionScreen({
+    super.key,
+    required this.deviceName,
+    required this.serialNumber,
+  });
 
   static const String path = 'view';
 
   @override
-  State<ViewAllPlantSessionScreen> createState() => _ViewAllPlantSessionScreenState();
+  State<ViewAllPlantSessionScreen> createState() =>
+      _ViewAllPlantSessionScreenState();
 }
 
 class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
@@ -22,12 +27,19 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
       children: [
-        searchButton(onPressed: () => context.push('/dashboard/search'), context: context, text: 'Search sessions...'),
+        searchButton(
+          onPressed: () => context.push('/dashboard/search'),
+          context: context,
+          text: 'Search sessions...',
+        ),
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('All Sessions', style: Theme.of(context).textTheme.headlineSmall),
+            Text(
+              'All Sessions',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             ElevatedButton.icon(
               onPressed: () {},
               label: const Text('Add Session'),
@@ -35,13 +47,18 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorValues.iotMainColor,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 4),
-        Text('on ${widget.deviceName}', style: dmSansHeadText(color: ColorValues.neutral600)),
+        Text(
+          'on ${widget.deviceName}',
+          style: dmSansHeadText(color: ColorValues.neutral600),
+        ),
         // Add your device list or other widgets here
         const SizedBox(height: 10),
         ...List.generate(2, (index) {
@@ -63,7 +80,8 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
                   'deviceName': 'Meja ${index + 1}',
                   'pH': 10.0,
                   'ppm': 850,
-                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                  'deviceDescription':
+                      'This is the Description of Meja ${index + 1}',
                 },
               ),
               onStopSession: () {
@@ -87,7 +105,8 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
                   'deviceName': 'Meja ${index + 1}',
                   'pH': 10.0,
                   'ppm': 850,
-                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                  'deviceDescription':
+                      'This is the Description of Meja ${index + 1}',
                 },
               ),
               isStopped: isStopped,
