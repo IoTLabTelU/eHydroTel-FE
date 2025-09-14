@@ -135,6 +135,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ElevatedButton.icon(
                 onPressed: () {
                   showModalBottomSheet(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.8,
+                    ),
                     useRootNavigator: true,
                     isScrollControlled: true,
                     context: context,
