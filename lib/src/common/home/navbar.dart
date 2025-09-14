@@ -23,7 +23,7 @@ class _NavbarState extends State<Navbar> {
 
   void _startCollapseTimer() {
     _collapseTimer?.cancel();
-    _collapseTimer = Timer(Duration(seconds: 5), () {
+    _collapseTimer = Timer(const Duration(seconds: 5), () {
       setState(() {
         isCollapsed = true;
       });
@@ -51,7 +51,7 @@ class _NavbarState extends State<Navbar> {
           children: [
             Positioned.fill(child: widget.navigationShell),
             AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.decelerate,
               bottom: isCollapsed ? -heightQuery(context) * 0.15 : 0,
               left: 0,
@@ -59,7 +59,7 @@ class _NavbarState extends State<Navbar> {
               child: bottomNav(context),
             ),
             AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.decelerate,
               bottom: 16,
               right: isCollapsed ? 16 : -widthQuery(context) * 0.15,

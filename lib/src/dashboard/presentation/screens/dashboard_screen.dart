@@ -3,6 +3,7 @@ import 'package:hydro_iot/core/components/dialogs.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
 // import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -121,7 +122,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    useRootNavigator: true,
+                    context: context,
+                    builder: (context) => const SessionModal(),
+                  );
+                },
                 label: const Text('Add Session'),
                 icon: const Icon(Icons.add),
                 style: ElevatedButton.styleFrom(
