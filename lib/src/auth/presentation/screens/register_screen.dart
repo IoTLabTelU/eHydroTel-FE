@@ -32,21 +32,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
               appBarWidget(context),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: heightQuery(context) * 0.05),
+                  padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'SIGN UP',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
                       ),
                       SizedBox(height: 20.h),
                       Text(
                         'Looks like you don\'t have an account! Please fill the form to create an account.',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
                       ),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
@@ -77,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             TextSpan(
                               text: 'By clicking "REGISTER", you agree to our ',
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
                             ),
                             WidgetSpan(
                               child: GestureDetector(
@@ -90,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
-                            WidgetSpan(child: Text(' & ', style: Theme.of(context).textTheme.bodyLarge)),
+                            WidgetSpan(child: Text(' & ', style: Theme.of(context).textTheme.bodyLarge?.copyWith())),
                             WidgetSpan(
                               child: GestureDetector(
                                 onTap: () {
@@ -119,10 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 2.w),
-                            child: Text(
-                              'OR',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral600),
-                            ),
+                            child: Text('OR', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                           ),
                           Expanded(
                             child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),

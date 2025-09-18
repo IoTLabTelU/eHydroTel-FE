@@ -23,9 +23,13 @@ class _NotificationCenterScreenState extends State<NotificationCenterScreen> {
     final filtered = filter == 'All' ? items : items.where((e) => e.type == filter).toList();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text('Notifications', style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
         actions: [
-          IconButton(onPressed: () => setState(() => items.clear()), icon: const Icon(Icons.clear_all), tooltip: 'Clear All'),
+          IconButton(
+            onPressed: () => setState(() => items.clear()),
+            icon: const Icon(Icons.clear_all),
+            tooltip: 'Clear All',
+          ),
         ],
       ),
       body: Column(
@@ -76,8 +80,14 @@ class _NotifFilterChips extends StatelessWidget {
             child: ChoiceChip(
               selected: selected,
               label: Text(e),
-              selectedColor: ColorValues.iotMainColor.withOpacity(0.15),
-              labelStyle: TextStyle(color: selected ? ColorValues.iotMainColor : ColorValues.neutral700),
+              selectedColor: ColorValues.iotMainColor.withValues(alpha: 0.15),
+              labelStyle: TextStyle(
+                color: selected
+                    ? ColorValues.iotMainColor
+                    : Theme.brightnessOf(context) == Brightness.dark
+                    ? ColorValues.whiteColor
+                    : ColorValues.neutral600,
+              ),
               onSelected: (_) => onChanged(e),
             ),
           );
@@ -120,9 +130,9 @@ class _NotifTileState extends State<_NotifTile> {
       curve: Curves.easeOut,
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 8))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 8))],
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -136,7 +146,10 @@ class _NotifTileState extends State<_NotifTile> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: badgeColor.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(
+                      color: badgeColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Text(
                       widget.item.type,
                       style: TextStyle(color: badgeColor, fontWeight: FontWeight.w600),
@@ -166,7 +179,11 @@ class _NotifTileState extends State<_NotifTile> {
                   children: [
                     TextButton.icon(onPressed: () {}, icon: const Icon(Icons.timeline), label: const Text('View history')),
                     const SizedBox(width: 8),
-                    TextButton.icon(onPressed: () {}, icon: const Icon(Icons.settings), label: const Text('Adjust threshold')),
+                    TextButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.settings),
+                      label: const Text('Adjust threshold'),
+                    ),
                   ],
                 ),
               ],

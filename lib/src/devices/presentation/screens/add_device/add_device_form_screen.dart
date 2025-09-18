@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/utils/utils.dart';
 
 class AddDeviceFormScreen extends StatefulWidget {
   const AddDeviceFormScreen({
@@ -34,13 +35,20 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(8.w),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              Text('Add Device Info', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 20),
+              Center(
+                child: Icon(Icons.devices, size: 100.sp, color: ColorValues.iotMainColor),
+              ),
+              Text(
+                'Add Device Info',
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.iotMainColor),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 60),
               TextFormFieldComponent(
                 controller: _deviceIdController,
                 hintText: 'Enter Serial Number',
@@ -48,7 +56,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                 obscureText: false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter device ID';
+                    return 'Please enter serial number';
                   }
                   return null;
                 },
@@ -86,6 +94,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                 label: 'Device Description',
                 obscureText: false,
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

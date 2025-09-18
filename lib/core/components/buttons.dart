@@ -41,15 +41,17 @@ Widget secondaryButton({required String text, required VoidCallback onPressed, r
   );
 }
 
-Widget searchButton({required VoidCallback onPressed, required BuildContext context, required String text}) {
+Widget searchButton({required VoidCallback onPressed, required BuildContext context}) {
   return GestureDetector(
     onTap: onPressed,
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(color: ColorValues.neutral200, borderRadius: BorderRadius.circular(20.r)),
+      decoration: BoxDecoration(color: ColorValues.iotNodeMCUColor, shape: BoxShape.circle),
       child: TextField(
         enabled: false,
-        decoration: InputDecoration(labelText: text, border: InputBorder.none, prefixIcon: const Icon(Icons.search)),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          label: Center(child: Icon(Icons.search, color: ColorValues.whiteColor)),
+        ),
       ),
     ),
   );

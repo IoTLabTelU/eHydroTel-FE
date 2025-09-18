@@ -8,15 +8,8 @@ class DashboardHeaderWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome, Alex Marnocha', style: Theme.of(context).textTheme.bodyLarge),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Dashboard', style: Theme.of(context).textTheme.titleLarge),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-          ],
-        ),
+        Text('Welcome, Telyu Sigma', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
+        Text('Dashboard', style: Theme.of(context).textTheme.titleLarge?.copyWith()),
       ],
     );
   }

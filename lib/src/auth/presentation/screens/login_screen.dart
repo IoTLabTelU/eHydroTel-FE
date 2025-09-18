@@ -26,24 +26,26 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: SafeArea(
         child: Scaffold(
+          // backgroundColor: ColorValues.neutral100.withValues(alpha: 0.99),
           body: CustomScrollView(
             slivers: [
               appBarWidget(context),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: heightQuery(context) * 0.05),
+                  padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'SIGN IN',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
                       ),
                       SizedBox(height: 20.h),
-                      Text('Welcome back! Please sign in to continue.', style: Theme.of(context).textTheme.bodyLarge),
+                      Text(
+                        'Welcome back! Please sign in to continue.',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
+                      ),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
                         label: 'Email',
@@ -89,10 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 2.w),
-                            child: Text(
-                              'OR',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral600),
-                            ),
+                            child: Text('OR', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                           ),
                           Expanded(
                             child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),

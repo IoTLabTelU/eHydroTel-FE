@@ -31,7 +31,7 @@ class HistoryChartCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 8))],
           ),
@@ -68,8 +68,14 @@ class HistoryChartCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _LegendDot(color: accent, label: 'Actual'),
-                  Text('Avg: ${_avg(series).toStringAsFixed(2)}$unit', style: const TextStyle(color: ColorValues.neutral600)),
-                  Text('Last: ${series.last.toStringAsFixed(2)}$unit', style: const TextStyle(color: ColorValues.neutral600)),
+                  Text(
+                    'Avg: ${_avg(series).toStringAsFixed(2)}$unit',
+                    style: const TextStyle(color: ColorValues.neutral600),
+                  ),
+                  Text(
+                    'Last: ${series.last.toStringAsFixed(2)}$unit',
+                    style: const TextStyle(color: ColorValues.neutral600),
+                  ),
                 ],
               ),
             ],

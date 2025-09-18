@@ -8,7 +8,7 @@ SliverAppBar appBarWidget(BuildContext context) {
     automaticallyImplyLeading: false,
     centerTitle: true,
     flexibleSpace: Padding(
-      padding: EdgeInsets.symmetric(vertical: heightQuery(context) * 0.025, horizontal: 5.w),
+      padding: EdgeInsets.symmetric(vertical: heightQuery(context) * 0.025, horizontal: 18.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

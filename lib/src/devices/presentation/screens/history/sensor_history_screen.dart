@@ -53,7 +53,8 @@ class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTi
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => ExportBottomSheet(onExportCsv: () => _simulateExport('csv'), onExportXlsx: () => _simulateExport('xlsx')),
+      builder: (_) =>
+          ExportBottomSheet(onExportCsv: () => _simulateExport('csv'), onExportXlsx: () => _simulateExport('xlsx')),
     );
   }
 
@@ -72,7 +73,11 @@ class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTi
       appBar: AppBar(
         title: Text('History · ${widget.deviceName}'),
         actions: [
-          IconButton(icon: const Icon(Icons.file_download_outlined), onPressed: _openExportSheet, tooltip: 'Export CSV/Excel'),
+          IconButton(
+            icon: const Icon(Icons.file_download_outlined),
+            onPressed: _openExportSheet,
+            tooltip: 'Export CSV/Excel',
+          ),
         ],
         bottom: TabBar(
           controller: _tabController,

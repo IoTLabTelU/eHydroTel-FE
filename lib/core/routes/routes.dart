@@ -174,10 +174,8 @@ final router = GoRouter(
                           child: SettingDeviceScreen(
                             deviceId: deviceId,
                             deviceName: extra['deviceName'] as String,
-                            initialMinPh: extra['initialMinPh'] as double,
-                            initialMaxPh: extra['initialMaxPh'] as double,
-                            initialMinPPM: extra['initialMinPPM'] as double,
-                            initialMaxPPM: extra['initialMaxPPM'] as double,
+                            deviceDescription: extra['deviceDescription'] as String,
+                            ssid: extra['ssid'] as String,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);
@@ -193,7 +191,10 @@ final router = GoRouter(
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
-                          child: ViewAllPlantSessionScreen(deviceName: extra['deviceName'] as String, serialNumber: deviceId),
+                          child: ViewAllPlantSessionScreen(
+                            deviceName: extra['deviceName'] as String,
+                            serialNumber: deviceId,
+                          ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);
                           },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
-import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -25,21 +24,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             appBarWidget(context),
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: heightQuery(context) * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'CHANGE PASSWORD',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w900),
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     SizedBox(height: 20.h),
                     Text(
                       'Create a new, strong password that you don\'t use before.',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
                     ),
                     SizedBox(height: 20.h),
                     TextFormFieldComponent(

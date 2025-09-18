@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: ListView(
         children: [
           const SizedBox(height: 20),
@@ -75,50 +75,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             children: [
               Expanded(
-                flex: 2,
-                child: searchButton(
-                  onPressed: () => context.push('/dashboard/search'),
-                  context: context,
-                  text: 'Find Sessions...',
-                ),
+                child: searchButton(onPressed: () => context.push('/dashboard/search'), context: context),
               ),
               const SizedBox(width: 10),
               Expanded(
-                flex: 1,
+                flex: 6,
                 child: MultiDropdown<String>(
                   items: items,
                   controller: controller,
                   enabled: true,
                   singleSelect: true,
                   fieldDecoration: FieldDecoration(
-                    hintText: 'Filter',
-                    hintStyle: dmSansSmallText(
-                      size: 12,
-                      color: ColorValues.neutral700,
-                    ),
+                    backgroundColor: ColorValues.neutral500,
+                    hintText: 'Filter Session',
+                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.whiteColor, weight: FontWeight.w800),
                     showClearIcon: false,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorValues.iotMainColor),
+                      borderSide: BorderSide(color: ColorValues.whiteColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: ColorValues.iotMainColor,
-                        width: 3,
-                      ),
+                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
                     ),
                   ),
-                  dropdownDecoration: const DropdownDecoration(
-                    marginTop: 2,
-                    maxHeight: 500,
-                  ),
+                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
                   dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon: const Icon(
-                      Icons.check_box,
-                      color: Colors.green,
-                    ),
+                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
                     disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+                    textColor: ColorValues.blackColor,
+                    selectedTextColor: ColorValues.iotMainColor,
                   ),
                 ),
               ),
@@ -128,23 +114,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Plant Sessions',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text('Plant Sessions', style: Theme.of(context).textTheme.titleLarge?.copyWith()),
               ElevatedButton.icon(
                 onPressed: () {
                   showModalBottomSheet(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * 0.8,
-                    ),
+                    constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
                     useRootNavigator: true,
                     isScrollControlled: true,
                     context: context,
                     builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: SessionModal(onSessionAdded: _onSessionAdded),
                     ),
                   );
@@ -154,9 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorValues.iotMainColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ],
@@ -185,8 +162,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     'deviceName': session.deviceName,
                     'pH': (session.minPh + session.maxPh) / 2,
                     'ppm': session.minPpm,
-                    'deviceDescription':
-                        'This is the Description of ${session.deviceName}',
+                    'deviceDescription': 'This is the Description of ${session.deviceName}',
                   },
                 ),
                 onStopSession: () {
@@ -211,8 +187,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     'deviceName': session.deviceName,
                     'pH': (session.minPh + session.maxPh) / 2,
                     'ppm': session.minPpm,
-                    'deviceDescription':
-                        'This is the Description of ${session.deviceName}',
+                    'deviceDescription': 'This is the Description of ${session.deviceName}',
                   },
                 ),
                 isStopped: addedSessionsStoppedStates[index],

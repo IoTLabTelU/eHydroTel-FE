@@ -46,11 +46,7 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: Theme.of(
-          context,
-        ).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral600),
-        filled: true,
-        fillColor: ColorValues.neutral200,
+        labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(),
         border: InputBorder.none,
         errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: ColorValues.danger600, width: 2.0),
@@ -61,17 +57,11 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: ColorValues.neutral300,
-            width: 0.0,
-            style: BorderStyle.none,
-          ),
+          borderSide: BorderSide(color: ColorValues.neutral300, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         hintText: widget.hintText,
-        hintStyle: Theme.of(
-          context,
-        ).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
+        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
         suffixIcon: !widget.obscureText
             ? widget.suffixIcon
             : isObscured
@@ -96,6 +86,9 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       readOnly: widget.readOnly ?? false,
       validator: widget.validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      style: dmSansNormalText(
+        color: Theme.brightnessOf(context) == Brightness.dark ? ColorValues.whiteColor : ColorValues.neutral700,
+      ),
     );
   }
 }

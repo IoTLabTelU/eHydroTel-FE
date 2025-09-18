@@ -21,11 +21,3 @@ class LottieAssets {
   static const String plantSessionGrowth = 'assets/lottie/Plant 3.json';
   static const String plantSessionFlower = 'assets/lottie/Plant 4.json';
 }
-
-class RiveAssets {
-  static const String iotDevice = 'assets/rive/HydroIoTDevices.riv';
-  static const String sessionSeeding = 'assets/rive/SessionSeeding.riv';
-  static const String sessionSprouting = 'assets/rive/SessionSprouting.riv';
-  static const String sessionFirstLeaf = 'assets/rive/SessionFirstLeaf.riv';
-  static const String sessionNewBranch = 'assets/rive/SessionNewBranch.riv';
-}

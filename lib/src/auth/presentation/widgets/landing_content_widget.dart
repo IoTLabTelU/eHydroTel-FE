@@ -11,14 +11,16 @@ SliverChildListDelegate contentWidget(BuildContext context) {
       padding: EdgeInsets.symmetric(vertical: 20.h),
       child: Text(
         'Hydroponic IoT \nPlatform',
-        style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
+        style: Theme.of(
+          context,
+        ).textTheme.headlineLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     ),
     Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Text(
-        '${AppStrings.appName} is a platform that allows you to monitor and control your hydroponic system seamlessly.',
+        '${AppStrings.appName} is a platform that allows you to monitor and control your hydroponic needs seamlessly.',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor),
         textAlign: TextAlign.center,
       ),

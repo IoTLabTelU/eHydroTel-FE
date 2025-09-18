@@ -43,9 +43,9 @@ class DeviceCard extends StatelessWidget {
     final formattedTime = DateFormat.yMMMd().format(lastUpdated);
 
     return Card(
-      color: ColorValues.whiteColor,
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 7,
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -138,7 +138,9 @@ class DeviceCard extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: isOn ? ColorValues.iotMainColor.withValues(alpha: 0.6) : ColorValues.neutral500.withValues(alpha: 0.6),
+                color: isOn
+                    ? ColorValues.iotMainColor.withValues(alpha: 0.6)
+                    : ColorValues.neutral500.withValues(alpha: 0.6),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),

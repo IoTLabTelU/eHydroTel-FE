@@ -21,7 +21,7 @@ Widget oAuthButtonWidget({
     icon: SvgPicture.asset(assetName, height: 24, width: 24),
     label: Text(
       label,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.neutral500, fontWeight: FontWeight.bold),
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.neutral700, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     ),
     onPressed: onPressed,

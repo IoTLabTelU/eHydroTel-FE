@@ -21,7 +21,7 @@ class HistoryToolbar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: ColorValues.whiteColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8)],
       ),
       child: Row(

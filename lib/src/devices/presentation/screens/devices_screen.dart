@@ -3,6 +3,7 @@ import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/devices_list.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class DevicesScreen extends StatefulWidget {
   const DevicesScreen({super.key});
@@ -20,24 +21,62 @@ class _DevicesScreenState extends State<DevicesScreen> {
     isOnList[index] = !isOnList[index];
   }
 
+  var items = [
+    DropdownItem(label: 'Idle', value: 'Idle'),
+    DropdownItem(label: 'Active Only', value: 'Active'),
+    DropdownItem(label: 'Critical Only', value: 'Critical'),
+  ];
+  final controller = MultiSelectController<String>();
+
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       children: [
-        searchButton(
-          onPressed: () => context.push('/dashboard/search'),
-          context: context,
-          text: 'Search devices...',
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: searchButton(onPressed: () => context.push('/dashboard/search'), context: context),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 6,
+              child: MultiDropdown<String>(
+                items: items,
+                controller: controller,
+                enabled: true,
+                singleSelect: true,
+                fieldDecoration: FieldDecoration(
+                  backgroundColor: ColorValues.neutral500,
+                  hintText: 'Filter Devices',
+                  hintStyle: dmSansSmallText(size: 12, color: ColorValues.whiteColor, weight: FontWeight.w800),
+                  showClearIcon: false,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: ColorValues.whiteColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                  ),
+                ),
+                dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
+                dropdownItemDecoration: DropdownItemDecoration(
+                  selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+                  disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+                  textColor: ColorValues.blackColor,
+                  selectedTextColor: ColorValues.iotMainColor,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'All Devices',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text('All Devices', style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
             ElevatedButton.icon(
               onPressed: () => context.push('/devices/create'),
               label: const Text('Add Device'),
@@ -45,23 +84,18 @@ class _DevicesScreenState extends State<DevicesScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorValues.iotMainColor,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],
         ),
         // Add your device list or other widgets here
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         ...List.generate(devices.length, (index) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
             child: GestureDetector(
-              onTap: () => context.push(
-                '/devices/HWTX88${index + 1}/view',
-                extra: {'deviceName': 'Meja ${index + 1}'},
-              ),
+              onTap: () => context.push('/devices/HWTX88${index + 1}/view', extra: {'deviceName': 'Meja ${index + 1}'}),
               child: DeviceCard(
                 deviceName: devices[index]['name'],
                 deviceId: devices[index]['id'],
@@ -74,18 +108,15 @@ class _DevicesScreenState extends State<DevicesScreen> {
                     'deviceName': devices[index]['name'],
                     'pH': 10.0,
                     'ppm': 850,
-                    'deviceDescription':
-                        'This is the Description of Meja ${index + 1}',
+                    'deviceDescription': 'This is the Description of Meja ${index + 1}',
                   },
                 ),
                 onTapSetting: () => context.push(
                   '/devices/HWTX88${index + 1}/settings',
                   extra: {
                     'deviceName': 'Meja ${index + 1}',
-                    'initialMinPh': 2.2,
-                    'initialMaxPh': 7.0,
-                    'initialMinPPM': 850.0,
-                    'initialMaxPPM': 1000.0,
+                    'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                    'ssid': 'HydroNet',
                   },
                 ),
                 onTapPower: () {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/components/buttons.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_connecting_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_pairing_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_form_screen.dart';
-import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_sensor_setup_screen.dart';
+// import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_sensor_setup_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/add_device_summary_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -17,8 +17,6 @@ class AddDeviceScreen extends StatefulWidget {
 }
 
 class _AddDeviceScreenState extends State<AddDeviceScreen> {
-  bool isDeviceConnected = false;
-  bool isDeviceConnecting = false;
   final ScrollController _scrollController = ScrollController();
   int _currentStep = 0;
 
@@ -27,43 +25,29 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
   final TextEditingController _deviceDescriptionController = TextEditingController();
   final TextEditingController _deviceIdController = TextEditingController();
 
-  RangeValues _phValues = RangeValues(5.0, 7.0);
-  RangeValues _ppmValues = RangeValues(300.0, 700.0);
+  // RangeValues _phValues = RangeValues(5.0, 7.0);
+  // RangeValues _ppmValues = RangeValues(300.0, 700.0);
 
-  void changePhValues(RangeValues newValues) {
-    setState(() {
-      _phValues = newValues;
-    });
-  }
+  // void changePhValues(RangeValues newValues) {
+  //   setState(() {
+  //     _phValues = newValues;
+  //   });
+  // }
 
-  void changePpmValues(RangeValues newValues) {
-    setState(() {
-      _ppmValues = newValues;
-    });
-  }
-
-  void connectDevice() {
-    setState(() {
-      isDeviceConnecting = true;
-    });
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        isDeviceConnected = true;
-        isDeviceConnecting = false;
-      });
-    });
-  }
+  // void changePpmValues(RangeValues newValues) {
+  //   setState(() {
+  //     _ppmValues = newValues;
+  //   });
+  // }
 
   void _resetAll() {
     setState(() {
-      isDeviceConnected = false;
-      isDeviceConnecting = false;
       _currentStep = 0;
       _deviceNameController.clear();
       _deviceDescriptionController.clear();
       _deviceIdController.clear();
-      _phValues = RangeValues(5.0, 7.0);
-      _ppmValues = RangeValues(300.0, 700.0);
+      // _phValues = RangeValues(5.0, 7.0);
+      // _ppmValues = RangeValues(300.0, 700.0);
     });
   }
 
@@ -83,8 +67,8 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
             children: <Widget>[
               if (_currentStep > 0) secondaryButton(onPressed: details.onStepCancel!, text: 'Back', context: context),
               const Spacer(),
-              if (_currentStep < 3) secondaryButton(onPressed: details.onStepContinue!, text: 'Next', context: context),
-              if (_currentStep == 3)
+              if (_currentStep < 2) secondaryButton(onPressed: details.onStepContinue!, text: 'Next', context: context),
+              if (_currentStep == 2)
                 primaryButton(
                   onPressed: () {
                     _resetAll();
@@ -102,18 +86,11 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           );
         },
         onStepContinue: () {
-          if (_currentStep == 0 && !isDeviceConnected) {
-            Toast().showErrorToast(
-              context: context,
-              title: 'Device not connected',
-              description: 'Please connect your device first.',
-            );
+          if (_currentStep == 0 && !_formKey.currentState!.validate()) {
             return;
           }
-          if (_currentStep == 1 && !_formKey.currentState!.validate()) {
-            return;
-          }
-          if (_currentStep < 3) {
+
+          if (_currentStep < 2) {
             setState(() {
               _currentStep++;
             });
@@ -134,19 +111,6 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
             title: const Text(''),
             content: SizedBox(
               height: heightQuery(context) * 0.6,
-              child: AddDeviceConnectingScreen(
-                isDeviceConnected: isDeviceConnected,
-                isDeviceConnecting: isDeviceConnecting,
-                onConnectPressed: connectDevice,
-              ),
-            ),
-            isActive: _currentStep == 0,
-            state: _currentStep >= 0 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: const Text(''),
-            content: SizedBox(
-              height: heightQuery(context) * 0.6,
               child: AddDeviceFormScreen(
                 deviceNameController: _deviceNameController,
                 deviceDescriptionController: _deviceDescriptionController,
@@ -154,27 +118,33 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                 formKey: _formKey,
               ),
             ),
-            isActive: _currentStep >= 1,
-            state: _currentStep >= 1 ? StepState.complete : StepState.indexed,
+            isActive: _currentStep >= 0,
+            state: _currentStep >= 0 ? StepState.complete : StepState.indexed,
           ),
           Step(
             title: const Text(''),
-            content: SizedBox(
-              height: heightQuery(context) * 0.6,
-              child: AddDeviceSensorSetupScreen(
-                phValues: _phValues,
-                ppmValues: _ppmValues,
-                onChangedPH: (RangeValues value) {
-                  changePhValues(value);
-                },
-                onChangedPPM: (RangeValues value) {
-                  changePpmValues(value);
-                },
-              ),
-            ),
-            isActive: _currentStep >= 2,
-            state: _currentStep >= 2 ? StepState.complete : StepState.indexed,
+            content: SizedBox(height: heightQuery(context) * 0.6, child: const AddDevicePairingScreen()),
+            isActive: _currentStep >= 1,
+            state: _currentStep >= 1 ? StepState.complete : StepState.indexed,
           ),
+          // Step(
+          //   title: const Text(''),
+          //   content: SizedBox(
+          //     height: heightQuery(context) * 0.6,
+          //     child: AddDeviceSensorSetupScreen(
+          //       phValues: _phValues,
+          //       ppmValues: _ppmValues,
+          //       onChangedPH: (RangeValues value) {
+          //         changePhValues(value);
+          //       },
+          //       onChangedPPM: (RangeValues value) {
+          //         changePpmValues(value);
+          //       },
+          //     ),
+          //   ),
+          //   isActive: _currentStep >= 2,
+          //   state: _currentStep >= 2 ? StepState.complete : StepState.indexed,
+          // ),
           Step(
             title: const Text(''),
             content: SizedBox(
@@ -184,12 +154,12 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                 deviceName: _deviceNameController.text,
                 deviceDescription: _deviceDescriptionController.text,
                 deviceId: _deviceIdController.text,
-                phValues: _phValues,
-                ppmValues: _ppmValues,
+                // phValues: _phValues,
+                // ppmValues: _ppmValues,
               ),
             ),
-            isActive: _currentStep >= 3,
-            state: _currentStep >= 3 ? StepState.complete : StepState.indexed,
+            isActive: _currentStep >= 2,
+            state: _currentStep >= 2 ? StepState.complete : StepState.indexed,
           ),
         ],
       ),

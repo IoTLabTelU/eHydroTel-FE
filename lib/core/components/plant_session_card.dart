@@ -48,9 +48,9 @@ class PlantSessionCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Card(
-        color: ColorValues.whiteColor,
+        color: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 6,
+        elevation: 2,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -92,7 +92,7 @@ class PlantSessionCard extends StatelessWidget {
                             asset = LottieAssets.plantSessionFlower;
                         }
                         return Container(
-                          margin: EdgeInsets.only(left: 20.w),
+                          margin: EdgeInsets.only(left: widthQuery(context) * 0.15),
                           decoration: BoxDecoration(
                             color: ColorValues.iotMainColor.withValues(alpha: 0.2),
                             shape: BoxShape.circle,

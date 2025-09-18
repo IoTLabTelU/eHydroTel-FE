@@ -46,7 +46,6 @@ class _NavbarState extends State<Navbar> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorValues.neutral100.withValues(alpha: 0.99),
         body: Stack(
           children: [
             Positioned.fill(child: widget.navigationShell),
@@ -72,11 +71,7 @@ class _NavbarState extends State<Navbar> {
                   });
                   _startCollapseTimer();
                 },
-                child: Icon(
-                  Icons.keyboard_arrow_up,
-                  color: Colors.white,
-                  size: 8.sp,
-                ),
+                child: Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 26.sp),
               ),
             ),
           ],
@@ -100,10 +95,7 @@ class _NavbarState extends State<Navbar> {
         child: Container(
           height: heightQuery(context) * 0.13,
           width: widthQuery(context),
-          decoration: BoxDecoration(
-            color: ColorValues.iotMainColor.withValues(alpha: 0.7),
-            borderRadius: BorderRadius.circular(30.r),
-          ),
+          decoration: BoxDecoration(color: ColorValues.iotMainColor, borderRadius: BorderRadius.circular(30.r)),
           child: Stack(
             children: [
               Positioned(
@@ -142,10 +134,7 @@ class _NavbarState extends State<Navbar> {
                     Container(
                       height: widthQuery(context) / 100 * 1.0,
                       width: widthQuery(context) / 100 * 12,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      decoration: BoxDecoration(color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
                     ),
                     ClipPath(
                       clipper: MyCustomClipper(context),
