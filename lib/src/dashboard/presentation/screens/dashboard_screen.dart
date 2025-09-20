@@ -1,33 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/dashboard/data/models/session_data.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
 // import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import '../../application/providers/crop_cycle_providers.dart';
+import '../../application/state/crop_cycle_state.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   static const String path = 'dashboard';
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  List<SessionData> addedSessions = [];
-  List<bool> addedSessionsStoppedStates = [];
-
-  void _onSessionAdded(SessionData sessionData) {
-    setState(() {
-      addedSessions.add(sessionData);
-      addedSessionsStoppedStates.add(false);
-    });
-  }
-
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   var items = [
     DropdownItem(label: 'All', value: 'All'),
     DropdownItem(label: 'Active Only', value: 'Active'),
@@ -37,7 +29,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool isStopped = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final cropCycleState = ref.watch(cropCycleNotifierProvider);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: ListView(
@@ -147,7 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
-                      child: SessionModal(onSessionAdded: _onSessionAdded),
+                      child: SessionModal(onSessionAdded: (p0) {}),
                     ),
                   );
                 },
@@ -165,122 +167,144 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 10),
 
-          ///INI SESSIONS
-          ...addedSessions.asMap().entries.map((entry) {
-            int index = entry.key;
-            SessionData session = entry.value;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: PlantSessionCard(
-                onDashboard: true,
-                deviceName: session.deviceName,
-                plantName: session.plantName,
-                startDate: session.startDate,
-                totalDays: session.totalDays,
-                minPh: session.minPh,
-                maxPh: session.maxPh,
-                minPpm: session.minPpm.toDouble(),
-                maxPpm: session.maxPpm.toDouble(),
-                onHistoryTap: () => context.push(
-                  '/devices/HWTX883/history',
-                  extra: {
-                    'deviceName': session.deviceName,
-                    'pH': (session.minPh + session.maxPh) / 2,
-                    'ppm': session.minPpm,
-                    'deviceDescription':
-                        'This is the Description of ${session.deviceName}',
-                  },
-                ),
-                onStopSession: () {
-                  showAdaptiveDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (context) {
-                      return alertDialog(
-                        context: context,
-                        title: 'Stop Session',
-                        content: 'Are you sure you want to stop this session?',
-                        onConfirm: () => setState(() {
-                          addedSessionsStoppedStates[index] = true;
-                        }),
-                      );
-                    },
-                  );
-                },
-                onTap: () => context.push(
-                  '/devices/HWTX883',
-                  extra: {
-                    'deviceName': session.deviceName,
-                    'pH': (session.minPh + session.maxPh) / 2,
-                    'ppm': session.minPpm,
-                    'deviceDescription':
-                        'This is the Description of ${session.deviceName}',
-                  },
-                ),
-                isStopped: addedSessionsStoppedStates[index],
-                onRestartSession: () {
-                  setState(() {
-                    addedSessionsStoppedStates[index] = false;
-                  });
-                },
-              ),
-            );
-          }),
-          PlantSessionCard(
-            onDashboard: true,
-            deviceName: 'Meja 1',
-            plantName: 'Broccoli',
-            startDate: DateTime.utc(2025, 8, 30),
-            totalDays: 30,
-            minPh: 5.5,
-            maxPh: 7.0,
-            minPpm: 800,
-            maxPpm: 1200,
-            onHistoryTap: () => context.push(
-              '/devices/HWTX883/history',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 5.7,
-                'ppm': 800,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
-            ),
-            onStopSession: () {
-              showAdaptiveDialog(
-                barrierDismissible: true,
-                context: context,
-                builder: (context) {
-                  return alertDialog(
-                    context: context,
-                    title: 'Stop Session',
-                    content: 'Are you sure you want to stop this session?',
-                    onConfirm: () => setState(() {
-                      isStopped = true;
-                    }),
-                  );
-                },
-              );
-            },
-            onTap: () => context.push(
-              '/devices/HWTX883',
-              extra: {
-                'deviceName': 'Meja 1',
-                'pH': 5.7,
-                'ppm': 800,
-                'deviceDescription': 'This is the Description of Meja 1',
-              },
-            ),
-            isStopped: isStopped,
-            onRestartSession: () {
-              setState(() {
-                isStopped = false;
-              });
-            },
-          ),
+          _buildCropCycleContent(cropCycleState),
 
           SizedBox(height: heightQuery(context) * 0.3),
         ],
       ),
     );
   }
+
+  Widget _buildCropCycleContent(CropCycleState state) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.error != null) {
+      return Center(
+        child: ElevatedButton(
+          onPressed: () {
+            ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+          },
+          child: const Text('Retry'),
+        ),
+      );
+    }
+
+    if (state.cropCycleResponse != null &&
+        state.cropCycleResponse!.data.isNotEmpty) {
+      return Column(
+        children: state.cropCycleResponse!.data.map((cropCycle) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: PlantSessionCard(
+              onDashboard: true,
+              deviceName: cropCycle.device.name,
+              plantName: cropCycle.plant.name,
+              startDate: cropCycle.startedAt,
+              totalDays: DateTime.now().difference(cropCycle.startedAt).inDays,
+              minPh: cropCycle.phMin,
+              maxPh: cropCycle.phMax,
+              minPpm: cropCycle.ppmMin.toDouble(),
+              maxPpm: cropCycle.ppmMax.toDouble(),
+              onHistoryTap: () => context.push(
+                '/devices/${cropCycle.device.serialNumber}/history',
+                extra: {
+                  'deviceName': cropCycle.device.name,
+                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
+                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
+                  'deviceDescription':
+                      'This is the Description of ${cropCycle.device.name}',
+                },
+              ),
+              onStopSession: () {
+                showAdaptiveDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (context) {
+                    return alertDialog(
+                      context: context,
+                      title: 'Stop Session',
+                      content: 'Are you sure you want to stop this session?',
+                      onConfirm: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                );
+              },
+              onTap: () => context.push(
+                '/devices/${cropCycle.device.serialNumber}',
+                extra: {
+                  'deviceName': cropCycle.device.name,
+                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
+                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
+                  'deviceDescription':
+                      'This is the Description of ${cropCycle.device.name}',
+                },
+              ),
+              isStopped: !cropCycle.active,
+              onRestartSession: () {},
+            ),
+          );
+        }).toList(),
+      );
+    }
+
+    return const Center(child: Text('No Data'));
+  }
 }
+
+
+
+        //  PlantSessionCard(
+        //     onDashboard: true,
+        //     deviceName: 'Meja 1',
+        //     plantName: 'Broccoli',
+        //     startDate: DateTime.utc(2025, 8, 30),
+        //     totalDays: 30,
+        //     minPh: 5.5,
+        //     maxPh: 7.0,
+        //     minPpm: 800,
+        //     maxPpm: 1200,
+        //     onHistoryTap: () => context.push(
+        //       '/devices/HWTX883/history',
+        //       extra: {
+        //         'deviceName': 'Meja 1',
+        //         'pH': 5.7,
+        //         'ppm': 800,
+        //         'deviceDescription': 'This is the Description of Meja 1',
+        //       },
+        //     ),
+        //     onStopSession: () {
+        //       showAdaptiveDialog(
+        //         barrierDismissible: true,
+        //         context: context,
+        //         builder: (context) {
+        //           return alertDialog(
+        //             context: context,
+        //             title: 'Stop Session',
+        //             content: 'Are you sure you want to stop this session?',
+        //             onConfirm: () => setState(() {
+        //               isStopped = true;
+        //             }),
+        //           );
+        //         },
+        //       );
+        //     },
+        //     onTap: () => context.push(
+        //       '/devices/HWTX883',
+        //       extra: {
+        //         'deviceName': 'Meja 1',
+        //         'pH': 5.7,
+        //         'ppm': 800,
+        //         'deviceDescription': 'This is the Description of Meja 1',
+        //       },
+        //     ),
+        //     isStopped: isStopped,
+        //     onRestartSession: () {
+        //       setState(() {
+        //         isStopped = false;
+        //       });
+        //     },
+        //   ),
