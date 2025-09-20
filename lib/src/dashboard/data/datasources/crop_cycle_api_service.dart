@@ -7,7 +7,7 @@ class CropCycleApiService {
   static const String accessToken = '';
 
   Future<CropCycleResponseModel> getCropCycles() async {
-    final url = '${BaseConfigs.baseUrl}/crop-cycles';
+    final url = '${BaseConfigs.baseUrl}/api/crop-cycle';
 
     final response = await http.get(
       Uri.parse(url),
