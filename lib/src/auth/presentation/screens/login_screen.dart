@@ -1,25 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/components.dart';
+import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/application/login_with_password_controller.dart';
+import 'package:hydro_iot/src/auth/data/model/auth_response.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 import '../widgets/oauth_button_widget.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   static const String path = 'login';
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<AuthResponse>>(loginWithPasswordControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (err, _) {
+          if (context.mounted) {
+            Toast().showErrorToast(context: context, title: err.toString());
+          }
+        },
+        data: (response) {
+          if (response.tokens != null && context.mounted) {
+            context.pushReplacement('/dashboard');
+          }
+        },
+      );
+    });
+
+    final loginState = ref.watch(loginWithPasswordControllerProvider);
+
+    void login() {
+      if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+        Toast().showErrorToast(context: context, title: 'Please fill in all fields');
+        return;
+      }
+      ref
+          .read(loginWithPasswordControllerProvider.notifier)
+          .loginWithEmailPassword(emailController.text, passwordController.text);
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -53,6 +84,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Enter your email',
                         obscureText: false,
                         keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
@@ -60,6 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: passwordController,
                         hintText: 'Enter your password',
                         obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20.h),
                       TextButton(
@@ -72,16 +118,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      SizedBox(
-                        width: double.infinity,
-                        child: primaryButton(
-                          text: 'LOGIN',
-                          onPressed: () {
-                            context.pushReplacement('/dashboard');
-                          },
-                          context: context,
-                        ),
-                      ),
+                      loginState.isLoading
+                          ? const CircularProgressIndicator.adaptive()
+                          : SizedBox(
+                              width: double.infinity,
+                              child: primaryButton(text: 'LOGIN', onPressed: login, context: context),
+                            ),
                       SizedBox(height: 20.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

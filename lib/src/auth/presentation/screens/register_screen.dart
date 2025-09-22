@@ -1,26 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/application/register_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 import '../widgets/oauth_button_widget.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   static const String path = 'register';
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    void register() async {
+      if (nameController.text.isEmpty || emailController.text.isEmpty || passwordController.text.isEmpty) {
+        Toast().showErrorToast(context: context, title: 'Please fill in all fields');
+        return;
+      }
+      try {
+        final res = await ref
+            .read(registerWithPasswordControllerProvider.notifier)
+            .registerWithEmailPassword(nameController.text, emailController.text, passwordController.text);
+        if (context.mounted && res) {
+          Toast().showSuccessToast(context: context, title: 'Registration successful, please login');
+          context.pushReplacement('/login');
+        }
+      } catch (e) {
+        if (context.mounted) Toast().showErrorToast(context: context, title: e.toString());
+      }
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -53,6 +73,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Enter your name',
                         obscureText: false,
                         keyboardType: TextInputType.name,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
@@ -61,6 +87,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Enter your email',
                         obscureText: false,
                         keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
@@ -68,6 +100,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: passwordController,
                         hintText: 'Enter your password',
                         obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20.h),
                       RichText(
@@ -106,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: double.infinity,
-                        child: primaryButton(text: 'REGISTER', onPressed: () {}, context: context),
+                        child: primaryButton(text: 'REGISTER', onPressed: register, context: context),
                       ),
                       SizedBox(height: 20.h),
                       Row(

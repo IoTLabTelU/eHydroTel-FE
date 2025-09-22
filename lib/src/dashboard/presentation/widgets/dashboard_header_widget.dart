@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class DashboardHeaderWidget extends StatelessWidget {
-  const DashboardHeaderWidget({super.key});
+  const DashboardHeaderWidget({super.key, required this.username});
+
+  final String username;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome, Telyu Sigma', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
+        Text('Welcome, $username', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
         Text('Dashboard', style: Theme.of(context).textTheme.titleLarge?.copyWith()),
       ],
     );

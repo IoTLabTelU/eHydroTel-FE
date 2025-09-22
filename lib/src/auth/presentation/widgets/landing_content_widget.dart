@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydro_iot/core/components/components.dart';
+import 'package:hydro_iot/utils/storage.dart';
 
 import '../../../../res/res.dart';
 
@@ -29,8 +30,9 @@ SliverChildListDelegate contentWidget(BuildContext context) {
       padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
       child: primaryButton(
         text: 'GET STARTED',
-        onPressed: () {
-          context.pushReplacement('/login');
+        onPressed: () async {
+          await Storage.setIsLoggedIn('false');
+          if (context.mounted) context.pushReplacement('/login');
         },
         context: context,
       ),

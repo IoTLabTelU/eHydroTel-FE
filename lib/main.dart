@@ -8,9 +8,5 @@ import 'package:hydro_iot/core/app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  runApp(
-    ProviderScope(
-      child: DevicePreview(enabled: false, builder: (context) => const App()),
-    ),
-  );
+  runApp(ProviderScope(child: DevicePreview(enabled: false, builder: (context) => const App())));
 }

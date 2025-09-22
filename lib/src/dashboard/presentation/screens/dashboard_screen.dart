@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/application/auth_controller.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
-// import 'package:hydro_iot/src/dashboard/presentation/widgets/devices_status_chart_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import '../../application/providers/crop_cycle_providers.dart';
@@ -39,48 +39,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final cropCycleState = ref.watch(cropCycleNotifierProvider);
+    final userProvider = ref.watch(authControllerProvider);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: ListView(
         children: [
           const SizedBox(height: 20),
-          const DashboardHeaderWidget(),
-          // const SizedBox(height: 20),
-          // Add your dashboard widgets here
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-          //     Padding(
-          //       padding: EdgeInsets.symmetric(horizontal: 2.w),
-          //       child: Text('Analytics', style: Theme.of(context).textTheme.bodyLarge),
-          //     ),
-          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-          //   ],
-          // ),
-          // const SizedBox(height: 20),
-          // const DevicesStatusChartWidget(),
-          // const SizedBox(height: 20),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-          //     Padding(
-          //       padding: EdgeInsets.symmetric(horizontal: 2.w),
-          //       child: Text('Plant Session', style: Theme.of(context).textTheme.bodyLarge),
-          //     ),
-          //     const Expanded(child: Divider(color: ColorValues.neutral300, thickness: 5)),
-          //   ],
-          // ),
+          userProvider.when(
+            data: (user) => DashboardHeaderWidget(username: user!.name),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, _) => Center(child: Text('Error: $err')),
+          ),
           const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
-                child: searchButton(
-                  onPressed: () => context.push('/dashboard/search'),
-                  context: context,
-                ),
+                child: searchButton(onPressed: () => context.push('/dashboard/search'), context: context),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -93,11 +68,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   fieldDecoration: FieldDecoration(
                     backgroundColor: ColorValues.neutral500,
                     hintText: 'Filter Session',
-                    hintStyle: dmSansSmallText(
-                      size: 12,
-                      color: ColorValues.whiteColor,
-                      weight: FontWeight.w800,
-                    ),
+                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.whiteColor, weight: FontWeight.w800),
                     showClearIcon: false,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -105,21 +76,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: ColorValues.iotMainColor,
-                        width: 3,
-                      ),
+                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
                     ),
                   ),
-                  dropdownDecoration: const DropdownDecoration(
-                    marginTop: 2,
-                    maxHeight: 500,
-                  ),
+                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
                   dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon: const Icon(
-                      Icons.check_box,
-                      color: Colors.green,
-                    ),
+                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
                     disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
                     textColor: ColorValues.blackColor,
                     selectedTextColor: ColorValues.iotMainColor,
@@ -132,23 +94,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Plant Sessions',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(),
-              ),
+              Text('Plant Sessions', style: Theme.of(context).textTheme.titleLarge?.copyWith()),
               ElevatedButton.icon(
                 onPressed: () {
                   showModalBottomSheet(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * 0.8,
-                    ),
+                    constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
                     useRootNavigator: true,
                     isScrollControlled: true,
                     context: context,
                     builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: SessionModal(onSessionAdded: (p0) {}),
                     ),
                   );
@@ -158,9 +113,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorValues.iotMainColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ],
@@ -191,8 +144,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    if (state.cropCycleResponse != null &&
-        state.cropCycleResponse!.data.isNotEmpty) {
+    if (state.cropCycleResponse != null && state.cropCycleResponse!.data.isNotEmpty) {
       return Column(
         children: state.cropCycleResponse!.data.map((cropCycle) {
           return Padding(
@@ -213,8 +165,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   'deviceName': cropCycle.device.name,
                   'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
                   'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription':
-                      'This is the Description of ${cropCycle.device.name}',
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
               onStopSession: () {
@@ -239,8 +190,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   'deviceName': cropCycle.device.name,
                   'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
                   'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription':
-                      'This is the Description of ${cropCycle.device.name}',
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
               isStopped: !cropCycle.active,

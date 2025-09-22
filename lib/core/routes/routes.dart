@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/change_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/landing_screen.dart';
@@ -17,6 +16,7 @@ import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_session_screen.dart';
 import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
+import 'package:hydro_iot/utils/utils.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -258,6 +258,29 @@ final router = GoRouter(
   observers: [routeObserver],
   debugLogDiagnostics: true,
   errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
+  redirect: (context, state) async {
+    final isLoggedIn = await Storage.readIsLoggedIn();
+    final role = await Storage.readRole();
+    if (isLoggedIn == null) {
+      return '/${LandingScreen.path}';
+    }
+    if (!isLoggedIn) {
+      return '/${LoginScreen.path}';
+    }
+
+    if (role != 'CUSTOMER') {
+      if (context.mounted) Toast().showErrorToast(context: context, title: 'Error', description: 'Account not supported');
+      return '/${LoginScreen.path}';
+    }
+
+    final loggingIn = state.matchedLocation == '/${LoginScreen.path}';
+    final landing = state.matchedLocation == '/${LandingScreen.path}';
+
+    if ((loggingIn || landing) && isLoggedIn) {
+      return '/${DashboardScreen.path}';
+    }
+    return null;
+  },
 );
 
 /// Route observer to use with RouteAware
