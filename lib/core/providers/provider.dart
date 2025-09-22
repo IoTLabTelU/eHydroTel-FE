@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/core/api/api.dart';
 
-final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio();
-  return dio;
+final apiClientProvider = Provider<ApiClient>((ref) {
+  return ApiClient();
 });

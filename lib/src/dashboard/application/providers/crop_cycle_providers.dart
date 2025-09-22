@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../../data/datasources/crop_cycle_api_service.dart';
 import '../../data/repositories/crop_cycle_repository_impl.dart';
 import '../../domain/repositories/crop_cycle_repository.dart';
@@ -24,8 +25,7 @@ final getCropCyclesUsecaseProvider = Provider<GetCropCyclesUsecase>((ref) {
 });
 
 // Notifier Provider
-final cropCycleNotifierProvider =
-    StateNotifierProvider<CropCycleNotifier, CropCycleState>((ref) {
-      final usecase = ref.read(getCropCyclesUsecaseProvider);
-      return CropCycleNotifier(usecase);
-    });
+final cropCycleNotifierProvider = StateNotifierProvider<CropCycleNotifier, CropCycleState>((ref) {
+  final usecase = ref.read(getCropCyclesUsecaseProvider);
+  return CropCycleNotifier(usecase);
+});

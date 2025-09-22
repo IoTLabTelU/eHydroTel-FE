@@ -1,3 +1,5 @@
+import 'package:hydro_iot/core/config/config.dart';
+
 class AppStrings {
   static const String appName = 'ꫀHydrotel';
   static const String errorMessage = 'An error has occurred. Please try again.';
@@ -12,7 +14,14 @@ class AppStrings {
   static const String maintenanceMessage = 'The system is currently under maintenance. Please try again later.';
 }
 
-class EndpointStrings {}
+class EndpointStrings {
+  static final baseUrl = BaseConfigs.baseUrl;
+  static final login = '$baseUrl/auth/login';
+  static final register = '$baseUrl/auth/register';
+  static final resetPassword = '$baseUrl/auth/reset-password';
+  static final userProfile = '$baseUrl/auth/profile';
+  static final updateProfile = '$baseUrl/users/profile';
+}
 
 enum DeviceStatus { active, idle, critical }
 
