@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/auth/application/register_with_password_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/register_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -23,22 +23,41 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    void register() async {
+    ref.listen<AsyncValue<bool>>(registerWithPasswordControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (err, _) {
+          if (context.mounted) {
+            Toast().showErrorToast(context: context, title: 'Error', description: err.toString());
+          }
+        },
+        loading: () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const FancyLoadingDialog(title: 'Creating your account...'),
+          );
+        },
+        data: (response) {
+          if (response && context.mounted) {
+            Toast().showSuccessToast(
+              context: context,
+              title: 'Success',
+              description: 'Registration successful, please login.',
+            );
+            context.pushReplacement('/login');
+          }
+        },
+      );
+    });
+
+    void register() {
       if (nameController.text.isEmpty || emailController.text.isEmpty || passwordController.text.isEmpty) {
         Toast().showErrorToast(context: context, title: 'Please fill in all fields');
         return;
       }
-      try {
-        final res = await ref
-            .read(registerWithPasswordControllerProvider.notifier)
-            .registerWithEmailPassword(nameController.text, emailController.text, passwordController.text);
-        if (context.mounted && res) {
-          Toast().showSuccessToast(context: context, title: 'Registration successful, please login');
-          context.pushReplacement('/login');
-        }
-      } catch (e) {
-        if (context.mounted) Toast().showErrorToast(context: context, title: e.toString());
-      }
+      ref
+          .read(registerWithPasswordControllerProvider.notifier)
+          .registerWithEmailPassword(nameController.text, emailController.text, passwordController.text);
     }
 
     return GestureDetector(

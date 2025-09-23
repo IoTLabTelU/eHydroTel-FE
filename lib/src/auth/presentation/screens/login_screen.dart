@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/components.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/auth/application/login_with_password_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/login_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/data/model/auth_response.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
@@ -31,6 +31,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Toast().showErrorToast(context: context, title: err.toString());
           }
         },
+        loading: () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const FancyLoadingDialog(title: 'Signing you in...'),
+          );
+        },
         data: (response) {
           if (response.tokens != null && context.mounted) {
             context.pushReplacement('/dashboard');
@@ -38,8 +45,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
       );
     });
-
-    final loginState = ref.watch(loginWithPasswordControllerProvider);
 
     void login() {
       if (emailController.text.isEmpty || passwordController.text.isEmpty) {
@@ -118,12 +123,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      loginState.isLoading
-                          ? const CircularProgressIndicator.adaptive()
-                          : SizedBox(
-                              width: double.infinity,
-                              child: primaryButton(text: 'LOGIN', onPressed: login, context: context),
-                            ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: primaryButton(text: 'LOGIN', onPressed: login, context: context),
+                      ),
                       SizedBox(height: 20.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/utils/spinner_paint.dart';
-import 'package:hydro_iot/utils/utils.dart';
+// import 'package:hydro_iot/utils/utils.dart';
 
 import '../../res/res.dart';
 
@@ -17,15 +17,15 @@ class FancyLoadingDialogState extends State<FancyLoadingDialog> with SingleTicke
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
-    _fakeDoWork();
+    // _fakeDoWork();
   }
 
-  Future<void> _fakeDoWork() async {
-    await Future.delayed(const Duration(milliseconds: 1400));
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    Toast().showSuccessToast(context: context, title: 'Export started.', description: ' You\'ll be notified when it\'s ready.');
-  }
+  // Future<void> _fakeDoWork() async {
+  //   await Future.delayed(const Duration(milliseconds: 1400));
+  //   if (!mounted) return;
+  //   Navigator.of(context).pop();
+  //   Toast().showSuccessToast(context: context, title: 'Export started.', description: ' You\'ll be notified when it\'s ready.');
+  // }
 
   @override
   void dispose() {
