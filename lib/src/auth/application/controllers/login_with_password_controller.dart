@@ -1,4 +1,4 @@
-import 'package:hydro_iot/src/auth/auth_provider.dart';
+import 'package:hydro_iot/src/auth/application/providers/auth_provider.dart';
 import 'package:hydro_iot/src/auth/data/model/auth_response.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

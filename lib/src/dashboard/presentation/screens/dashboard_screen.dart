@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/auth/application/auth_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
 import 'package:hydro_iot/utils/utils.dart';
