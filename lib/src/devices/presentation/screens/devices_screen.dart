@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/devices/presentation/screens/devices_list.dart';
+import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class DevicesScreen extends StatefulWidget {
+class DevicesScreen extends ConsumerStatefulWidget {
   const DevicesScreen({super.key});
 
   static const String path = 'devices';
 
   @override
-  State<DevicesScreen> createState() => _DevicesScreenState();
+  ConsumerState<DevicesScreen> createState() => _DevicesScreenState();
 }
 
-class _DevicesScreenState extends State<DevicesScreen> {
-  late List<bool> isOnList = List.generate(devices.length, (_) => true);
+class _DevicesScreenState extends ConsumerState<DevicesScreen> {
+  late List<bool> isOnList;
 
   void toggleStart(int index) {
     isOnList[index] = !isOnList[index];
@@ -30,6 +32,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final devices = ref.watch(devicesControllerProvider);
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       children: [
@@ -91,43 +94,75 @@ class _DevicesScreenState extends State<DevicesScreen> {
         ),
         // Add your device list or other widgets here
         const SizedBox(height: 10),
-        ...List.generate(devices.length, (index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: GestureDetector(
-              onTap: () => context.push('/devices/HWTX88${index + 1}/view', extra: {'deviceName': 'Meja ${index + 1}'}),
-              child: DeviceCard(
-                deviceName: devices[index]['name'],
-                deviceId: devices[index]['id'],
-                isOnline: isOnList[index],
-                ssid: 'HydroNet',
-                lastUpdated: DateTime.now(),
-                onTapDetail: () => context.push(
-                  '/devices/HWTX88${index + 1}',
-                  extra: {
-                    'deviceName': devices[index]['name'],
-                    'pH': 10.0,
-                    'ppm': 850,
-                    'deviceDescription': 'This is the Description of Meja ${index + 1}',
-                  },
+        devices.when(
+          data: (device) {
+            if (devices.isLoading) context.pop();
+            setState(() {
+              isOnList = List<bool>.generate(device.length, (index) => false);
+            });
+            if (device.isEmpty) {
+              return Center(
+                child: Text(
+                  'No devices found. Please add a device.',
+                  style: dmSansSmallText(size: 14, color: ColorValues.whiteColor, weight: FontWeight.w700),
+                  textAlign: TextAlign.center,
                 ),
-                onTapSetting: () => context.push(
-                  '/devices/HWTX88${index + 1}/settings',
-                  extra: {
-                    'deviceName': 'Meja ${index + 1}',
-                    'deviceDescription': 'This is the Description of Meja ${index + 1}',
-                    'ssid': 'HydroNet',
-                  },
-                ),
-                onTapPower: () {
-                  setState(() {
-                    toggleStart(index);
-                  });
+              );
+            }
+            return SizedBox(
+              height: heightQuery(context),
+              child: ListView.builder(
+                itemCount: device.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.h),
+                    child: GestureDetector(
+                      onTap: () =>
+                          context.push('/devices/${device[index].id}/view', extra: {'deviceName': device[index].name}),
+                      child: DeviceCard(
+                        deviceName: device[index].name,
+                        deviceId: device[index].id,
+                        isOnline: isOnList[index],
+                        ssid: device[index].ssid ?? 'Unknown SSID',
+                        createdAt: device[index].createdAt,
+                        lastUpdated: device[index].updatedAt,
+                        onTapDetail: () => context.push(
+                          '/devices/${device[index].id}/view',
+                          extra: {
+                            'deviceName': device[index].name,
+                            'pH': 10.0,
+                            'ppm': 850,
+                            'deviceDescription': device[index].description,
+                          },
+                        ),
+                        onTapSetting: () => context.push(
+                          '/devices/${device[index].id}/settings',
+                          extra: {
+                            'deviceName': device[index].name,
+                            'deviceDescription': device[index].description,
+                            'ssid': device[index].ssid ?? 'Unknown SSID',
+                          },
+                        ),
+                        onTapPower: () {
+                          setState(() {
+                            toggleStart(index);
+                          });
+                        },
+                      ),
+                    ),
+                  );
                 },
               ),
-            ),
-          );
-        }),
+            );
+          },
+          error: (error, stackTrace) {
+            context.pop();
+            return Center(child: Text('Error: $error'));
+          },
+          loading: () {
+            return const FancyLoading(title: 'Loading devices...');
+          },
+        ),
       ],
     );
   }

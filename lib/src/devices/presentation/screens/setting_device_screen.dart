@@ -36,7 +36,11 @@ class _SettingDeviceScreenState extends State<SettingDeviceScreen> {
     _deviceNameController = TextEditingController(text: widget.deviceName);
     _deviceIdController = TextEditingController(text: widget.deviceId);
     _deviceDescriptionController = TextEditingController(text: widget.deviceDescription);
-    _ssidController = TextEditingController(text: widget.ssid);
+    if (widget.ssid == 'Unknown SSID') {
+      _ssidController = TextEditingController();
+    } else {
+      _ssidController = TextEditingController(text: widget.ssid);
+    }
   }
 
   void _saveDevice() {

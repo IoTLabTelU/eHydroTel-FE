@@ -27,8 +27,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen<AsyncValue<AuthResponse>>(loginWithPasswordControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: err.toString());
+            context.pop();
+            Toast().showErrorToast(context: context, title: 'Error', description: errorMessage);
           }
         },
         loading: () {
@@ -40,6 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
         data: (response) {
           if (response.tokens != null && context.mounted) {
+            context.pop();
             context.pushReplacement('/dashboard');
           }
         },

@@ -8,6 +8,7 @@ class DeviceCard extends StatelessWidget {
   final String deviceId;
   final bool isOnline;
   final String ssid;
+  final DateTime createdAt;
   final DateTime lastUpdated;
   final VoidCallback onTapDetail;
   final VoidCallback onTapSetting;
@@ -23,6 +24,7 @@ class DeviceCard extends StatelessWidget {
     required this.onTapDetail,
     required this.onTapSetting,
     required this.onTapPower,
+    required this.createdAt,
   });
 
   String _getStatusText() {
@@ -40,7 +42,7 @@ class DeviceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusText = _getStatusText();
-    final formattedTime = DateFormat.yMMMd().format(lastUpdated);
+    String formattedTime(DateTime time) => DateFormat.yMMMd().format(time);
 
     return Card(
       color: Colors.white,
@@ -80,7 +82,18 @@ class DeviceCard extends StatelessWidget {
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Added at: $formattedTime', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
+              child: Text(
+                'Added at: ${formattedTime(createdAt)}',
+                style: dmSansNormalText(size: 12, color: ColorValues.neutral500),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Last updated: ${formattedTime(lastUpdated)}',
+                style: dmSansNormalText(size: 12, color: ColorValues.neutral500),
+              ),
             ),
 
             const Divider(height: 24, color: ColorValues.neutral200),

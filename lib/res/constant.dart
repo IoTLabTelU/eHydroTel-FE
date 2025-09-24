@@ -21,6 +21,9 @@ class EndpointStrings {
   static final resetPassword = '$baseUrl/auth/reset-password';
   static final userProfile = '$baseUrl/auth/profile';
   static final updateProfile = '$baseUrl/users/profile';
+  static final devices = '$baseUrl/devices';
+  static final getMyDevices = '$devices/me';
+  static final registerMyDevice = '$devices/register';
 }
 
 enum DeviceStatus { active, idle, critical }
