@@ -1,4 +1,3 @@
-import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,10 +21,7 @@ class _AppState extends ConsumerState<App> {
       enableScaleWH: () => true,
       builder: (context, child) {
         return MaterialApp.router(
-          useInheritedMediaQuery: true,
           debugShowCheckedModeBanner: false,
-          builder: DevicePreview.appBuilder,
-          locale: DevicePreview.locale(context),
           theme: AppThemeData.getTheme(),
           darkTheme: AppThemeData.getDarkTheme(),
           themeMode: ref.watch(themeProvider).themeMode,
