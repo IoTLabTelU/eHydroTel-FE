@@ -131,7 +131,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
-                      child: SessionModal(onSessionAdded: (p0) {}),
+                      child: SessionModal(
+                        onSessionAdded: (sessionData) {
+                          ref
+                              .read(cropCycleNotifierProvider.notifier)
+                              .fetchCropCycles();
+                        },
+                      ),
                     ),
                   );
                 },
@@ -221,16 +227,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   },
                 );
               },
-              onTap: () => context.push(
-                '/devices/${cropCycle.device.serialNumber}',
-                extra: {
-                  'deviceName': cropCycle.device.name,
-                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription':
-                      'This is the Description of ${cropCycle.device.name}',
-                },
-              ),
+              onTap: () {},
+              // onTap: () => context.push(
+              //   '/devices/${cropCycle.device.serialNumber}',
+              //   extra: {
+              //     'deviceName': cropCycle.device.name,
+              //     'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
+              //     'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
+              //     'deviceDescription':
+              //         'This is the Description of ${cropCycle.device.name}',
+              //   },
+              // ),
               isStopped: !cropCycle.active,
               onRestartSession: () {},
             ),

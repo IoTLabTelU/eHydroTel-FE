@@ -27,12 +27,30 @@ class _SessionModalState extends ConsumerState<SessionModal> {
   late RangeValues _phRange;
   late RangeValues _ppmRange;
 
-  AsyncValue<List<PlantEntity>> get plantTypes => ref.watch(plantControllerProvider);
-  AsyncValue<List<DeviceEntity>> get devices => ref.watch(devicesControllerProvider);
+  AsyncValue<List<PlantEntity>> get plantTypes =>
+      ref.watch(plantControllerProvider);
+  AsyncValue<List<DeviceEntity>> get devices =>
+      ref.watch(devicesControllerProvider);
 
   void _saveDevice() {
-    if (_nameController.text.isEmpty || _totalDaysController.text.isEmpty || plantsController.selectedItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter session name')),
+      );
+      return;
+    }
+
+    if (devicesController.selectedItems.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a device')));
+      return;
+    }
+
+    if (plantsController.selectedItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a plant type')),
+      );
       return;
     }
 
@@ -54,7 +72,9 @@ class _SessionModalState extends ConsumerState<SessionModal> {
       ppmMax: maxPPM,
     );
 
-    ref.read(cropCycleControllerProvider.notifier).addCropCycleSession(newSession);
+    ref
+        .read(cropCycleControllerProvider.notifier)
+        .addCropCycleSession(newSession);
   }
 
   @override
@@ -82,16 +102,35 @@ class _SessionModalState extends ConsumerState<SessionModal> {
       next.whenOrNull(
         loading: () => showDialog(
           context: context,
-          builder: (context) => const FancyLoadingDialog(title: 'Adding New Crop Cycle Session...'),
+          builder: (context) => const FancyLoadingDialog(
+            title: 'Adding New Crop Cycle Session...',
+          ),
         ),
         error: (error, stackTrace) {
           context.pop();
-          Toast().showErrorToast(context: context, title: 'Error', description: error.toString());
+          Toast().showErrorToast(
+            context: context,
+            title: 'Error',
+            description: error.toString(),
+          );
         },
         data: (_) {
           context.pop();
-          Toast().showSuccessToast(context: context, title: 'Success', description: 'Crop Cycle Session Added');
-          widget.onSessionAdded;
+          Toast().showSuccessToast(
+            context: context,
+            title: 'Success',
+            description: 'Crop Cycle Session Added',
+          );
+          SessionData sessionData = SessionData(
+            deviceId: devicesController.selectedItems.first.value.id,
+            plantId: plantsController.selectedItems.first.value.id,
+            name: _nameController.text,
+            phMin: _phRange.start,
+            phMax: _phRange.end,
+            ppmMin: _ppmRange.start.round(),
+            ppmMax: _ppmRange.end.round(),
+          );
+          widget.onSessionAdded(sessionData);
           context.pop();
         },
       );
@@ -107,7 +146,11 @@ class _SessionModalState extends ConsumerState<SessionModal> {
             overlayColor: ColorValues.iotMainColor.withValues(alpha: 0.2),
             valueIndicatorColor: ColorValues.iotMainColor,
             trackHeight: heightQuery(context) * 0.03,
-            rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 15.r, pressedElevation: 10, elevation: 5),
+            rangeThumbShape: RoundRangeSliderThumbShape(
+              enabledThumbRadius: 15.r,
+              pressedElevation: 10,
+              elevation: 5,
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -117,21 +160,37 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                   width: 40,
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(color: ColorValues.neutral300, borderRadius: BorderRadius.circular(4)),
+                  decoration: BoxDecoration(
+                    color: ColorValues.neutral300,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-              Text('Add New Session', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Add New Session',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20),
 
               devices.when(
                 data: (data) {
                   return MultiDropdown<DeviceEntity>(
-                    items: data.map((device) => DropdownItem(label: device.name, value: device)).toList(),
+                    items: data
+                        .map(
+                          (device) =>
+                              DropdownItem(label: device.name, value: device),
+                        )
+                        .toList(),
                     controller: devicesController,
                     enabled: true,
                     singleSelect: true,
-                    itemSeparator: const Divider(height: 1, color: ColorValues.neutral300),
+                    itemSeparator: const Divider(
+                      height: 1,
+                      color: ColorValues.neutral300,
+                    ),
                     fieldDecoration: FieldDecoration(
                       hintText: 'Select Device',
                       hintStyle: Theme.of(context).textTheme.bodyMedium,
@@ -142,18 +201,30 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2),
+                        borderSide: BorderSide(
+                          color: ColorValues.iotMainColor,
+                          width: 2,
+                        ),
                       ),
                     ),
                     dropdownDecoration: DropdownDecoration(
                       marginTop: 2,
                       maxHeight: 200,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor,
                     ),
                     dropdownItemDecoration: DropdownItemDecoration(
-                      selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-                      disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                      selectedBackgroundColor: ColorValues.iotMainColor.withValues(alpha: 0.1),
+                      selectedIcon: const Icon(
+                        Icons.check_box,
+                        color: Colors.green,
+                      ),
+                      disabledIcon: Icon(
+                        Icons.lock,
+                        color: Colors.grey.shade300,
+                      ),
+                      selectedBackgroundColor: ColorValues.iotMainColor
+                          .withValues(alpha: 0.1),
                     ),
                   );
                 },
@@ -172,10 +243,15 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                 decoration: InputDecoration(
                   labelText: 'Session Name',
                   hintText: 'Enter session name',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2),
+                    borderSide: BorderSide(
+                      color: ColorValues.iotMainColor,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
@@ -186,17 +262,28 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                 data: (data) {
                   print('Plant Types: ${data}');
                   return MultiDropdown<PlantEntity>(
-                    items: data.map((plant) => DropdownItem(label: plant.name, value: plant)).toList(),
+                    items: data
+                        .map(
+                          (plant) =>
+                              DropdownItem(label: plant.name, value: plant),
+                        )
+                        .toList(),
                     controller: plantsController,
                     enabled: true,
                     singleSelect: true,
-                    itemSeparator: const Divider(height: 1, color: ColorValues.neutral300),
+                    itemSeparator: const Divider(
+                      height: 1,
+                      color: ColorValues.neutral300,
+                    ),
                     onSelectionChange: (selectedItems) {
                       setState(() {
                         // Update UI based on selected plant
                         if (selectedItems.isNotEmpty) {
                           final selectedPlant = selectedItems.first;
-                          _phRange = RangeValues(selectedPlant.phMin ?? 0, selectedPlant.phMax ?? 14);
+                          _phRange = RangeValues(
+                            selectedPlant.phMin ?? 0,
+                            selectedPlant.phMax ?? 14,
+                          );
                           _ppmRange = RangeValues(
                             selectedPlant.ppmMin?.toDouble() ?? 0,
                             selectedPlant.ppmMax?.toDouble() ?? 2000,
@@ -217,18 +304,30 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2),
+                        borderSide: BorderSide(
+                          color: ColorValues.iotMainColor,
+                          width: 2,
+                        ),
                       ),
                     ),
                     dropdownDecoration: DropdownDecoration(
                       marginTop: 2,
                       maxHeight: 200,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor,
                     ),
                     dropdownItemDecoration: DropdownItemDecoration(
-                      selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-                      disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                      selectedBackgroundColor: ColorValues.iotMainColor.withValues(alpha: 0.1),
+                      selectedIcon: const Icon(
+                        Icons.check_box,
+                        color: Colors.green,
+                      ),
+                      disabledIcon: Icon(
+                        Icons.lock,
+                        color: Colors.grey.shade300,
+                      ),
+                      selectedBackgroundColor: ColorValues.iotMainColor
+                          .withValues(alpha: 0.1),
                     ),
                   );
                 },
@@ -258,14 +357,20 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                 //   ),
                 // ),
                 const SizedBox(height: 24), // pH Threshold
-                const Text('pH Threshold', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'pH Threshold',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 RangeSlider(
                   values: _phRange,
                   min: 0,
                   max: 14,
                   divisions: 28,
-                  labels: RangeLabels(_phRange.start.toStringAsFixed(1), _phRange.end.toStringAsFixed(1)),
+                  labels: RangeLabels(
+                    _phRange.start.toStringAsFixed(1),
+                    _phRange.end.toStringAsFixed(1),
+                  ),
                   onChanged: (RangeValues values) {
                     setState(() {
                       _phRange = values;
@@ -282,14 +387,20 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                 const SizedBox(height: 24),
 
                 // PPM Threshold
-                const Text('PPM Threshold', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'PPM Threshold',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 RangeSlider(
                   values: _ppmRange,
                   min: 0,
                   max: 2000,
                   divisions: 40,
-                  labels: RangeLabels(_ppmRange.start.round().toString(), _ppmRange.end.round().toString()),
+                  labels: RangeLabels(
+                    _ppmRange.start.round().toString(),
+                    _ppmRange.end.round().toString(),
+                  ),
                   onChanged: (RangeValues values) {
                     setState(() {
                       _ppmRange = values;
@@ -298,7 +409,10 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('Min PPM: ${_ppmRange.start.round()}'), Text('Max PPM: ${_ppmRange.end.round()}')],
+                  children: [
+                    Text('Min PPM: ${_ppmRange.start.round()}'),
+                    Text('Max PPM: ${_ppmRange.end.round()}'),
+                  ],
                 ),
 
                 const SizedBox(height: 32),
@@ -310,11 +424,16 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                     onPressed: _saveDevice,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       backgroundColor: ColorValues.iotMainColor,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Add Session', style: TextStyle(fontSize: 16)),
+                    child: const Text(
+                      'Add Session',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ] else

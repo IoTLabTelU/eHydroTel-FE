@@ -12,7 +12,9 @@ class CropCycleController extends _$CropCycleController {
   Future<void> addCropCycleSession(SessionData sessionData) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final res = await ref.read(cropCycleRepositoryProvider).addCropCycle(sessionData);
+      final res = await ref
+          .read(cropCycleRepositoryProvider)
+          .addCropCycle(sessionData);
       if (!res) {
         throw Exception('Failed to add crop cycle session');
       }

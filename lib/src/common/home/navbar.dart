@@ -44,37 +44,47 @@ class _NavbarState extends State<Navbar> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        return;
+      },
       child: Scaffold(
-        body: Stack(
-          children: [
-            Positioned.fill(child: widget.navigationShell),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.decelerate,
-              bottom: isCollapsed ? -heightQuery(context) * 0.15 : 0,
-              left: 0,
-              right: 0,
-              child: bottomNav(context),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.decelerate,
-              bottom: 16,
-              right: isCollapsed ? 16 : -widthQuery(context) * 0.15,
-              child: FloatingActionButton(
-                backgroundColor: ColorValues.iotMainColor,
-                mini: true,
-                onPressed: () {
-                  setState(() {
-                    isCollapsed = false;
-                  });
-                  _startCollapseTimer();
-                },
-                child: Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 26.sp),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Positioned.fill(child: widget.navigationShell),
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.decelerate,
+                bottom: isCollapsed ? -heightQuery(context) * 0.15 : 0,
+                left: 0,
+                right: 0,
+                child: bottomNav(context),
               ),
-            ),
-          ],
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.decelerate,
+                bottom: 16,
+                right: isCollapsed ? 16 : -widthQuery(context) * 0.15,
+                child: FloatingActionButton(
+                  backgroundColor: ColorValues.iotMainColor,
+                  mini: true,
+                  onPressed: () {
+                    setState(() {
+                      isCollapsed = false;
+                    });
+                    _startCollapseTimer();
+                  },
+                  child: Icon(
+                    Icons.keyboard_arrow_up,
+                    color: Colors.white,
+                    size: 26.sp,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -95,7 +105,10 @@ class _NavbarState extends State<Navbar> {
         child: Container(
           height: heightQuery(context) * 0.13,
           width: widthQuery(context),
-          decoration: BoxDecoration(color: ColorValues.iotMainColor, borderRadius: BorderRadius.circular(30.r)),
+          decoration: BoxDecoration(
+            color: ColorValues.iotMainColor,
+            borderRadius: BorderRadius.circular(30.r),
+          ),
           child: Stack(
             children: [
               Positioned(
@@ -134,7 +147,10 @@ class _NavbarState extends State<Navbar> {
                     Container(
                       height: widthQuery(context) / 100 * 1.0,
                       width: widthQuery(context) / 100 * 12,
-                      decoration: BoxDecoration(color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(
+                        color: Colors.yellow,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     ClipPath(
                       clipper: MyCustomClipper(context),
