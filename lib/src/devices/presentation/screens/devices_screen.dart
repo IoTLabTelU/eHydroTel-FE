@@ -40,7 +40,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: searchButton(onPressed: () => context.push('/dashboard/search'), context: context),
+              child: searchButton(
+                onPressed: () => context.push('/dashboard/search'),
+                context: context,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -53,7 +56,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 fieldDecoration: FieldDecoration(
                   backgroundColor: ColorValues.neutral500,
                   hintText: 'Filter Devices',
-                  hintStyle: dmSansSmallText(size: 12, color: ColorValues.whiteColor, weight: FontWeight.w800),
+                  hintStyle: dmSansSmallText(
+                    size: 12,
+                    color: ColorValues.whiteColor,
+                    weight: FontWeight.w800,
+                  ),
                   showClearIcon: false,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -61,12 +68,21 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                    borderSide: BorderSide(
+                      color: ColorValues.iotMainColor,
+                      width: 3,
+                    ),
                   ),
                 ),
-                dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
+                dropdownDecoration: const DropdownDecoration(
+                  marginTop: 2,
+                  maxHeight: 500,
+                ),
                 dropdownItemDecoration: DropdownItemDecoration(
-                  selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+                  selectedIcon: const Icon(
+                    Icons.check_box,
+                    color: Colors.green,
+                  ),
                   disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
                   textColor: ColorValues.blackColor,
                   selectedTextColor: ColorValues.iotMainColor,
@@ -79,7 +95,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('All Devices', style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
+            Text(
+              'All Devices',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(),
+            ),
             ElevatedButton.icon(
               onPressed: () => context.push('/devices/create'),
               label: const Text('Add Device'),
@@ -87,7 +106,9 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorValues.iotMainColor,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
             ),
           ],
@@ -104,7 +125,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               return Center(
                 child: Text(
                   'No devices found. Please add a device.',
-                  style: dmSansSmallText(size: 14, color: ColorValues.whiteColor, weight: FontWeight.w700),
+                  style: dmSansSmallText(
+                    size: 14,
+                    color: ColorValues.whiteColor,
+                    weight: FontWeight.w700,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               );
@@ -119,7 +144,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     child: GestureDetector(
                       onTap: () => context.push(
                         '/devices/${device[index].serialNumber}/view',
-                        extra: {'deviceName': device[index].name, 'deviceId': device[index].id},
+                        extra: {
+                          'deviceName': device[index].name,
+                          'deviceId': device[index].id,
+                        },
                       ),
                       child: DeviceCard(
                         deviceName: device[index].name,

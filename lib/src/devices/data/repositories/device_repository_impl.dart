@@ -16,7 +16,11 @@ class DeviceRepositoryImpl implements DeviceRepository {
     required String description,
     required String serialNumber,
   }) async {
-    final request = RegisterMyDeviceRequest(name: name, description: description, serialNumber: serialNumber);
+    final request = RegisterMyDeviceRequest(
+      name: name,
+      description: description,
+      serialNumber: serialNumber,
+    );
     return api.post<bool>(
       Params<bool>(
         path: EndpointStrings.registerMyDevice,
@@ -31,7 +35,9 @@ class DeviceRepositoryImpl implements DeviceRepository {
     return api.get<List<DeviceEntity>>(
       Params<List<DeviceEntity>>(
         path: EndpointStrings.getMyDevices,
-        fromJson: (json) => (json['data'] as List).map((item) => DeviceEntity.fromJson(item)).toList(),
+        fromJson: (json) => (json['data'] as List)
+            .map((item) => DeviceEntity.fromJson(item))
+            .toList(),
       ),
     );
   }
