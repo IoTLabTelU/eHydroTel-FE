@@ -32,3 +32,26 @@ Widget alertDialog({
     ],
   );
 }
+
+Widget infoDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  String confirmText = 'OK',
+  VoidCallback? onConfirm,
+}) {
+  return AlertDialog(
+    title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+    content: Text(content, style: Theme.of(context).textTheme.bodyMedium),
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          if (onConfirm != null) onConfirm();
+        },
+        style: ElevatedButton.styleFrom(backgroundColor: ColorValues.iotMainColor),
+        child: Text(confirmText, style: dmSansNormalText(color: ColorValues.whiteColor)),
+      ),
+    ],
+  );
+}

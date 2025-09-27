@@ -16,18 +16,18 @@ class SparklinePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     final fill = Paint()
-      ..color = color.withOpacity(0.12)
+      ..color = color.withValues(alpha: 0.12)
       ..style = PaintingStyle.fill;
 
     final path = Path();
     final fillPath = Path();
 
     double dxStep = size.width / (series.length - 1);
-    double _normalize(double v) => (v - yMin) / (yMax - yMin);
+    double normalize(double v) => (v - yMin) / (yMax - yMin);
 
     for (int i = 0; i < (series.length * t).clamp(1, series.length).toInt(); i++) {
       double x = i * dxStep;
-      double norm = 1 - _normalize(series[i]).clamp(0.0, 1.0);
+      double norm = 1 - normalize(series[i]).clamp(0.0, 1.0);
       double y = norm * size.height;
       if (i == 0) {
         path.moveTo(x, y);

@@ -41,7 +41,10 @@ class _AnimatedRefreshButtonState extends State<AnimatedRefreshButton> with Sing
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: ColorValues.iotMainColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: ColorValues.iotMainColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: RotationTransition(
           turns: Tween<double>(begin: 0, end: 1).animate(_controller),
           child: Icon(Icons.refresh, color: ColorValues.iotMainColor),
