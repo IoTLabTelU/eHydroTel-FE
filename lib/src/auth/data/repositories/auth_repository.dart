@@ -45,9 +45,32 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<void> signInWithGoogle() {
-    // TODO: implement signInWithGoogle
-    throw UnimplementedError();
+  Future<Responses<AuthResponse>> signInWithGoogle({required String idToken}) {
+    return _apiClient
+        .post<AuthResponse>(
+          Params(
+            path: EndpointStrings.googleLogin,
+            fromJson: (json) => AuthResponse.fromJson(json['data']),
+            body: {'id_token': idToken},
+          ),
+        )
+        .then((response) async {
+          final data = response.data;
+          if (response.isSuccess && data != null) {
+            final tokens = data.tokens;
+            final user = data.user;
+            if (tokens == null || user == null) {
+              throw Exception('Invalid login response: tokens or user is null');
+            }
+            await Storage.writeAccessToken(tokens.accessToken);
+            await Storage.writeRefreshToken(tokens.refreshToken);
+            await Storage.setIsLoggedIn('true');
+            await Storage.writeRole(user.role);
+            return response;
+          } else {
+            throw Exception(response.message ?? AppStrings.errorMessage);
+          }
+        });
   }
 
   @override

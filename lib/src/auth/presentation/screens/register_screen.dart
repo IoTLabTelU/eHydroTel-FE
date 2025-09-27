@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/application/controllers/login_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/application/controllers/register_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
@@ -58,6 +59,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ref
           .read(registerWithPasswordControllerProvider.notifier)
           .registerWithEmailPassword(nameController.text, emailController.text, passwordController.text);
+    }
+
+    void registerWithGoogle() {
+      context.push('/login');
+      ref.read(loginWithPasswordControllerProvider.notifier).loginWithGoogle();
     }
 
     return GestureDetector(
@@ -187,9 +193,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         context: context,
                         assetName: IconAssets.googleIcon,
                         label: 'Sign Up with Google',
-                        onPressed: () {
-                          // Handle Google sign-in
-                        },
+                        onPressed: registerWithGoogle,
                       ),
                       SizedBox(height: 20.h),
                       Center(

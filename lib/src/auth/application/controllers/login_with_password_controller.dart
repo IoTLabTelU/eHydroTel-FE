@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydro_iot/src/auth/application/providers/auth_provider.dart';
 import 'package:hydro_iot/src/auth/data/model/auth_response.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,6 +26,20 @@ class LoginWithPasswordController extends _$LoginWithPasswordController {
       } else {
         throw Exception(loginResponse.message ?? 'Login failed');
       }
+    });
+  }
+
+  Future<void> loginWithGoogle() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final serverClientId = dotenv.env['GOOGLE_CLIENT_ID'];
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize(serverClientId: serverClientId);
+      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final idToken = googleAuth.idToken;
+      final loginResponse = await ref.read(authRepositoryProvider).signInWithGoogle(idToken: idToken ?? '');
+      return loginResponse.data!;
     });
   }
 }

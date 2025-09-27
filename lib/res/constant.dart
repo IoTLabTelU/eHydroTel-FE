@@ -17,6 +17,7 @@ class AppStrings {
 class EndpointStrings {
   static final baseUrl = BaseConfigs.baseUrl;
   static final login = '$baseUrl/auth/login';
+  static final googleLogin = '$baseUrl/auth/google';
   static final register = '$baseUrl/auth/register';
   static final resetPassword = '$baseUrl/auth/reset-password';
   static final userProfile = '$baseUrl/auth/profile';

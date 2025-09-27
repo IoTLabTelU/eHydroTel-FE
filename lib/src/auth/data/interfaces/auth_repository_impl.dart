@@ -8,7 +8,7 @@ abstract class AuthRepositoryInterface {
 
   Future<void> sendPasswordResetEmail({required String email});
 
-  Future<void> signInWithGoogle();
+  Future<void> signInWithGoogle({required String idToken});
 
   Future<void> signOut();
 }

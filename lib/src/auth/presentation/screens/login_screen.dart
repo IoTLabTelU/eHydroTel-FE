@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydro_iot/core/components/components.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -57,6 +58,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ref
           .read(loginWithPasswordControllerProvider.notifier)
           .loginWithEmailPassword(emailController.text, passwordController.text);
+    }
+
+    void loginWithGoogle() {
+      if (GoogleSignIn.instance.supportsAuthenticate()) {
+        ref.read(loginWithPasswordControllerProvider.notifier).loginWithGoogle();
+      } else {
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'Google Sign-In is not supported on this device.',
+        );
+      }
     }
 
     return GestureDetector(
@@ -151,9 +164,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         context: context,
                         assetName: IconAssets.googleIcon,
                         label: 'Sign In with Google',
-                        onPressed: () {
-                          // Handle Google sign-in
-                        },
+                        onPressed: loginWithGoogle,
                       ),
                       SizedBox(height: 20.h),
                       Center(
