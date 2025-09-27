@@ -7,16 +7,16 @@ import 'package:hydro_iot/src/devices/application/controllers/devices_controller
 import 'package:hydro_iot/src/devices/domain/entities/device_entity.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
-class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+class SearchDeviceScreen extends ConsumerStatefulWidget {
+  const SearchDeviceScreen({super.key});
 
-  static const String path = 'search';
+  static const String path = 'search-device';
 
   @override
-  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchDeviceScreen> createState() => _SearchDeviceScreenState();
 }
 
-class _SearchScreenState extends ConsumerState<SearchScreen> {
+class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
   final TextEditingController searchController = TextEditingController();
   List<DeviceEntity> _filteredDevices = [];
   List<DeviceEntity> _allDevices = [];
@@ -89,7 +89,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ],
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(
+        child: CircularProgressIndicator(color: ColorValues.iotMainColor),
+      ),
       error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }

@@ -7,7 +7,8 @@ import 'package:hydro_iot/src/auth/presentation/screens/register_screen.dart';
 import 'package:hydro_iot/src/common/error_screen.dart';
 import 'package:hydro_iot/src/common/home/navbar.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:hydro_iot/src/dashboard/presentation/screens/search_screen.dart';
+import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
@@ -106,11 +107,26 @@ final router = GoRouter(
               ),
               routes: [
                 GoRoute(
-                  path: '/${SearchScreen.path}',
-                  name: SearchScreen.path,
+                  path: '/${SearchDeviceScreen.path}',
+                  name: SearchDeviceScreen.path,
                   pageBuilder: (context, state) => CustomTransitionPage(
                     key: state.pageKey,
-                    child: const SearchScreen(),
+                    child: const SearchDeviceScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                  ),
+                ),
+                GoRoute(
+                  path: '/${SearchCropCycleScreen.path}',
+                  name: SearchCropCycleScreen.path,
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const SearchCropCycleScreen(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                           return FadeTransition(

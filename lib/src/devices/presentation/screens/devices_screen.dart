@@ -4,6 +4,7 @@ import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
@@ -41,7 +42,8 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           children: [
             Expanded(
               child: searchButton(
-                onPressed: () => context.push('/dashboard/search'),
+                onPressed: () =>
+                    context.push('/dashboard/${SearchDeviceScreen.path}'),
                 context: context,
               ),
             ),

@@ -30,6 +30,16 @@ class CropCycleRepositoryImpl implements CropCycleRepository {
   }
 
   @override
+  Future<CropCycleResponse> searchCropCycles(String query) async {
+    try {
+      final response = await apiService.searchCropCycles(query);
+      return response.data!;
+    } catch (e) {
+      throw Exception('Failed to search crop cycles: $e');
+    }
+  }
+
+  @override
   Future<bool> addCropCycle(SessionData cropCycleData) async {
     try {
       final response = await apiService.addCropCycle(cropCycleData);

@@ -5,6 +5,7 @@ import '../entities/crop_cycle_response.dart';
 abstract class CropCycleRepository {
   Future<CropCycleResponse> getCropCyclesForDashboard();
   Future<CropCycleResponse> getCropCyclesForDevices(String deviceId);
+  Future<CropCycleResponse> searchCropCycles(String query);
   Future<bool> addCropCycle(SessionData cropCycleData);
   Future<bool> updateCropCycle(String id, SessionData cropCycleData);
   Future<bool> deleteCropCycle(String id);

@@ -5,7 +5,9 @@ import '../../data/datasources/crop_cycle_api_service.dart';
 import '../../data/repositories/crop_cycle_repository_impl.dart';
 import '../../domain/repositories/crop_cycle_repository.dart';
 import '../../domain/usecases/get_crop_cycles_usecase.dart';
+import '../../domain/usecases/search_crop_cycles_usecase.dart';
 import '../notifiers/crop_cycle_notifier.dart';
+import '../notifiers/search_crop_cycle_notifier.dart';
 import '../state/crop_cycle_state.dart';
 
 // API Service Provider
@@ -30,4 +32,16 @@ final getCropCyclesUsecaseProvider = Provider<GetCropCyclesUsecase>((ref) {
 final cropCycleNotifierProvider = StateNotifierProvider<CropCycleNotifier, CropCycleState>((ref) {
   final usecase = ref.read(getCropCyclesUsecaseProvider);
   return CropCycleNotifier(usecase);
+});
+
+// Search Usecase Provider
+final searchCropCyclesUsecaseProvider = Provider<SearchCropCyclesUsecase>((ref) {
+  final repository = ref.read(cropCycleRepositoryProvider);
+  return SearchCropCyclesUsecase(repository);
+});
+
+// Search Notifier Provider
+final searchCropCycleNotifierProvider = StateNotifierProvider<SearchCropCycleNotifier, CropCycleState>((ref) {
+  final usecase = ref.read(searchCropCyclesUsecaseProvider);
+  return SearchCropCycleNotifier(usecase);
 });

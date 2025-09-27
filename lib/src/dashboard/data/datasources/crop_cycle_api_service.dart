@@ -56,4 +56,13 @@ class CropCycleApiService {
       ),
     );
   }
+
+  Future<Responses<CropCycleResponseModel>> searchCropCycles(String query) async {
+    return await apiClient.get<CropCycleResponseModel>(
+      Params<CropCycleResponseModel>(
+        path: '${EndpointStrings.cropcycle}?q=$query',
+        fromJson: (json) => CropCycleResponseModel.fromJson(json),
+      ),
+    );
+  }
 }
