@@ -42,7 +42,6 @@ dependencies:
   freezed_annotation: ^3.1.0
   cherry_toast: ^1.13.0
   flutter_screenutil: ^5.9.3
-  device_preview_plus: ^2.4.7
   dio: ^5.8.0+1
   flutter_svg: ^2.2.0
   fl_chart: ^1.0.0
@@ -53,6 +52,8 @@ dependencies:
   flutter_dotenv: ^6.0.0
   http: ^1.5.0
   flutter_secure_storage: ^9.2.4
+  mobile_scanner: ^7.1.2
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
