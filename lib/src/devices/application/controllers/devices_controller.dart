@@ -27,4 +27,30 @@ class DevicesController extends _$DevicesController {
     state = AsyncValue.data(res.data!);
     return res.data!;
   }
+
+  Future<void> registerDevice({required String name, required String description, required String serialNumber}) async {
+    state = const AsyncValue.loading();
+    final res = await ref
+        .read(devicesRepositoryProvider)
+        .registerDevice(name: name, description: description, serialNumber: serialNumber);
+
+    if (!res.isSuccess) {
+      state = AsyncValue.error(res.message ?? 'Failed to register device', StackTrace.current);
+      return;
+    }
+
+    // Refresh the devices list after successful registration
+    await fetchDevices();
+  }
+
+  Future<DeviceEntity?> getDeviceDetails(String deviceId) async {
+    state = const AsyncValue.loading();
+    final res = await ref.read(devicesRepositoryProvider).getDeviceDetails(deviceId);
+
+    if (!res.isSuccess) {
+      state = AsyncValue.error(res.message ?? 'Failed to fetch device details', StackTrace.current);
+      return null;
+    }
+    return res.data;
+  }
 }

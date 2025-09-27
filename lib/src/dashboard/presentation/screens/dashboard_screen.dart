@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
+import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import '../../application/providers/crop_cycle_providers.dart';
@@ -130,17 +132,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildCropCycleContent(CropCycleState state) {
     if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: FancyLoading(title: 'Loading Crop Cycles...'));
     }
 
     if (state.error != null) {
-      return Center(
-        child: ElevatedButton(
-          onPressed: () {
-            ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
-          },
-          child: const Text('Retry'),
-        ),
+      return Column(
+        children: [
+          Center(child: Text('Error: ${state.error}')),
+          const SizedBox(height: 10),
+          AnimatedRefreshButton(
+            onRefresh: () async {
+              await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+            },
+            loading: false,
+          ),
+        ],
       );
     }
 

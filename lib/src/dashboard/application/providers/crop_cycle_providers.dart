@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:hydro_iot/core/providers/provider.dart';
 import '../../data/datasources/crop_cycle_api_service.dart';
 import '../../data/repositories/crop_cycle_repository_impl.dart';
 import '../../domain/repositories/crop_cycle_repository.dart';
@@ -9,7 +10,8 @@ import '../state/crop_cycle_state.dart';
 
 // API Service Provider
 final cropCycleApiServiceProvider = Provider<CropCycleApiService>((ref) {
-  return CropCycleApiService();
+  final apiClient = ref.read(apiClientProvider);
+  return CropCycleApiService(apiClient: apiClient);
 });
 
 // Repository Provider

@@ -26,9 +26,7 @@ class ErrorScreen extends StatelessWidget {
                 ),
                 Text(
                   errorMessage ?? 'Unknown error. Please contact support.',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.bold, fontSize: 7.sp),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 7.sp),
                   textAlign: TextAlign.center,
                 ),
               ],

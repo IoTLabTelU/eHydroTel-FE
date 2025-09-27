@@ -5,7 +5,7 @@ Widget buildAddDeviceSummaryWidget({
   required BuildContext context,
   required String deviceName,
   required String deviceDescription,
-  required String deviceId,
+  required String serialNumber,
 }) {
   return ListView(
     children: [
@@ -34,10 +34,7 @@ Widget buildAddDeviceSummaryWidget({
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Text(
-                  '\r$deviceName',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.blackColor),
-                ),
+                child: Text('\r$deviceName\r', style: Theme.of(context).textTheme.bodyLarge),
               ),
             ],
           ),
@@ -55,10 +52,7 @@ Widget buildAddDeviceSummaryWidget({
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Text(
-                  '\r$deviceId',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.blackColor),
-                ),
+                child: Text('\r$serialNumber\r', style: Theme.of(context).textTheme.bodyLarge),
               ),
             ],
           ),
@@ -76,10 +70,7 @@ Widget buildAddDeviceSummaryWidget({
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Text(
-                  '\r$deviceDescription',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.blackColor),
-                ),
+                child: Text('\r$deviceDescription\r', style: Theme.of(context).textTheme.bodyLarge),
               ),
             ],
           ),

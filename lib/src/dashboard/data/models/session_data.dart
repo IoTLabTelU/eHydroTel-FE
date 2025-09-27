@@ -1,21 +1,20 @@
-class SessionData {
-  final String deviceName;
-  final String plantName;
-  final DateTime startDate;
-  final int totalDays;
-  final double minPh;
-  final double maxPh;
-  final int minPpm;
-  final int maxPpm;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  SessionData({
-    required this.deviceName,
-    required this.plantName,
-    required this.startDate,
-    required this.totalDays,
-    required this.minPh,
-    required this.maxPh,
-    required this.minPpm,
-    required this.maxPpm,
-  });
+part 'session_data.freezed.dart';
+part 'session_data.g.dart';
+
+@freezed
+sealed class SessionData with _$SessionData {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory SessionData({
+    required String deviceId,
+    required String plantId,
+    required String name,
+    required double phMin,
+    required double phMax,
+    required int ppmMin,
+    required int ppmMax,
+  }) = _SessionData;
+
+  factory SessionData.fromJson(Map<String, dynamic> json) => _$SessionDataFromJson(json);
 }

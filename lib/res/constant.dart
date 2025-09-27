@@ -24,6 +24,10 @@ class EndpointStrings {
   static final devices = '$baseUrl/devices';
   static final getMyDevices = '$devices/me';
   static final registerMyDevice = '$devices/register';
+  static final plants = '$baseUrl/plants';
+  static final cropcycle = '$baseUrl/crop-cycle';
+  static final cropcycleByUser = '$cropcycle/user';
+  static final cropcycleByDevice = '$cropcycle/device';
 }
 
 enum DeviceStatus { active, idle, critical }

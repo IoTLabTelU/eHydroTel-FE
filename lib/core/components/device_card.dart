@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/utils/utils.dart';
+// import 'package:hydro_iot/utils/utils.dart';
 import 'package:intl/intl.dart';
 
 class DeviceCard extends StatelessWidget {
   final String deviceName;
-  final String deviceId;
+  final String serialNumber;
   final bool isOnline;
   final String ssid;
   final DateTime createdAt;
   final DateTime lastUpdated;
-  final VoidCallback onTapDetail;
   final VoidCallback onTapSetting;
   final VoidCallback onTapPower;
 
   const DeviceCard({
     super.key,
     required this.deviceName,
-    required this.deviceId,
+    required this.serialNumber,
     required this.isOnline,
     required this.ssid,
     required this.lastUpdated,
-    required this.onTapDetail,
     required this.onTapSetting,
     required this.onTapPower,
     required this.createdAt,
@@ -63,7 +61,7 @@ class DeviceCard extends StatelessWidget {
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Serial: $deviceId', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
+              child: Text('Serial: $serialNumber', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
             ),
             const SizedBox(height: 12),
 
@@ -112,7 +110,7 @@ class DeviceCard extends StatelessWidget {
                     textStyle: dmSansNormalText(weight: FontWeight.w700),
                   ),
                 ),
-                _buildPowerButton(context, onTapPower, isOnline),
+                // _buildPowerButton(context, onTapPower, isOnline),
               ],
             ),
           ],
@@ -137,31 +135,31 @@ class DeviceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPowerButton(BuildContext context, VoidCallback onPressed, bool isOn) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: widthQuery(context) * 0.1),
-        child: AnimatedContainer(
-          padding: EdgeInsets.all(6.r),
-          height: 50.h,
-          duration: const Duration(milliseconds: 100),
-          decoration: BoxDecoration(
-            color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: isOn
-                    ? ColorValues.iotMainColor.withValues(alpha: 0.6)
-                    : ColorValues.neutral500.withValues(alpha: 0.6),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(Icons.power_settings_new, color: isOn ? ColorValues.whiteColor : ColorValues.neutral100, size: 30.r),
-        ),
-      ),
-    );
-  }
+  // Widget _buildPowerButton(BuildContext context, VoidCallback onPressed, bool isOn) {
+  //   return GestureDetector(
+  //     onTap: onPressed,
+  //     child: Padding(
+  //       padding: EdgeInsets.symmetric(horizontal: widthQuery(context) * 0.1),
+  //       child: AnimatedContainer(
+  //         padding: EdgeInsets.all(6.r),
+  //         height: 50.h,
+  //         duration: const Duration(milliseconds: 100),
+  //         decoration: BoxDecoration(
+  //           color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500,
+  //           shape: BoxShape.circle,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: isOn
+  //                   ? ColorValues.iotMainColor.withValues(alpha: 0.6)
+  //                   : ColorValues.neutral500.withValues(alpha: 0.6),
+  //               blurRadius: 8,
+  //               offset: const Offset(0, 4),
+  //             ),
+  //           ],
+  //         ),
+  //         child: Icon(Icons.power_settings_new, color: isOn ? ColorValues.whiteColor : ColorValues.neutral100, size: 30.r),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

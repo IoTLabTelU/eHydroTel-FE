@@ -14,9 +14,11 @@ import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/history/sensor_history_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_session_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/add_device/serial_number_scanner_screen.dart';
 import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -140,18 +142,38 @@ final router = GoRouter(
                       return FadeTransition(opacity: animation, child: child);
                     },
                   ),
+                  routes: [
+                    GoRoute(
+                      path: '/${SerialNumberScannerScreen.path}',
+                      name: SerialNumberScannerScreen.path,
+                      pageBuilder: (context, state) {
+                        final extra = state.extra as Map<String, dynamic>?;
+
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: SerialNumberScannerScreen(
+                            barcode: extra?['barcode'] as Barcode?,
+                            onDetect: extra?['onDetect'] as Function(BarcodeCapture)?,
+                          ),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(opacity: animation, child: child);
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
 
                 GoRoute(
-                  path: '/:deviceId',
+                  path: '/:serialNumber',
                   name: 'deviceDetail',
                   pageBuilder: (context, state) {
-                    final deviceId = state.pathParameters['deviceId']!;
+                    final serialNumber = state.pathParameters['serialNumber']!;
                     final extra = state.extra as Map<String, dynamic>;
                     return CustomTransitionPage(
                       key: state.pageKey,
                       child: DetailDeviceScreen(
-                        deviceId: deviceId,
+                        deviceId: serialNumber,
                         deviceName: extra['deviceName'] as String,
                         pH: extra['pH'] as double,
                         ppm: extra['ppm'] as int,
@@ -167,12 +189,12 @@ final router = GoRouter(
                       path: '/${SettingDeviceScreen.path}',
                       name: SettingDeviceScreen.path,
                       pageBuilder: (context, state) {
-                        final deviceId = state.pathParameters['deviceId']!;
+                        final serialNumber = state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
                           child: SettingDeviceScreen(
-                            deviceId: deviceId,
+                            deviceId: serialNumber,
                             deviceName: extra['deviceName'] as String,
                             deviceDescription: extra['deviceDescription'] as String,
                             ssid: extra['ssid'] as String,
@@ -187,13 +209,14 @@ final router = GoRouter(
                       path: '/${ViewAllPlantSessionScreen.path}',
                       name: ViewAllPlantSessionScreen.path,
                       pageBuilder: (context, state) {
-                        final deviceId = state.pathParameters['deviceId']!;
+                        final serialNumber = state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
                           child: ViewAllPlantSessionScreen(
+                            deviceId: extra['deviceId'] as String,
                             deviceName: extra['deviceName'] as String,
-                            serialNumber: deviceId,
+                            serialNumber: serialNumber,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);
@@ -205,11 +228,11 @@ final router = GoRouter(
                       path: '/${SensorHistoryScreen.path}',
                       name: SensorHistoryScreen.path,
                       pageBuilder: (context, state) {
-                        final deviceId = state.pathParameters['deviceId']!;
+                        final serialNumber = state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
-                          child: SensorHistoryScreen(deviceId: deviceId, deviceName: extra['deviceName'] as String),
+                          child: SensorHistoryScreen(deviceId: serialNumber, deviceName: extra['deviceName'] as String),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);
                           },
@@ -261,23 +284,28 @@ final router = GoRouter(
   redirect: (context, state) async {
     final isLoggedIn = await Storage.readIsLoggedIn();
     final role = await Storage.readRole();
+    print('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
+    final publicPaths = [
+      '/',
+      '/${LandingScreen.path}',
+      '/${LoginScreen.path}',
+      '/${RegisterScreen.path}',
+      '/${ChangePasswordScreen.path}',
+      '/${ForgotPasswordScreen.path}',
+    ];
+
     if (isLoggedIn == null) {
       return '/${LandingScreen.path}';
     }
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !publicPaths.contains(state.matchedLocation)) {
       return '/${LoginScreen.path}';
     }
-
-    if (role != 'CUSTOMER') {
+    if (isLoggedIn && publicPaths.contains(state.matchedLocation)) {
+      return '/${DashboardScreen.path}';
+    }
+    if (role != 'CUSTOMER' && isLoggedIn) {
       if (context.mounted) Toast().showErrorToast(context: context, title: 'Error', description: 'Account not supported');
       return '/${LoginScreen.path}';
-    }
-
-    final loggingIn = state.matchedLocation == '/${LoginScreen.path}';
-    final landing = state.matchedLocation == '/${LandingScreen.path}';
-
-    if ((loggingIn || landing) && isLoggedIn) {
-      return '/${DashboardScreen.path}';
     }
     return null;
   },

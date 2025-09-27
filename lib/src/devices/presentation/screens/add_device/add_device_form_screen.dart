@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class AddDeviceFormScreen extends StatefulWidget {
   const AddDeviceFormScreen({
@@ -27,6 +28,47 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
   TextEditingController get _deviceNameController => widget.deviceNameController;
   TextEditingController get _deviceDescriptionController => widget.deviceDescriptionController;
   TextEditingController get _deviceIdController => widget.deviceIdController;
+
+  Barcode? _barcode;
+
+  void _handleBarcode(BarcodeCapture barcodes) async {
+    if (mounted) {
+      _barcode = barcodes.barcodes.first;
+      final displayValue = _barcode?.displayValue;
+      if (displayValue == null) {
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'No display value found in the scanned barcode.',
+        );
+        context.pop();
+        return;
+      }
+      if (!displayValue.contains('EHT-')) {
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'Invalid barcode. Please scan a valid device serial number barcode.',
+        );
+        context.pop();
+        return;
+      }
+      setState(() {
+        _deviceIdController.text = displayValue;
+      });
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return infoDialog(
+            context: context,
+            title: 'Scanned!',
+            content: 'Serial Number: $displayValue',
+            onConfirm: () => context.pop(),
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +104,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                 },
                 suffixIcon: InkWell(
                   onTap: () {
-                    // Handle QR code scanner tap
-                    // This could be a function that opens a QR code scanner
-                    // For example, you might use a package like ai_barcode_scanner
-                    // to scan a QR code and retrieve the device ID.
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => QRCodeScannerScreen()));
+                    context.push('/devices/create/scan', extra: {'barcode': _barcode, 'onDetect': _handleBarcode});
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8.0),

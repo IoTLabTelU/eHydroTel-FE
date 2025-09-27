@@ -162,7 +162,10 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> with SingleTick
           child: AnimatedContainer(
             height: 50.h,
             duration: const Duration(milliseconds: 100),
-            decoration: BoxDecoration(color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500,
+              shape: BoxShape.circle,
+            ),
             child: Icon(Icons.power_settings_new, color: isOn ? ColorValues.whiteColor : ColorValues.neutral100, size: 30.r),
           ),
         ),
@@ -181,7 +184,7 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> with SingleTick
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.online_prediction_outlined, color: Colors.black54, size: 65),
+          const Icon(Icons.online_prediction_outlined, color: Colors.black54, size: 65),
           const SizedBox(height: 8),
           Text(
             isOn ? 'Online' : 'Offline',
@@ -205,7 +208,7 @@ class _DetailDeviceScreenState extends State<DetailDeviceScreen> with SingleTick
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.cable_outlined, color: Colors.black54, size: 65),
+          const Icon(Icons.cable_outlined, color: Colors.black54, size: 65),
           const SizedBox(height: 8),
           Text(
             deviceDescription!,

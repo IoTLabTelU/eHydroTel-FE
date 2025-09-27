@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/components.dart';
+import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_for_devices_controller.dart';
+import 'package:hydro_iot/src/dashboard/domain/entities/crop_cycle_entity.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
+import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
-class ViewAllPlantSessionScreen extends StatefulWidget {
+class ViewAllPlantSessionScreen extends ConsumerStatefulWidget {
+  final String deviceId;
   final String deviceName;
   final String serialNumber;
 
-  const ViewAllPlantSessionScreen({super.key, required this.deviceName, required this.serialNumber});
+  const ViewAllPlantSessionScreen({super.key, required this.deviceId, required this.deviceName, required this.serialNumber});
 
   static const String path = 'view';
 
   @override
-  State<ViewAllPlantSessionScreen> createState() => _ViewAllPlantSessionScreenState();
+  ConsumerState<ViewAllPlantSessionScreen> createState() => _ViewAllPlantSessionScreenState();
 }
 
-class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
+class _ViewAllPlantSessionScreenState extends ConsumerState<ViewAllPlantSessionScreen> {
   bool isStopped = false;
   @override
   Widget build(BuildContext context) {
+    final cropCycles = ref.watch(cropCycleForDevicesControllerProvider(widget.deviceId));
+
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       children: [
@@ -27,7 +36,18 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
           children: [
             Text('All Sessions', style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
+                  useRootNavigator: true,
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: SessionModal(onSessionAdded: (p0) {}),
+                  ),
+                );
+              },
               label: const Text('Add Session'),
               icon: const Icon(Icons.add),
               style: ElevatedButton.styleFrom(
@@ -47,62 +67,82 @@ class _ViewAllPlantSessionScreenState extends State<ViewAllPlantSessionScreen> {
         ),
         // Add your device list or other widgets here
         const SizedBox(height: 10),
-        ...List.generate(2, (index) {
+        cropCycles.when(
+          data: (data) => _buildCropCycleContent(data),
+          loading: () => const Center(child: FancyLoading(title: 'Loading Crop Cycles...')),
+          error: (error, stackTrace) => Column(
+            children: [
+              Center(child: Text('Error: $error')),
+              const SizedBox(height: 10),
+              AnimatedRefreshButton(
+                onRefresh: () => ref.refresh(cropCycleForDevicesControllerProvider(widget.deviceId).future),
+                loading: false,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCropCycleContent(List<CropCycle>? data) {
+    if (data != null && data.isNotEmpty) {
+      return Column(
+        children: data.map((cropCycle) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
+            padding: const EdgeInsets.only(bottom: 16.0),
             child: PlantSessionCard(
-              deviceName: 'Meja ${index + 1}',
               onDashboard: false,
-              plantName: 'Lettuce',
-              startDate: DateTime.utc(2025, 9, 2),
-              totalDays: 20,
-              minPh: 5.6,
-              maxPh: 6.6,
-              minPpm: 500,
-              maxPpm: 750,
+              deviceName: cropCycle.device.name,
+              plantName: cropCycle.plant.name,
+              startDate: cropCycle.startedAt,
+              totalDays: DateTime.now().difference(cropCycle.startedAt).inDays,
+              minPh: cropCycle.phMin,
+              maxPh: cropCycle.phMax,
+              minPpm: cropCycle.ppmMin.toDouble(),
+              maxPpm: cropCycle.ppmMax.toDouble(),
               onHistoryTap: () => context.push(
-                '/devices/HWTX88${index + 1}/history',
+                '/devices/${cropCycle.device.serialNumber}/history',
                 extra: {
-                  'deviceName': 'Meja ${index + 1}',
-                  'pH': 10.0,
-                  'ppm': 850,
-                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                  'deviceName': cropCycle.device.name,
+                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
+                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
               onStopSession: () {
                 showAdaptiveDialog(
+                  barrierDismissible: true,
                   context: context,
                   builder: (context) {
                     return alertDialog(
                       context: context,
                       title: 'Stop Session',
                       content: 'Are you sure you want to stop this session?',
-                      onConfirm: () => setState(() {
-                        isStopped = true;
-                      }),
+                      onConfirm: () {
+                        Navigator.of(context).pop();
+                      },
                     );
                   },
                 );
               },
               onTap: () => context.push(
-                '/devices/HWTX88${index + 1}',
+                '/devices/${cropCycle.device.serialNumber}',
                 extra: {
-                  'deviceName': 'Meja ${index + 1}',
-                  'pH': 10.0,
-                  'ppm': 850,
-                  'deviceDescription': 'This is the Description of Meja ${index + 1}',
+                  'deviceName': cropCycle.device.name,
+                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
+                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
-              isStopped: isStopped,
-              onRestartSession: () {
-                setState(() {
-                  isStopped = false;
-                });
-              },
+              isStopped: !cropCycle.active,
+              onRestartSession: () {},
             ),
           );
-        }),
-      ],
-    );
+        }).toList(),
+      );
+    }
+
+    return const Center(child: Text('No Data'));
   }
 }

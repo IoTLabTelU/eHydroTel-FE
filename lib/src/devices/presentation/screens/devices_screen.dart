@@ -110,33 +110,26 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               );
             }
             return SizedBox(
-              height: heightQuery(context),
+              height: heightQuery(context) * 0.65,
               child: ListView.builder(
                 itemCount: device.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.h),
                     child: GestureDetector(
-                      onTap: () =>
-                          context.push('/devices/${device[index].id}/view', extra: {'deviceName': device[index].name}),
+                      onTap: () => context.push(
+                        '/devices/${device[index].serialNumber}/view',
+                        extra: {'deviceName': device[index].name, 'deviceId': device[index].id},
+                      ),
                       child: DeviceCard(
                         deviceName: device[index].name,
-                        deviceId: device[index].id,
+                        serialNumber: device[index].serialNumber,
                         isOnline: isOnList[index],
                         ssid: device[index].ssid ?? 'Unknown SSID',
                         createdAt: device[index].createdAt,
                         lastUpdated: device[index].updatedAt,
-                        onTapDetail: () => context.push(
-                          '/devices/${device[index].id}/view',
-                          extra: {
-                            'deviceName': device[index].name,
-                            'pH': 10.0,
-                            'ppm': 850,
-                            'deviceDescription': device[index].description,
-                          },
-                        ),
                         onTapSetting: () => context.push(
-                          '/devices/${device[index].id}/settings',
+                          '/devices/${device[index].serialNumber}/settings',
                           extra: {
                             'deviceName': device[index].name,
                             'deviceDescription': device[index].description,
