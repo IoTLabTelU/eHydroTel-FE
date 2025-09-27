@@ -99,9 +99,10 @@ final router = GoRouter(
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const DashboardScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
               ),
               routes: [
                 GoRoute(
@@ -110,9 +111,13 @@ final router = GoRouter(
                   pageBuilder: (context, state) => CustomTransitionPage(
                     key: state.pageKey,
                     child: const SearchScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
                   ),
                 ),
               ],
@@ -127,9 +132,10 @@ final router = GoRouter(
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const DevicesScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
               ),
               routes: [
                 GoRoute(
@@ -138,9 +144,13 @@ final router = GoRouter(
                   pageBuilder: (context, state) => CustomTransitionPage(
                     key: state.pageKey,
                     child: const AddDeviceScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
                   ),
                   routes: [
                     GoRoute(
@@ -153,11 +163,16 @@ final router = GoRouter(
                           key: state.pageKey,
                           child: SerialNumberScannerScreen(
                             barcode: extra?['barcode'] as Barcode?,
-                            onDetect: extra?['onDetect'] as Function(BarcodeCapture)?,
+                            onDetect:
+                                extra?['onDetect'] as Function(BarcodeCapture)?,
                           ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                         );
                       },
                     ),
@@ -176,12 +191,17 @@ final router = GoRouter(
                         deviceId: serialNumber,
                         deviceName: extra['deviceName'] as String,
                         pH: extra['pH'] as double,
-                        ppm: extra['ppm'] as int,
-                        deviceDescription: extra['deviceDescription'] as String?,
+                        ppm: (extra['ppm'] as double).toInt(),
+                        deviceDescription:
+                            extra['deviceDescription'] as String?,
                       ),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
                     );
                   },
                   routes: [
@@ -189,19 +209,25 @@ final router = GoRouter(
                       path: '/${SettingDeviceScreen.path}',
                       name: SettingDeviceScreen.path,
                       pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
+                        final serialNumber =
+                            state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
                           child: SettingDeviceScreen(
                             deviceId: serialNumber,
                             deviceName: extra['deviceName'] as String,
-                            deviceDescription: extra['deviceDescription'] as String,
+                            deviceDescription:
+                                extra['deviceDescription'] as String,
                             ssid: extra['ssid'] as String,
                           ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                         );
                       },
                     ),
@@ -209,7 +235,8 @@ final router = GoRouter(
                       path: '/${ViewAllPlantSessionScreen.path}',
                       name: ViewAllPlantSessionScreen.path,
                       pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
+                        final serialNumber =
+                            state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
@@ -218,9 +245,13 @@ final router = GoRouter(
                             deviceName: extra['deviceName'] as String,
                             serialNumber: serialNumber,
                           ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                         );
                       },
                     ),
@@ -228,14 +259,22 @@ final router = GoRouter(
                       path: '/${SensorHistoryScreen.path}',
                       name: SensorHistoryScreen.path,
                       pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
+                        final serialNumber =
+                            state.pathParameters['serialNumber']!;
                         final extra = state.extra as Map<String, dynamic>;
                         return CustomTransitionPage(
                           key: state.pageKey,
-                          child: SensorHistoryScreen(deviceId: serialNumber, deviceName: extra['deviceName'] as String),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
+                          child: SensorHistoryScreen(
+                            deviceId: serialNumber,
+                            deviceName: extra['deviceName'] as String,
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                         );
                       },
                     ),
@@ -253,9 +292,10 @@ final router = GoRouter(
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const NotificationCenterScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
               ),
             ),
           ],
@@ -268,9 +308,10 @@ final router = GoRouter(
               pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const ProfileScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
               ),
             ),
           ],
@@ -280,11 +321,14 @@ final router = GoRouter(
   ],
   observers: [routeObserver],
   debugLogDiagnostics: true,
-  errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
+  errorBuilder: (context, state) =>
+      ErrorScreen(errorMessage: state.error!.message),
   redirect: (context, state) async {
     final isLoggedIn = await Storage.readIsLoggedIn();
     final role = await Storage.readRole();
-    print('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
+    print(
+      'isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}',
+    );
     final publicPaths = [
       '/',
       '/${LandingScreen.path}',
@@ -304,7 +348,12 @@ final router = GoRouter(
       return '/${DashboardScreen.path}';
     }
     if (role != 'CUSTOMER' && isLoggedIn) {
-      if (context.mounted) Toast().showErrorToast(context: context, title: 'Error', description: 'Account not supported');
+      if (context.mounted)
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'Account not supported',
+        );
       return '/${LoginScreen.path}';
     }
     return null;
@@ -312,4 +361,5 @@ final router = GoRouter(
 );
 
 /// Route observer to use with RouteAware
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();

@@ -11,7 +11,13 @@ class Params<T> {
   final Map<String, dynamic>? queryParameters;
   final Options? options;
 
-  Params({required this.path, required this.fromJson, this.queryParameters, this.body, this.options});
+  Params({
+    required this.path,
+    required this.fromJson,
+    this.queryParameters,
+    this.body,
+    this.options,
+  });
 }
 
 class Responses<T> {
@@ -25,7 +31,14 @@ class Responses<T> {
   bool get isSuccess => statusCode == 200 || statusCode == 201;
 }
 
-enum ResponseStatus { normal, waiting, success, connectionError, serverError, notFound }
+enum ResponseStatus {
+  normal,
+  waiting,
+  success,
+  connectionError,
+  serverError,
+  notFound,
+}
 
 class ApiClient {
   final Dio _dio = Dio();
@@ -34,23 +47,40 @@ class ApiClient {
     _dio.interceptors.add(DioInterceptor(_dio));
   }
 
-  Future<Responses<T>> _responseHandler<T>(Response response, Params<T> param) async {
+  Future<Responses<T>> _responseHandler<T>(
+    Response response,
+    Params<T> param,
+  ) async {
     final int statusCode = response.statusCode ?? 0;
 
     try {
-      final jsonBody = response.data is String ? json.decode(response.data) : response.data;
+      final jsonBody = response.data is String
+          ? json.decode(response.data)
+          : response.data;
 
       final dataField = jsonBody['data'];
       final messageField = jsonBody['message'];
 
       if (dataField == null) {
-        return Responses<T>(data: null, statusCode: statusCode, message: messageField);
+        return Responses<T>(
+          data: null,
+          statusCode: statusCode,
+          message: messageField,
+        );
       }
 
       final T data = param.fromJson(jsonBody);
-      return Responses<T>(data: data, statusCode: statusCode, message: messageField);
+      return Responses<T>(
+        data: data,
+        statusCode: statusCode,
+        message: messageField,
+      );
     } catch (e) {
-      return Responses<T>(data: null, statusCode: statusCode, message: AppStrings.serverErrorMessage);
+      return Responses<T>(
+        data: null,
+        statusCode: statusCode,
+        message: AppStrings.serverErrorMessage,
+      );
     }
   }
 
@@ -63,9 +93,15 @@ class ApiClient {
 
         if (responseData is String) {
           final decoded = json.decode(responseData);
-          errorMessage = decoded['message'] ?? decoded['message'] ?? AppStrings.errorMessage;
+          errorMessage =
+              decoded['message'] ??
+              decoded['message'] ??
+              AppStrings.errorMessage;
         } else if (responseData is Map<String, dynamic>) {
-          errorMessage = responseData['message'] ?? responseData['message'] ?? AppStrings.errorMessage;
+          errorMessage =
+              responseData['message'] ??
+              responseData['message'] ??
+              AppStrings.errorMessage;
         }
       } else {
         errorMessage = ResponseStatus.connectionError;
@@ -77,10 +113,18 @@ class ApiClient {
     final statusCode = e.response?.statusCode;
 
     if (statusCode != null && statusCode >= 500) {
-      return Responses<T>(data: null, statusCode: statusCode, message: ResponseStatus.serverError);
+      return Responses<T>(
+        data: null,
+        statusCode: statusCode,
+        message: ResponseStatus.serverError,
+      );
     }
 
-    return Responses<T>(data: null, statusCode: statusCode, message: errorMessage);
+    return Responses<T>(
+      data: null,
+      statusCode: statusCode,
+      message: errorMessage,
+    );
   }
 
   Future<Responses<T>> get<T>(Params<T> param) async {

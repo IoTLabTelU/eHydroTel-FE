@@ -36,7 +36,9 @@ class CropCycleApiService {
     );
   }
 
-  Future<Responses<CropCycleResponseModel>> getCropCyclesForDevices(String deviceId) async {
+  Future<Responses<CropCycleResponseModel>> getCropCyclesForDevices(
+    String deviceId,
+  ) async {
     return await apiClient.get<CropCycleResponseModel>(
       Params<CropCycleResponseModel>(
         path: '${EndpointStrings.cropcycleByDevice}/$deviceId',
@@ -47,7 +49,11 @@ class CropCycleApiService {
 
   Future<Responses<bool>> addCropCycle(SessionData sessionData) async {
     return await apiClient.post<bool>(
-      Params<bool>(path: EndpointStrings.cropcycle, fromJson: (json) => json as bool, body: sessionData.toJson()),
+      Params<bool>(
+        path: EndpointStrings.cropcycle,
+        fromJson: (json) => json as bool,
+        body: sessionData.toJson(),
+      ),
     );
   }
 }

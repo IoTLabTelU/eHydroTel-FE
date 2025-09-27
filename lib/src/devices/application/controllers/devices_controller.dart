@@ -17,7 +17,10 @@ class DevicesController extends _$DevicesController {
     final res = await ref.read(devicesRepositoryProvider).getMyDevices();
 
     if (!res.isSuccess) {
-      state = AsyncValue.error(res.message ?? 'Failed to fetch devices', StackTrace.current);
+      state = AsyncValue.error(
+        res.message ?? 'Failed to fetch devices',
+        StackTrace.current,
+      );
       return [];
     }
     if (res.data == null) {
@@ -28,14 +31,25 @@ class DevicesController extends _$DevicesController {
     return res.data!;
   }
 
-  Future<void> registerDevice({required String name, required String description, required String serialNumber}) async {
+  Future<void> registerDevice({
+    required String name,
+    required String description,
+    required String serialNumber,
+  }) async {
     state = const AsyncValue.loading();
     final res = await ref
         .read(devicesRepositoryProvider)
-        .registerDevice(name: name, description: description, serialNumber: serialNumber);
+        .registerDevice(
+          name: name,
+          description: description,
+          serialNumber: serialNumber,
+        );
 
     if (!res.isSuccess) {
-      state = AsyncValue.error(res.message ?? 'Failed to register device', StackTrace.current);
+      state = AsyncValue.error(
+        res.message ?? 'Failed to register device',
+        StackTrace.current,
+      );
       return;
     }
 
@@ -45,10 +59,15 @@ class DevicesController extends _$DevicesController {
 
   Future<DeviceEntity?> getDeviceDetails(String deviceId) async {
     state = const AsyncValue.loading();
-    final res = await ref.read(devicesRepositoryProvider).getDeviceDetails(deviceId);
+    final res = await ref
+        .read(devicesRepositoryProvider)
+        .getDeviceDetails(deviceId);
 
     if (!res.isSuccess) {
-      state = AsyncValue.error(res.message ?? 'Failed to fetch device details', StackTrace.current);
+      state = AsyncValue.error(
+        res.message ?? 'Failed to fetch device details',
+        StackTrace.current,
+      );
       return null;
     }
     return res.data;

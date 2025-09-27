@@ -23,7 +23,7 @@ class _AppState extends ConsumerState<App> {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           theme: AppThemeData.getTheme(),
-          darkTheme: AppThemeData.getDarkTheme(),
+          // darkTheme: AppThemeData.getDarkTheme(),
           themeMode: ref.watch(themeProvider).themeMode,
           themeAnimationCurve: Easing.emphasizedAccelerate,
           themeAnimationDuration: const Duration(milliseconds: 500),
