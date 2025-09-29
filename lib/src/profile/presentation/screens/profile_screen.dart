@@ -20,16 +20,24 @@ class ProfileScreen extends ConsumerWidget {
     ref.listen(authControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
-          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
+          final errorMessage = (err as Exception).toString().replaceAll(
+            'Exception: ',
+            '',
+          );
           if (context.mounted) {
             context.pop();
-            Toast().showErrorToast(context: context, title: 'Error', description: errorMessage);
+            Toast().showErrorToast(
+              context: context,
+              title: 'Error',
+              description: errorMessage,
+            );
           }
         },
         loading: () async => await showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const FancyLoadingDialog(title: 'Logging you out...'),
+          builder: (context) =>
+              const FancyLoadingDialog(title: 'Logging you out...'),
         ),
         data: (u) {
           if (u == null && context.mounted) {
@@ -53,18 +61,21 @@ class ProfileScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30.h),
-              Row(
-                children: [
-                  Text('Profile Settings', style: dmSansHeadText()),
-                  SizedBox(width: 5.w),
-                  const Expanded(child: Divider(color: Colors.black)),
-                ],
-              ),
+              SizedBox(height: 10.h),
+              // Row(
+              //   children: [
+              //     Text('Profile Settings', style: dmSansHeadText()),
+              //     SizedBox(width: 5.w),
+              //     const Expanded(child: Divider(color: Colors.black)),
+              //   ],
+              // ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10.h),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -84,23 +95,30 @@ class ProfileScreen extends ConsumerWidget {
               ),
 
               ///LOGOUT (FIXED)
-              Row(
-                children: [
-                  Text('Logout', style: dmSansHeadText()),
-                  SizedBox(width: 5.w),
-                  const Expanded(child: Divider(color: Colors.black)),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Text('Logout', style: dmSansHeadText()),
+              //     SizedBox(width: 5.w),
+              //     const Expanded(child: Divider(color: Colors.black)),
+              //   ],
+              // ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10.h),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: ColorValues.neutral300.withAlpha(150),
                 ),
-                child: ProfileItemWidget(title: 'Logout', onTap: logout, icon: IconAssets.logout),
+                child: ProfileItemWidget(
+                  title: 'Logout',
+                  onTap: logout,
+                  icon: IconAssets.logout,
+                ),
               ),
             ],
           ),
