@@ -34,22 +34,28 @@ class _SessionModalState extends ConsumerState<SessionModal> {
 
   void _saveDevice() {
     if (_nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter session name')),
+      Toast().showErrorToast(
+        context: context,
+        title: 'Error',
+        description: 'Please enter session name',
       );
       return;
     }
 
     if (devicesController.selectedItems.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a device')));
+      Toast().showErrorToast(
+        context: context,
+        title: 'Error',
+        description: 'Please select a device',
+      );
       return;
     }
 
     if (plantsController.selectedItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a plant type')),
+      Toast().showErrorToast(
+        context: context,
+        title: 'Error',
+        description: 'Please select a plant type',
       );
       return;
     }
@@ -59,8 +65,8 @@ class _SessionModalState extends ConsumerState<SessionModal> {
     String plantId = plantsController.selectedItems.first.value.id;
     double minPH = _phRange.start;
     double maxPH = _phRange.end;
-    int minPPM = _ppmRange.start.round();
-    int maxPPM = _ppmRange.end.round();
+    double minPPM = _ppmRange.start;
+    double maxPPM = _ppmRange.end;
 
     SessionData newSession = SessionData(
       deviceId: deviceId,
@@ -70,6 +76,7 @@ class _SessionModalState extends ConsumerState<SessionModal> {
       phMax: maxPH,
       ppmMin: minPPM,
       ppmMax: maxPPM,
+      expectedEnd: 30,
     );
 
     ref
@@ -127,8 +134,9 @@ class _SessionModalState extends ConsumerState<SessionModal> {
             name: _nameController.text,
             phMin: _phRange.start,
             phMax: _phRange.end,
-            ppmMin: _ppmRange.start.round(),
-            ppmMax: _ppmRange.end.round(),
+            ppmMin: _ppmRange.start,
+            ppmMax: _ppmRange.end,
+            expectedEnd: 30,
           );
           widget.onSessionAdded(sessionData);
           context.pop();
@@ -260,7 +268,6 @@ class _SessionModalState extends ConsumerState<SessionModal> {
               //plant Selection Dropdown
               plantTypes.when(
                 data: (data) {
-                  print('Plant Types: ${data}');
                   return MultiDropdown<PlantEntity>(
                     items: data
                         .map(

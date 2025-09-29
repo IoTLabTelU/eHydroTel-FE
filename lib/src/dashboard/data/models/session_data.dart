@@ -12,9 +12,11 @@ sealed class SessionData with _$SessionData {
     required String name,
     required double phMin,
     required double phMax,
-    required int ppmMin,
-    required int ppmMax,
+    required double ppmMin,
+    required double ppmMax,
+    required int expectedEnd,
   }) = _SessionData;
 
-  factory SessionData.fromJson(Map<String, dynamic> json) => _$SessionDataFromJson(json);
+  factory SessionData.fromJson(Map<String, dynamic> json) =>
+      _$SessionDataFromJson(json);
 }
