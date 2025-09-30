@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/login_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/application/controllers/register_with_password_controller.dart';
@@ -24,27 +25,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     ref.listen<AsyncValue<bool>>(registerWithPasswordControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: 'Error', description: err.toString());
+            Toast().showErrorToast(context: context, title: local.error, description: err.toString());
           }
         },
         loading: () {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => const FancyLoadingDialog(title: 'Creating your account...'),
+            builder: (context) => FancyLoadingDialog(title: local.creatingYourAccount),
           );
         },
         data: (response) {
           if (response && context.mounted) {
-            Toast().showSuccessToast(
-              context: context,
-              title: 'Success',
-              description: 'Registration successful, please login.',
-            );
+            Toast().showSuccessToast(context: context, title: local.success, description: local.registrationSuccessful);
             context.pushReplacement('/login');
           }
         },
@@ -53,7 +51,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     void register() {
       if (nameController.text.isEmpty || emailController.text.isEmpty || passwordController.text.isEmpty) {
-        Toast().showErrorToast(context: context, title: 'Please fill in all fields');
+        Toast().showErrorToast(context: context, title: local.fillAllFields);
         return;
       }
       ref
@@ -83,14 +81,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'SIGN UP',
+                        local.registerTitle,
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
                       ),
                       SizedBox(height: 20.h),
-                      Text(
-                        'Looks like you don\'t have an account! Please fill the form to create an account.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-                      ),
+                      Text(local.registerSubtitle, style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
                         label: 'Name',
@@ -137,17 +132,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       RichText(
                         text: TextSpan(
                           children: [
-                            TextSpan(
-                              text: 'By clicking "REGISTER", you agree to our ',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-                            ),
+                            TextSpan(text: local.clickingRegister, style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                             WidgetSpan(
                               child: GestureDetector(
                                 onTap: () {
                                   // Navigate to Terms of Service
                                 },
                                 child: Text(
-                                  'Terms of Service',
+                                  local.termsOfService,
                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                                 ),
                               ),
@@ -159,7 +151,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   // Navigate to Privacy Policy
                                 },
                                 child: Text(
-                                  'Privacy Policy.',
+                                  local.privacyPolicy,
                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                                 ),
                               ),
@@ -170,7 +162,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: double.infinity,
-                        child: primaryButton(text: 'REGISTER', onPressed: register, context: context),
+                        child: primaryButton(text: local.registerTitle, onPressed: register, context: context),
                       ),
                       SizedBox(height: 20.h),
                       Row(
@@ -181,7 +173,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 2.w),
-                            child: Text('OR', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
+                            child: Text(local.or, style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                           ),
                           Expanded(
                             child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),
@@ -192,13 +184,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       oAuthButtonWidget(
                         context: context,
                         assetName: IconAssets.googleIcon,
-                        label: 'Sign Up with Google',
+                        label: local.signUpWithGoogle,
                         onPressed: registerWithGoogle,
                       ),
                       SizedBox(height: 20.h),
                       Center(
                         child: Text(
-                          'Already have an account?',
+                          local.alreadyHaveAccount,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral400, fontWeight: FontWeight.w600),
@@ -208,7 +200,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: secondaryButton(
-                          text: 'LOGIN',
+                          text: local.signInTitle,
                           onPressed: () {
                             context.pushReplacement('/login');
                           },

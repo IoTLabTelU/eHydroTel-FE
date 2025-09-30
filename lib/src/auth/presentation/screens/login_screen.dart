@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydro_iot/core/components/components.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/login_with_password_controller.dart';
 import 'package:hydro_iot/src/auth/data/model/auth_response.dart';
@@ -25,20 +26,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     ref.listen<AsyncValue<AuthResponse>>(loginWithPasswordControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
             context.pop();
-            Toast().showErrorToast(context: context, title: 'Error', description: errorMessage);
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
         loading: () {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => const FancyLoadingDialog(title: 'Signing you in...'),
+            builder: (context) => FancyLoadingDialog(title: local.signingYouIn),
           );
         },
         data: (response) {
@@ -52,7 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     void login() {
       if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-        Toast().showErrorToast(context: context, title: 'Please fill in all fields');
+        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
         return;
       }
       ref
@@ -64,11 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (GoogleSignIn.instance.supportsAuthenticate()) {
         ref.read(loginWithPasswordControllerProvider.notifier).loginWithGoogle();
       } else {
-        Toast().showErrorToast(
-          context: context,
-          title: 'Error',
-          description: 'Google Sign-In is not supported on this device.',
-        );
+        Toast().showErrorToast(context: context, title: local.error, description: local.googleSignInNotSupported);
       }
     }
 
@@ -90,14 +88,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'SIGN IN',
+                        local.signInTitle,
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
                       ),
                       SizedBox(height: 20.h),
-                      Text(
-                        'Welcome back! Please sign in to continue.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-                      ),
+                      Text(local.signInSubtitle, style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                       SizedBox(height: 20.h),
                       TextFormFieldComponent(
                         label: 'Email',
@@ -134,14 +129,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           context.push('/forgot-password');
                         },
                         child: Text(
-                          'Forgot Password?',
+                          local.forgotPassword,
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                         ),
                       ),
                       SizedBox(height: 20.h),
                       SizedBox(
                         width: double.infinity,
-                        child: primaryButton(text: 'LOGIN', onPressed: login, context: context),
+                        child: primaryButton(text: local.signInTitle, onPressed: login, context: context),
                       ),
                       SizedBox(height: 20.h),
                       Row(
@@ -152,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 2.w),
-                            child: Text('OR', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
+                            child: Text(local.or, style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
                           ),
                           Expanded(
                             child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),
@@ -163,13 +158,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       oAuthButtonWidget(
                         context: context,
                         assetName: IconAssets.googleIcon,
-                        label: 'Sign In with Google',
+                        label: local.signInWithGoogle,
                         onPressed: loginWithGoogle,
                       ),
                       SizedBox(height: 20.h),
                       Center(
                         child: Text(
-                          'Don\'t have an account?',
+                          local.dontHaveAccount,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral400, fontWeight: FontWeight.w600),
@@ -179,7 +174,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: secondaryButton(
-                          text: 'REGISTER',
+                          text: local.register,
                           onPressed: () {
                             context.pushReplacement('/register');
                           },

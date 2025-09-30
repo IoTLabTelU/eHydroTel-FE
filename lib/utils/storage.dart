@@ -7,6 +7,7 @@ class Storage {
   static const refreshToken = 'REFRESH_TOKEN';
   static const isLoggedIn = 'IS_LOGGED_IN';
   static const role = 'ROLE';
+  static const locale = 'LOCALE';
 
   static Future<void> writeAccessToken(String value) async {
     await _storage.write(key: accessToken, value: value);
@@ -49,5 +50,13 @@ class Storage {
 
   static Future<String?> readRole() async {
     return await _storage.read(key: role);
+  }
+
+  static Future<void> writeLocale(String value) async {
+    await _storage.write(key: locale, value: value);
+  }
+
+  static Future<String?> readLocale() async {
+    return await _storage.read(key: locale);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/utils/spinner_paint.dart';
 
 import '../../res/res.dart';
@@ -26,6 +27,7 @@ class FancyLoadingState extends State<FancyLoading> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -68,7 +70,7 @@ class FancyLoadingState extends State<FancyLoading> with SingleTickerProviderSta
           Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           Text(
-            'This may take a moment...',
+            local.thisMayTakeAMoment,
             style: TextStyle(
               color: Theme.brightnessOf(context) == Brightness.dark ? ColorValues.neutral100 : ColorValues.neutral600,
             ),
