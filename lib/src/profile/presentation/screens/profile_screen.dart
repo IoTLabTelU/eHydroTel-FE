@@ -4,6 +4,8 @@ import 'package:hydro_iot/core/components/components.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/login_screen.dart';
+import 'package:hydro_iot/src/profile/presentation/screens/edit_profile.dart';
+import 'package:hydro_iot/src/profile/presentation/screens/ssid.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_list.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_widget.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_layout_widget.dart';
@@ -17,6 +19,9 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authControllerProvider);
+
+    List<Widget> pages = [const EditProfile(), const Ssid()];
+
     ref.listen(authControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
@@ -82,15 +87,27 @@ class ProfileScreen extends ConsumerWidget {
                   color: ColorValues.neutral300.withAlpha(150),
                 ),
                 child: Column(
-                  children: profileItemList
-                      .map(
-                        (item) => ProfileItemWidget(
-                          title: item['title'] ?? '',
-                          icon: item['icon'] ?? '',
-                          onTap: () => context.push(item['path']!),
+                  children: List.generate(profileItemList.length, (index) {
+                    final item = profileItemList[index];
+                    return ProfileItemWidget(
+                      title: item['title'] ?? '',
+                      icon: item['icon'] ?? '',
+                      onTap: () => showModalBottomSheet(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.8,
                         ),
-                      )
-                      .toList(),
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: pages[index],
+                        ),
+                      ),
+                    );
+                  }),
                 ),
               ),
 
