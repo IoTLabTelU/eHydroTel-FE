@@ -7,8 +7,6 @@ import 'package:hydro_iot/utils/utils.dart';
 import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/auth/application/providers/auth_provider.dart';
 
-import '../../../auth/application/controllers/auth_controller.dart';
-
 class EditProfile extends ConsumerStatefulWidget {
   const EditProfile({super.key});
 
@@ -18,10 +16,10 @@ class EditProfile extends ConsumerStatefulWidget {
 
 class _EditProfileState extends ConsumerState<EditProfile> {
   final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  // final _emailController = TextEditingController();
   final _roleController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  // final _passwordController = TextEditingController();
+  // final _confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -36,10 +34,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
+    // _emailController.dispose();
     _roleController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    // _passwordController.dispose();
+    // _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -50,15 +48,17 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         final user = response.data!;
         setState(() {
           _nameController.text = user.name;
-          _emailController.text = user.email;
+          // _emailController.text = user.email;
           _roleController.text = user.role;
         });
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to load profile: $e')));
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'Failed to load profile',
+        );
       }
     }
   }
@@ -77,38 +77,32 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     try {
       await ref
           .read(userControllerProvider.notifier)
-          .updateProfile(
-            name: _nameController.text.trim(),
-            email: _emailController.text.trim(),
-          );
+          .updateProfile(name: _nameController.text.trim());
 
-      if (mounted) {
-        ref.invalidate(authControllerProvider);
-
-        Toast().showSuccessToast(
-          context: context,
-          title: 'Success',
-          description: 'Profile updated successfully',
-        );
-
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      ///INI harusnya error tapi malah work ke backend (untuk sementara dibikin kebalik dulu)
-      if (mounted) {
-        ref.invalidate(authControllerProvider);
-        Navigator.pop(context);
-        Toast().showSuccessToast(
-          context: context,
-          title: 'Success',
-          description: 'Profile updated successfully',
-        );
-      }
-    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
+
+        Navigator.pop(context);
+
+        Toast().showSuccessToast(
+          context: context,
+          title: 'Success',
+          description: 'Profile updated successfully',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        Toast().showErrorToast(
+          context: context,
+          title: 'Error',
+          description: 'Failed to update profile',
+        );
       }
     }
   }
@@ -140,24 +134,25 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
-                TextFormFieldComponent(
-                  controller: _emailController,
-                  label: 'Email',
-                  hintText: 'Enter your email',
-                  obscureText: false,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email is required';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
+                // const SizedBox(height: 16),
+                // TextFormFieldComponent(
+                //   controller: _emailController,
+                //   label: 'Email',
+                //   hintText: 'Enter your email',
+                //   obscureText: false,
+                //   readOnly: true,
+                //   validator: (value) {
+                //     if (value == null || value.trim().isEmpty) {
+                //       return 'Email is required';
+                //     }
+                //     if (!RegExp(
+                //       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                //     ).hasMatch(value)) {
+                //       return 'Enter a valid email';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 const SizedBox(height: 16),
                 TextFormFieldComponent(
                   controller: _roleController,

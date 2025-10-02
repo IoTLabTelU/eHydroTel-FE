@@ -12,7 +12,12 @@ class UserRepository implements UserRepositoryInterface {
   @override
   Future<Responses<UserEntity?>> getUserProfile() {
     return _apiClient
-        .get(Params(path: EndpointStrings.userProfile, fromJson: (json) => UserEntity.fromJson(json['data']['user'])))
+        .get(
+          Params(
+            path: EndpointStrings.userProfile,
+            fromJson: (json) => UserEntity.fromJson(json['data']['user']),
+          ),
+        )
         .then((response) {
           if (response.isSuccess && response.data != null) {
             return response;
@@ -24,12 +29,18 @@ class UserRepository implements UserRepositoryInterface {
 
   @override
   Future<void> updateUserProfile({required Map<String, dynamic> user}) {
-    return _apiClient.put(Params(path: EndpointStrings.updateProfile, body: user, fromJson: (json) => null)).then((
-      response,
-    ) {
-      if (!response.isSuccess) {
-        throw Exception(response.message ?? AppStrings.errorMessage);
-      }
-    });
+    return _apiClient
+        .put(
+          Params(
+            path: EndpointStrings.updateProfile,
+            body: user,
+            fromJson: (json) => null,
+          ),
+        )
+        .then((response) {
+          if (!response.isSuccess) {
+            throw Exception(response.message ?? AppStrings.errorMessage);
+          }
+        });
   }
 }

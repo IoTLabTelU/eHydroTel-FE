@@ -23,19 +23,13 @@ class UserController extends _$UserController {
     }
   }
 
-  Future<void> updateProfile({
-    required String? name,
-    required String? email,
-  }) async {
+  Future<void> updateProfile({required String? name}) async {
     state = const AsyncValue.loading();
     try {
       await ref
           .read(userRepositoryProvider)
           .updateUserProfile(
-            user: {
-              if (name != null && name.isNotEmpty) 'name': name,
-              if (email != null && email.isNotEmpty) 'email': email,
-            },
+            user: {if (name != null && name.isNotEmpty) 'name': name},
           );
       state = const AsyncValue.data(null);
     } catch (e, st) {
