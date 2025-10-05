@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/components/plant_session_card.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import '../../application/providers/crop_cycle_providers.dart';
@@ -14,8 +15,7 @@ class SearchCropCycleScreen extends ConsumerStatefulWidget {
   static const String path = 'search-crop-cycle';
 
   @override
-  ConsumerState<SearchCropCycleScreen> createState() =>
-      _SearchCropCycleScreenState();
+  ConsumerState<SearchCropCycleScreen> createState() => _SearchCropCycleScreenState();
 }
 
 class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
@@ -41,9 +41,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       final query = searchController.text.trim();
       if (query.isNotEmpty) {
-        ref
-            .read(searchCropCycleNotifierProvider.notifier)
-            .searchCropCycles(query);
+        ref.read(searchCropCycleNotifierProvider.notifier).searchCropCycles(query);
       } else {
         ref.read(searchCropCycleNotifierProvider.notifier).clearSearch();
       }
@@ -52,6 +50,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final searchState = ref.watch(searchCropCycleNotifierProvider);
 
     return ListView(
@@ -59,7 +58,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
       children: [
         const SizedBox(height: 20),
         SearchBar(
-          hintText: 'Search crop cycles...',
+          hintText: local.searchCropCycles,
           leading: Padding(
             padding: EdgeInsets.only(left: 5.w),
             child: const Icon(Icons.search),
@@ -86,6 +85,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
   }
 
   Widget _buildSearchResults(CropCycleState state) {
+    final local = AppLocalizations.of(context)!;
     if (state is CropCycleStateInitial) {
       return Center(
         child: Column(
@@ -93,19 +93,14 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
           children: [
             Icon(Icons.search, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
-            Text(
-              'Start typing to search crop cycles',
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-            ),
+            Text(local.startTypingToSearch, style: TextStyle(fontSize: 16, color: Colors.grey.shade600)),
           ],
         ),
       );
     }
 
     if (state is CropCycleStateLoading) {
-      return const Center(
-        child: FancyLoading(title: 'Searching crop cycles...'),
-      );
+      return const Center(child: FancyLoading(title: 'Searching crop cycles...'));
     }
 
     if (state is CropCycleStateError) {
@@ -152,8 +147,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
                   'deviceName': cropCycle.device.name,
                   'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
                   'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription':
-                      'This is the Description of ${cropCycle.device.name}',
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
               onStopSession: () {
@@ -163,18 +157,10 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
                   builder: (context) {
                     return AlertDialog(
                       title: const Text('Stop Session'),
-                      content: const Text(
-                        'Are you sure you want to stop this session?',
-                      ),
+                      content: const Text('Are you sure you want to stop this session?'),
                       actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Stop'),
-                        ),
+                        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+                        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Stop')),
                       ],
                     );
                   },
@@ -186,8 +172,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
                   'deviceName': cropCycle.device.name,
                   'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
                   'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription':
-                      'This is the Description of ${cropCycle.device.name}',
+                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
                 },
               ),
               isStopped: !cropCycle.active,
