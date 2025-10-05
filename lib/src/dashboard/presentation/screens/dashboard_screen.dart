@@ -74,13 +74,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   enabled: true,
                   singleSelect: true,
                   fieldDecoration: FieldDecoration(
-                    backgroundColor: ColorValues.neutral500,
+                    backgroundColor: ColorValues.whiteColor,
                     hintText: local.filterSessions,
-                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.whiteColor, weight: FontWeight.w800),
+                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.blackColor, weight: FontWeight.w500),
                     showClearIcon: false,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorValues.whiteColor),
+                      borderSide: BorderSide(color: ColorValues.iotNodeMCUColor, width: 2),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -141,8 +141,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildCropCycleContent(CropCycleState state) {
+    final local = AppLocalizations.of(context)!;
     if (state.isLoading) {
-      return const Center(child: FancyLoading(title: 'Loading Crop Cycles...'));
+      return Center(child: FancyLoading(title: local.loadingCropCycles));
     }
 
     if (state.error != null) {
@@ -219,7 +220,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    return const Center(child: Text('No Data'));
+    return SizedBox(
+      height: heightQuery(context) * 0.65,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
+            Text(
+              local.warning,
+              style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              local.noCropCyclesFound,
+              style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
