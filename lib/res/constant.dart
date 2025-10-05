@@ -29,6 +29,8 @@ class EndpointStrings {
   static final cropcycle = '$baseUrl/crop-cycle';
   static final cropcycleByUser = '$cropcycle/user';
   static final cropcycleByDevice = '$cropcycle/device';
+  static final sensors = '$baseUrl/sensors';
+  static final historySensor = '$sensors/history';
 }
 
 enum DeviceStatus { active, idle, critical }
