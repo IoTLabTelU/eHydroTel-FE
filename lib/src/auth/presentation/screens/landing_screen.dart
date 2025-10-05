@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/presentation/widgets/language_toggle_fab.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 import '../widgets/landing_appbar_widget.dart';
@@ -31,6 +32,8 @@ class LandingScreen extends StatelessWidget {
             SliverList(delegate: contentWidget(context)),
           ],
         ),
+        floatingActionButton: LanguageToggleFAB(width: widthQuery(context) * 0.3),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
       ),
     );
   }
