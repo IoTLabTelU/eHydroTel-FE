@@ -71,6 +71,7 @@ class FancyLoadingState extends State<FancyLoading> with SingleTickerProviderSta
           const SizedBox(height: 6),
           Text(
             local.thisMayTakeAMoment,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.brightnessOf(context) == Brightness.dark ? ColorValues.neutral100 : ColorValues.neutral600,
             ),

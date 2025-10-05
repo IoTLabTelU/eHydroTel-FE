@@ -56,6 +56,10 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
           borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2.0),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: ColorValues.danger600, width: 2.0),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: ColorValues.neutral300, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(10)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/utils/spinner_paint.dart';
 
 import '../../res/res.dart';
@@ -34,6 +35,7 @@ class FancyLoadingDialogState extends State<FancyLoadingDialog> with SingleTicke
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 60),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -80,7 +82,8 @@ class FancyLoadingDialogState extends State<FancyLoadingDialog> with SingleTicke
             Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 6),
             Text(
-              'This may take a moment...',
+              local.thisMayTakeAMoment,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.brightnessOf(context) == Brightness.dark ? ColorValues.neutral100 : ColorValues.neutral600,
               ),
