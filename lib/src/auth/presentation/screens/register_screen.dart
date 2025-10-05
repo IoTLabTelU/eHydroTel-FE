@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -60,8 +61,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
 
     void registerWithGoogle() {
-      context.push('/login');
-      ref.read(loginWithPasswordControllerProvider.notifier).loginWithGoogle();
+      if (GoogleSignIn.instance.supportsAuthenticate()) {
+        context.push('/login');
+        ref.read(loginWithPasswordControllerProvider.notifier).loginWithGoogle();
+      } else {
+        Toast().showErrorToast(context: context, title: local.error, description: local.googleSignInNotSupported);
+      }
     }
 
     return GestureDetector(
