@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -72,6 +73,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -86,7 +88,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                 child: Icon(Icons.devices, size: 100.sp, color: ColorValues.iotMainColor),
               ),
               Text(
-                'Add Device Info',
+                local.addDeviceInfo,
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),
@@ -94,7 +96,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
               TextFormFieldComponent(
                 controller: _deviceIdController,
                 hintText: 'Enter Serial Number',
-                label: 'Serial Number',
+                label: local.serialNumber,
                 obscureText: false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -116,7 +118,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
               TextFormFieldComponent(
                 controller: _deviceNameController,
                 hintText: 'Enter device name',
-                label: 'Device Name',
+                label: local.deviceName,
                 obscureText: false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -129,7 +131,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
               TextFormFieldComponent(
                 controller: _deviceDescriptionController,
                 hintText: 'Enter device description (optional)',
-                label: 'Device Description',
+                label: local.deviceDescription,
                 obscureText: false,
               ),
               const SizedBox(height: 20),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_pairing_screen.dart';
@@ -37,15 +38,12 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     ref.listen<AsyncValue>(devicesControllerProvider, (previous, next) {
       next.when(
         data: (data) {
           _resetAll();
-          Toast().showSuccessToast(
-            context: context,
-            title: 'Success',
-            description: 'Your device has been added successfully.',
-          );
+          Toast().showSuccessToast(context: context, title: local.success, description: local.deviceAddedSuccessfully);
           context.pop();
           context.pop();
         },
@@ -53,14 +51,14 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
             context.pop();
-            Toast().showErrorToast(context: context, title: 'Error', description: errorMessage);
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
         loading: () {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => const FancyLoadingDialog(title: 'Registering your device...'),
+            builder: (context) => FancyLoadingDialog(title: local.registeringYourDevice),
           );
         },
       );
@@ -70,7 +68,7 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
       if (_deviceNameController.text.isEmpty ||
           _deviceDescriptionController.text.isEmpty ||
           _serialNumberController.text.isEmpty) {
-        Toast().showErrorToast(context: context, title: 'Please fill in all fields');
+        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
         return;
       }
 
@@ -94,8 +92,10 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
           context: context,
           builder: (context) => alertDialog(
             context: context,
-            title: 'Cancel Add Device?',
-            content: 'Are you sure you want to cancel adding a new device?',
+            title: local.cancelAddDevice,
+            content: local.areYouSureCancelAddDevice,
+            confirmText: local.yes,
+            cancelText: local.no,
             onConfirm: () => context.pop(true),
           ),
         ).then((result) {
@@ -117,10 +117,11 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
           controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Row(
               children: <Widget>[
-                if (_currentStep > 0) secondaryButton(onPressed: details.onStepCancel!, text: 'Back', context: context),
+                if (_currentStep > 0) secondaryButton(onPressed: details.onStepCancel!, text: local.back, context: context),
                 const Spacer(),
-                if (_currentStep < 2) secondaryButton(onPressed: details.onStepContinue!, text: 'Next', context: context),
-                if (_currentStep == 2) primaryButton(onPressed: registerDevice, text: 'Add Device', context: context),
+                if (_currentStep < 2)
+                  secondaryButton(onPressed: details.onStepContinue!, text: local.next, context: context),
+                if (_currentStep == 2) primaryButton(onPressed: registerDevice, text: local.addDevice, context: context),
               ],
             );
           },

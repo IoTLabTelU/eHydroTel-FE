@@ -83,6 +83,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get error => 'Kesalahan';
 
   @override
+  String get warning => 'Peringatan';
+
+  @override
   String get registrationSuccessful =>
       'Pendaftaran berhasil! Anda sekarang dapat masuk.';
 
@@ -94,6 +97,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get filterSessions => 'Filter Sesi';
+
+  @override
+  String get filterDevices => 'Filter Perangkat';
 
   @override
   String get plantSessions => 'Sesi Tanam';
@@ -108,7 +114,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get welcome => 'Selamat Datang';
 
   @override
-  String get devices => 'Perangkat';
+  String get yourDevices => 'Perangkat Anda';
 
   @override
   String get notifications => 'Notifikasi';
@@ -126,10 +132,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get addNewSession => 'Tambah Sesi Baru';
 
   @override
-  String get addDevice => 'Tambah Perangkat';
+  String get addDevice => 'Tambah';
 
   @override
-  String get addDeviceInfo => 'Info Tambah Perangkat';
+  String get addDeviceInfo => 'Informasi Perangkat';
 
   @override
   String get deviceName => 'Nama Perangkat';
@@ -141,10 +147,26 @@ class AppLocalizationsId extends AppLocalizations {
   String get deviceDescription => 'Deskripsi Perangkat';
 
   @override
+  String get warningNoDeviceFound =>
+      'Tidak ada perangkat ditemukan. Silakan tambahkan perangkat terlebih dahulu.';
+
+  @override
+  String get deviceSummary => 'Ringkasan Perangkat';
+
+  @override
   String get back => 'Kembali';
 
   @override
   String get next => 'Lanjut';
+
+  @override
+  String get yes => 'Ya';
+
+  @override
+  String get no => 'Tidak';
+
+  @override
+  String get loadingDevice => 'Memuat perangkat...';
 
   @override
   String get cancelAddDevice => 'Batalkan penambahan perangkat?';
@@ -165,18 +187,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get addStep1 =>
-      '1. Konfigurasi ulang **SSID dan Kata Sandi *tethering*** Anda sesuai dengan instruksi yang tersedia pada perangkat IoT.';
+      '1. Konfigurasi ulang SSID dan Kata Sandi tethering Anda sesuai dengan instruksi yang tersedia pada perangkat IoT.';
 
   @override
   String get addStep2 => '2. Pastikan perangkat IoT Anda sudah dinyalakan.';
 
   @override
   String get addStep3 =>
-      '3. Perangkat IoT akan secara otomatis terhubung ke *hotspot* menggunakan **SSID dan Kata Sandi** yang telah dikonfigurasi.';
+      '3. Perangkat IoT akan secara otomatis terhubung ke hotspot menggunakan SSID dan Kata Sandi yang telah dikonfigurasi.';
 
   @override
   String get addStep4 =>
-      '4. Setelah perangkat IoT Anda terhubung ke *hotspot*, perangkat akan otomatis dipasangkan dengan aplikasi.';
+      '4. Setelah perangkat IoT Anda terhubung ke hotspot, perangkat akan otomatis dipasangkan dengan aplikasi.';
 
   @override
   String get deviceInformation => 'Informasi Perangkat';
@@ -190,4 +212,21 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get chooseExportFormat =>
       'Pilih format dan kami akan membuatkan berkas untuk rentang tanggal yang Anda pilih.';
+
+  @override
+  String get loadingCropCycles => 'Memuat siklus tanam...';
+
+  @override
+  String get noCropCyclesFound =>
+      'Tidak ada siklus tanam ditemukan. Silakan tambahkan sesi siklus tanam terlebih dahulu.';
+
+  @override
+  String get searchCropCycles => 'Cari siklus tanam...';
+
+  @override
+  String get startTypingToSearch => 'Mulai ketik untuk mencari...';
+
+  @override
+  String get searchDevices =>
+      'Cari berdasarkan nama perangkat, seri, atau SSID...';
 }

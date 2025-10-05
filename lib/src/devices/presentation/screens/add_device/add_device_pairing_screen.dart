@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -7,6 +8,7 @@ class AddDevicePairingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
@@ -19,31 +21,31 @@ class AddDevicePairingScreen extends StatelessWidget {
               Icon(Icons.wifi, size: 100.sp, color: ColorValues.iotMainColor),
               const SizedBox(height: 10),
               Text(
-                'Ready to Pair?',
+                local.readyToPair,
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
-                '1. Re-configure your tethering SSID and Password according to the instructions provided on the IoT device.',
+                local.addStep1,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
-                '2. Make sure your IoT device is turned on.',
+                local.addStep2,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
-                '3. The IoT device will automatically connect to the hotspot using the configured SSID and Password.',
+                local.addStep3,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
-                '4. Once your IoT device is connected to the hotspot, it will automatically pair with the app.',
+                local.addStep4,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.iotMainColor),
                 textAlign: TextAlign.center,
               ),

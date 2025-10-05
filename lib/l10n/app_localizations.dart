@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Error'**
   String get error;
 
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get warning;
+
   /// No description provided for @registrationSuccessful.
   ///
   /// In en, this message translates to:
@@ -259,6 +265,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filter Sessions'**
   String get filterSessions;
+
+  /// No description provided for @filterDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Devices'**
+  String get filterDevices;
 
   /// No description provided for @plantSessions.
   ///
@@ -284,11 +296,11 @@ abstract class AppLocalizations {
   /// **'Welcome'**
   String get welcome;
 
-  /// No description provided for @devices.
+  /// No description provided for @yourDevices.
   ///
   /// In en, this message translates to:
-  /// **'Devices'**
-  String get devices;
+  /// **'Your Devices'**
+  String get yourDevices;
 
   /// No description provided for @notifications.
   ///
@@ -329,7 +341,7 @@ abstract class AppLocalizations {
   /// No description provided for @addDeviceInfo.
   ///
   /// In en, this message translates to:
-  /// **'Add Device Info'**
+  /// **'Device Info'**
   String get addDeviceInfo;
 
   /// No description provided for @deviceName.
@@ -350,6 +362,18 @@ abstract class AppLocalizations {
   /// **'Device Description'**
   String get deviceDescription;
 
+  /// No description provided for @warningNoDeviceFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No device found. Please add a device first.'**
+  String get warningNoDeviceFound;
+
+  /// No description provided for @deviceSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Summary'**
+  String get deviceSummary;
+
   /// No description provided for @back.
   ///
   /// In en, this message translates to:
@@ -361,6 +385,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @loadingDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading devices...'**
+  String get loadingDevice;
 
   /// No description provided for @cancelAddDevice.
   ///
@@ -439,6 +481,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose format and we\\\'ll generate a file for your selected date range.'**
   String get chooseExportFormat;
+
+  /// No description provided for @loadingCropCycles.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading crop cycles...'**
+  String get loadingCropCycles;
+
+  /// No description provided for @noCropCyclesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No crop cycles found. Please add crop cycle session first.'**
+  String get noCropCyclesFound;
+
+  /// No description provided for @searchCropCycles.
+  ///
+  /// In en, this message translates to:
+  /// **'Search crop cycles...'**
+  String get searchCropCycles;
+
+  /// No description provided for @startTypingToSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to search...'**
+  String get startTypingToSearch;
+
+  /// No description provided for @searchDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by device name, serial, or SSID...'**
+  String get searchDevices;
 }
 
 class _AppLocalizationsDelegate

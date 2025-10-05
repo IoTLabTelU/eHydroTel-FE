@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
@@ -25,6 +26,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   }
 
   var items = [
+    DropdownItem(label: 'All', value: 'All'),
     DropdownItem(label: 'Idle', value: 'Idle'),
     DropdownItem(label: 'Active Only', value: 'Active'),
     DropdownItem(label: 'Critical Only', value: 'Critical'),
@@ -33,6 +35,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final devices = ref.watch(devicesControllerProvider);
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
@@ -41,11 +44,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: searchButton(
-                onPressed: () =>
-                    context.push('/dashboard/${SearchDeviceScreen.path}'),
-                context: context,
-              ),
+              child: searchButton(onPressed: () => context.push('/dashboard/${SearchDeviceScreen.path}'), context: context),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -56,35 +55,22 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 enabled: true,
                 singleSelect: true,
                 fieldDecoration: FieldDecoration(
-                  backgroundColor: ColorValues.neutral500,
-                  hintText: 'Filter Devices',
-                  hintStyle: dmSansSmallText(
-                    size: 12,
-                    color: ColorValues.whiteColor,
-                    weight: FontWeight.w800,
-                  ),
+                  backgroundColor: ColorValues.whiteColor,
+                  hintText: local.filterDevices,
+                  hintStyle: dmSansSmallText(size: 12, color: ColorValues.blackColor, weight: FontWeight.w500),
                   showClearIcon: false,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: ColorValues.whiteColor),
+                    borderSide: BorderSide(color: ColorValues.iotNodeMCUColor, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: ColorValues.iotMainColor,
-                      width: 3,
-                    ),
+                    borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
                   ),
                 ),
-                dropdownDecoration: const DropdownDecoration(
-                  marginTop: 2,
-                  maxHeight: 500,
-                ),
+                dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
                 dropdownItemDecoration: DropdownItemDecoration(
-                  selectedIcon: const Icon(
-                    Icons.check_box,
-                    color: Colors.green,
-                  ),
+                  selectedIcon: const Icon(Icons.check_box, color: Colors.green),
                   disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
                   textColor: ColorValues.blackColor,
                   selectedTextColor: ColorValues.iotMainColor,
@@ -97,19 +83,16 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'All Devices',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(),
-            ),
-            ElevatedButton.icon(
-              onPressed: () => context.push('/devices/create'),
-              label: const Text('Add Device'),
-              icon: const Icon(Icons.add),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorValues.iotMainColor,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            Text(local.yourDevices, style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () => context.push('/devices/create'),
+                label: Text(local.addDevice, maxLines: 2, overflow: TextOverflow.ellipsis),
+                icon: const Icon(Icons.add),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorValues.iotMainColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ),
@@ -124,15 +107,27 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               isOnList = List<bool>.generate(device.length, (index) => false);
             });
             if (device.isEmpty) {
-              return Center(
-                child: Text(
-                  'No devices found. Please add a device.',
-                  style: dmSansSmallText(
-                    size: 14,
-                    color: ColorValues.whiteColor,
-                    weight: FontWeight.w700,
+              return SizedBox(
+                height: heightQuery(context) * 0.65,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
+                      Text(
+                        local.warning,
+                        style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        local.warningNoDeviceFound,
+                        style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
               );
             }
@@ -146,10 +141,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     child: GestureDetector(
                       onTap: () => context.push(
                         '/devices/${device[index].serialNumber}/view',
-                        extra: {
-                          'deviceName': device[index].name,
-                          'deviceId': device[index].id,
-                        },
+                        extra: {'deviceName': device[index].name, 'deviceId': device[index].id},
                       ),
                       child: DeviceCard(
                         deviceName: device[index].name,
@@ -183,7 +175,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
             return Center(child: Text('Error: $error'));
           },
           loading: () {
-            return const FancyLoading(title: 'Loading devices...');
+            return FancyLoading(title: local.loadingDevice);
           },
         ),
       ],

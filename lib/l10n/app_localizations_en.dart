@@ -81,6 +81,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error => 'Error';
 
   @override
+  String get warning => 'Warning';
+
+  @override
   String get registrationSuccessful =>
       'Registration successful! You can now sign in.';
 
@@ -92,6 +95,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterSessions => 'Filter Sessions';
+
+  @override
+  String get filterDevices => 'Filter Devices';
 
   @override
   String get plantSessions => 'Plant Sessions';
@@ -106,7 +112,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome';
 
   @override
-  String get devices => 'Devices';
+  String get yourDevices => 'Your Devices';
 
   @override
   String get notifications => 'Notifications';
@@ -127,7 +133,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addDevice => 'Add Device';
 
   @override
-  String get addDeviceInfo => 'Add Device Info';
+  String get addDeviceInfo => 'Device Info';
 
   @override
   String get deviceName => 'Device Name';
@@ -139,10 +145,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceDescription => 'Device Description';
 
   @override
+  String get warningNoDeviceFound =>
+      'No device found. Please add a device first.';
+
+  @override
+  String get deviceSummary => 'Device Summary';
+
+  @override
   String get back => 'Back';
 
   @override
   String get next => 'Next';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get loadingDevice => 'Loading devices...';
 
   @override
   String get cancelAddDevice => 'Cancel adding device?';
@@ -188,4 +210,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chooseExportFormat =>
       'Choose format and we\\\'ll generate a file for your selected date range.';
+
+  @override
+  String get loadingCropCycles => 'Loading crop cycles...';
+
+  @override
+  String get noCropCyclesFound =>
+      'No crop cycles found. Please add crop cycle session first.';
+
+  @override
+  String get searchCropCycles => 'Search crop cycles...';
+
+  @override
+  String get startTypingToSearch => 'Start typing to search...';
+
+  @override
+  String get searchDevices => 'Search by device name, serial, or SSID...';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/device_card.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/domain/entities/device_entity.dart';
@@ -50,6 +51,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final devicesAsync = ref.watch(devicesControllerProvider);
 
     return devicesAsync.when(
@@ -61,7 +63,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
           children: [
             const SizedBox(height: 20),
             SearchBar(
-              hintText: 'Search by device name, serial, or SSID...',
+              hintText: local.searchDevices,
               leading: Padding(
                 padding: EdgeInsets.only(left: 5.w),
                 child: const Icon(Icons.search),
@@ -89,9 +91,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
           ],
         );
       },
-      loading: () => Center(
-        child: CircularProgressIndicator(color: ColorValues.iotMainColor),
-      ),
+      loading: () => Center(child: CircularProgressIndicator(color: ColorValues.iotMainColor)),
       error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
