@@ -7,6 +7,7 @@ class CropCycle {
   final int ppmMax;
   final DateTime startedAt;
   final DateTime? endedAt;
+  final DateTime? expectedEnd;
   final bool active;
   final String status;
   final Device device;
@@ -21,6 +22,7 @@ class CropCycle {
     required this.ppmMax,
     required this.startedAt,
     this.endedAt,
+    required this.expectedEnd,
     required this.active,
     required this.status,
     required this.device,
@@ -34,12 +36,7 @@ class Device {
   final String serialNumber;
   final String status;
 
-  Device({
-    required this.id,
-    required this.name,
-    required this.serialNumber,
-    required this.status,
-  });
+  Device({required this.id, required this.name, required this.serialNumber, required this.status});
 }
 
 class Plant {

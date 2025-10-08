@@ -14,6 +14,7 @@ class CropCycleModel extends CropCycle {
     required super.status,
     required DeviceModel super.device,
     required PlantModel super.plant,
+    super.expectedEnd,
   });
 
   factory CropCycleModel.fromJson(Map<String, dynamic> json) {
@@ -25,9 +26,8 @@ class CropCycleModel extends CropCycle {
       ppmMin: json['ppm_min'],
       ppmMax: json['ppm_max'],
       startedAt: DateTime.parse(json['started_at']),
-      endedAt: json['ended_at'] != null
-          ? DateTime.parse(json['ended_at'])
-          : null,
+      endedAt: json['ended_at'] != null ? DateTime.parse(json['ended_at']) : null,
+      expectedEnd: json['expected_end'] != null ? DateTime.parse(json['expected_end']) : null,
       active: json['active'],
       status: json['status'],
       device: DeviceModel.fromJson(json['device']),
@@ -54,29 +54,14 @@ class CropCycleModel extends CropCycle {
 }
 
 class DeviceModel extends Device {
-  DeviceModel({
-    required super.id,
-    required super.name,
-    required super.serialNumber,
-    required super.status,
-  });
+  DeviceModel({required super.id, required super.name, required super.serialNumber, required super.status});
 
   factory DeviceModel.fromJson(Map<String, dynamic> json) {
-    return DeviceModel(
-      id: json['id'],
-      name: json['name'],
-      serialNumber: json['serial_number'],
-      status: json['status'],
-    );
+    return DeviceModel(id: json['id'], name: json['name'], serialNumber: json['serial_number'], status: json['status']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'serial_number': serialNumber,
-      'status': status,
-    };
+    return {'id': id, 'name': name, 'serial_number': serialNumber, 'status': status};
   }
 }
 
