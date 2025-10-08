@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/components/buttons.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:intl/intl.dart';
@@ -43,6 +44,7 @@ class PlantSessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final progress = (daysElapsed / totalDays).clamp(0.0, 1.0);
 
     return InkWell(
@@ -67,7 +69,8 @@ class PlantSessionCard extends StatelessWidget {
                         plantName,
                         style: dmSansNormalText(size: 20, color: Colors.black, weight: FontWeight.bold),
                       ),
-                      if (onDashboard) Text('Device: $deviceName', style: dmSansNormalText(size: 14, color: Colors.grey)),
+                      if (onDashboard)
+                        Text('${local.device}: $deviceName', style: dmSansNormalText(size: 14, color: Colors.grey)),
                     ],
                   ),
                   // Animasi Rive
@@ -118,7 +121,10 @@ class PlantSessionCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               const SizedBox(height: 8),
-              Text('Day $daysElapsed of $totalDays', style: const TextStyle(fontSize: 14, color: Colors.black54)),
+              Text(
+                '${local.day} $daysElapsed ${local.oof} $totalDays',
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
 
               const SizedBox(height: 16),
 
@@ -127,7 +133,7 @@ class PlantSessionCard extends StatelessWidget {
               const SizedBox(height: 12),
               _buildInfoBox('💧 PPM Threshold', '$minPpm – $maxPpm'),
               const SizedBox(height: 12),
-              _buildInfoBox('🌱 Planted at', DateFormat.yMMMd().format(startDate)),
+              _buildInfoBox('🌱 ${local.plantedAt}', DateFormat.yMMMd().format(startDate)),
               const SizedBox(height: 20),
 
               /// Action Buttons
@@ -137,7 +143,7 @@ class PlantSessionCard extends StatelessWidget {
                     child: iconTextButtonWidget(
                       context: context,
                       icon: const Icon(Icons.history, size: 20),
-                      label: 'History',
+                      label: local.history,
                       onPressed: onHistoryTap,
                     ),
                   ),
@@ -147,7 +153,7 @@ class PlantSessionCard extends StatelessWidget {
                         ? iconTextButtonWidget(
                             context: context,
                             icon: const Icon(Icons.check),
-                            label: 'Harvest',
+                            label: local.harvest,
                             onPressed: () {},
                             backgroundColor: Colors.green.shade200,
                             foregroundColor: Colors.green.shade800,
