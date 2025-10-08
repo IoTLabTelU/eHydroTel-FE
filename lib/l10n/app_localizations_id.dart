@@ -105,6 +105,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get plantSessions => 'Sesi Tanam';
 
   @override
+  String get allSessions => 'Semua Sesi';
+
+  @override
   String get noSessionsFound => 'Tidak ada sesi ditemukan.';
 
   @override
@@ -154,6 +157,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get deviceSummary => 'Ringkasan Perangkat';
 
   @override
+  String get device => 'Perangkat';
+
+  @override
   String get back => 'Kembali';
 
   @override
@@ -164,6 +170,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get no => 'Tidak';
+
+  @override
+  String get day => 'Hari';
+
+  @override
+  String get oof => 'dari';
+
+  @override
+  String get plantedAt => 'Ditanam pada';
 
   @override
   String get loadingDevice => 'Memuat perangkat...';
@@ -229,4 +244,22 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get searchDevices =>
       'Cari berdasarkan nama perangkat, seri, atau SSID...';
+
+  @override
+  String get accountNotSupported => 'Akun tidak didukung';
+
+  @override
+  String get history => 'Riwayat';
+
+  @override
+  String get last7Days => '7 Hari Terakhir';
+
+  @override
+  String get phOverTime => 'pH dari waktu ke waktu';
+
+  @override
+  String get ppmOverTime => 'PPM dari waktu ke waktu';
+
+  @override
+  String get harvest => 'Panen';
 }

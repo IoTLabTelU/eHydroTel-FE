@@ -103,6 +103,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plantSessions => 'Plant Sessions';
 
   @override
+  String get allSessions => 'All Sessions';
+
+  @override
   String get noSessionsFound => 'No sessions found.';
 
   @override
@@ -152,6 +155,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceSummary => 'Device Summary';
 
   @override
+  String get device => 'Device';
+
+  @override
   String get back => 'Back';
 
   @override
@@ -162,6 +168,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no => 'No';
+
+  @override
+  String get day => 'Day';
+
+  @override
+  String get oof => 'of';
+
+  @override
+  String get plantedAt => 'Planted at';
 
   @override
   String get loadingDevice => 'Loading devices...';
@@ -226,4 +241,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchDevices => 'Search by device name, serial, or SSID...';
+
+  @override
+  String get accountNotSupported => 'Account not supported';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get last7Days => 'Last 7 Days';
+
+  @override
+  String get phOverTime => 'pH over time';
+
+  @override
+  String get ppmOverTime => 'PPM over time';
+
+  @override
+  String get harvest => 'Harvest';
 }

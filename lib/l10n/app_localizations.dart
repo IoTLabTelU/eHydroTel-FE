@@ -278,6 +278,12 @@ abstract class AppLocalizations {
   /// **'Plant Sessions'**
   String get plantSessions;
 
+  /// No description provided for @allSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'All Sessions'**
+  String get allSessions;
+
   /// No description provided for @noSessionsFound.
   ///
   /// In en, this message translates to:
@@ -374,6 +380,12 @@ abstract class AppLocalizations {
   /// **'Device Summary'**
   String get deviceSummary;
 
+  /// No description provided for @device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get device;
+
   /// No description provided for @back.
   ///
   /// In en, this message translates to:
@@ -397,6 +409,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get no;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get day;
+
+  /// No description provided for @oof.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get oof;
+
+  /// No description provided for @plantedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Planted at'**
+  String get plantedAt;
 
   /// No description provided for @loadingDevice.
   ///
@@ -511,6 +541,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search by device name, serial, or SSID...'**
   String get searchDevices;
+
+  /// No description provided for @accountNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Account not supported'**
+  String get accountNotSupported;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @last7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 Days'**
+  String get last7Days;
+
+  /// No description provided for @phOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'pH over time'**
+  String get phOverTime;
+
+  /// No description provided for @ppmOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'PPM over time'**
+  String get ppmOverTime;
+
+  /// No description provided for @harvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest'**
+  String get harvest;
 }
 
 class _AppLocalizationsDelegate
