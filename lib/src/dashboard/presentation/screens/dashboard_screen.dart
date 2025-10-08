@@ -171,7 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               deviceName: cropCycle.device.name,
               plantName: cropCycle.plant.name,
               startDate: cropCycle.startedAt,
-              totalDays: DateTime.now().difference(cropCycle.startedAt).inDays,
+              totalDays: cropCycle.expectedEnd != null ? DateTime.now().difference(cropCycle.expectedEnd!).inDays : 30,
               minPh: cropCycle.phMin,
               maxPh: cropCycle.phMax,
               minPpm: cropCycle.ppmMin.toDouble(),
@@ -180,9 +180,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 '/devices/${cropCycle.device.serialNumber}/history',
                 extra: {
                   'deviceName': cropCycle.device.name,
-                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
+                  'phMin': cropCycle.phMin,
+                  'ppmMin': cropCycle.ppmMin,
+                  'phMax': cropCycle.phMax,
+                  'ppmMax': cropCycle.ppmMax,
                 },
               ),
               onStopSession: () {

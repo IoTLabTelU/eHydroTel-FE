@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/utils/sparkline_paint.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../res/res.dart';
 
@@ -11,6 +12,7 @@ class HistoryChartCard extends StatelessWidget {
   final double yMax;
   final String unit;
   final Color accent;
+  final List<DateTime> timestamps;
 
   const HistoryChartCard({
     super.key,
@@ -21,6 +23,7 @@ class HistoryChartCard extends StatelessWidget {
     required this.yMax,
     required this.unit,
     required this.accent,
+    required this.timestamps,
   });
 
   @override
@@ -60,8 +63,16 @@ class HistoryChartCard extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               SizedBox(
+                width: double.infinity,
                 height: 180,
-                child: SparklineChart(series: series, color: accent, yMin: yMin, yMax: yMax, unit: unit),
+                child: SparklineChart(
+                  series: series,
+                  color: accent,
+                  yMin: yMin,
+                  yMax: yMax,
+                  unit: unit,
+                  timestamps: timestamps,
+                ),
               ),
               const SizedBox(height: 6),
               Row(
@@ -109,12 +120,14 @@ class _LegendDot extends StatelessWidget {
 }
 
 // Minimal custom sparkline chart without external packages
-class SparklineChart extends StatelessWidget {
+class SparklineChart extends StatefulWidget {
   final List<double> series;
   final double yMin;
   final double yMax;
   final String unit;
   final Color color;
+  final List<DateTime> timestamps;
+
   const SparklineChart({
     super.key,
     required this.series,
@@ -122,7 +135,16 @@ class SparklineChart extends StatelessWidget {
     required this.yMax,
     required this.unit,
     required this.color,
+    required this.timestamps,
   });
+
+  @override
+  State<SparklineChart> createState() => _SparklineChartState();
+}
+
+class _SparklineChartState extends State<SparklineChart> {
+  int? _hoverIndex;
+  Offset? _tapPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +153,83 @@ class SparklineChart extends StatelessWidget {
       duration: const Duration(milliseconds: 700),
       curve: Curves.easeOutCubic,
       builder: (context, t, child) {
-        return CustomPaint(
-          painter: SparklinePainter(series: series, t: t, yMin: yMin, yMax: yMax, color: color),
+        return GestureDetector(
+          onTapDown: (details) {
+            final box = context.findRenderObject() as RenderBox;
+            final localPos = box.globalToLocal(details.globalPosition);
+            _handleTap(localPos, box.size);
+          },
+          child: Stack(
+            children: [
+              // Chart + highlight
+              CustomPaint(
+                painter: SparklinePainter(
+                  series: widget.series,
+                  t: t,
+                  yMin: widget.yMin,
+                  yMax: widget.yMax,
+                  color: widget.color,
+                  highlightIndex: _hoverIndex,
+                ),
+                size: const Size(double.infinity, double.infinity),
+              ),
+
+              // Tooltip
+              if (_hoverIndex != null && _tapPosition != null)
+                Positioned(
+                  left: _tapPosition!.dx - 35,
+                  top: _tapPosition!.dy - 45,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 150),
+                    opacity: 1,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '${widget.series[_hoverIndex!].toStringAsFixed(2)}${widget.unit}',
+                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              DateFormat('dd/MMM/yy HH:mm').format(widget.timestamps[_hoverIndex!]),
+                              style: const TextStyle(color: Colors.white70, fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );
+  }
+
+  void _handleTap(Offset pos, Size size) {
+    if (widget.series.isEmpty) return;
+    final dxStep = size.width / (widget.series.length - 1);
+    int index = (pos.dx / dxStep).round().clamp(0, widget.series.length - 1);
+
+    double normalize(double v) {
+      if (widget.yMax - widget.yMin == 0) return 0.5;
+      return (v - widget.yMin) / (widget.yMax - widget.yMin);
+    }
+
+    final norm = 1 - normalize(widget.series[index]).clamp(0.0, 1.0);
+    final y = norm * size.height;
+
+    setState(() {
+      _hoverIndex = index;
+      _tapPosition = Offset(index * dxStep, y);
+    });
   }
 }

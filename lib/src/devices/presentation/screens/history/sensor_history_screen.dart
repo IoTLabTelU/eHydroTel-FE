@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_iot/l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/core.dart';
+import 'package:hydro_iot/src/devices/application/controllers/history_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/export_bottom_sheet_widget.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/history_chart_card_widget.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/history_toolbar_widget.dart';
+import 'package:hydro_iot/utils/history_mapper.dart';
 
 import '../../../../../res/res.dart';
 
-class SensorHistoryScreen extends StatefulWidget {
+class SensorHistoryScreen extends ConsumerStatefulWidget {
   final String deviceName;
   final String deviceId;
-  const SensorHistoryScreen({super.key, required this.deviceName, required this.deviceId});
+  final int ppmMin;
+  final int ppmMax;
+  final double phMin;
+  final double phMax;
+  const SensorHistoryScreen({
+    super.key,
+    required this.deviceName,
+    required this.deviceId,
+    required this.ppmMin,
+    required this.ppmMax,
+    required this.phMin,
+    required this.phMax,
+  });
 
   static const String path = 'history';
 
   @override
-  State<SensorHistoryScreen> createState() => _SensorHistoryScreenState();
+  ConsumerState<SensorHistoryScreen> createState() => _SensorHistoryScreenState();
 }
 
-class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTickerProviderStateMixin {
+class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   DateTimeRange? _range;
   bool _loading = false;
@@ -69,9 +85,20 @@ class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+    List<DateTime> timestamps = List.generate(
+      phSeries.length,
+      (index) => DateTime.now().subtract(Duration(hours: (phSeries.length - index) * 2)),
+    );
+    final history = ref.watch(historyControllerProvider(widget.deviceId));
+    // final mappedData = HistoryChartMapper.mapRecordsToSeries(history.asData?.value.);
+    // phSeries = mappedData.phSeries;
+    // ppmSeries = mappedData.ppmSeries;
+    // timestamps = mappedData.timestamps;
+    // MASIH PERLU PERBAIKAN, NTAR LANJUT BESOK
     return Scaffold(
       appBar: AppBar(
-        title: Text('History · ${widget.deviceName}'),
+        title: Text('${local.history} · ${widget.deviceName}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.file_download_outlined),
@@ -92,7 +119,7 @@ class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTi
         children: [
           HistoryToolbar(
             rangeText: _range == null
-                ? 'Last 7 days'
+                ? local.last7Days
                 : '${_range!.start.toString().substring(0, 10)} → ${_range!.end.toString().substring(0, 10)}',
             onPickRange: _pickRange,
             onRefresh: _refresh,
@@ -105,22 +132,24 @@ class _SensorHistoryScreenState extends State<SensorHistoryScreen> with SingleTi
                 controller: _tabController,
                 children: [
                   HistoryChartCard(
-                    title: 'pH over time',
-                    subtitle: 'Target 5.5 - 6.5',
+                    title: local.phOverTime,
+                    subtitle: 'Target ${widget.phMin} - ${widget.phMax}',
                     series: phSeries,
                     yMin: 4,
                     yMax: 8,
                     unit: '',
                     accent: ColorValues.iotNodeMCUColor,
+                    timestamps: timestamps,
                   ),
                   HistoryChartCard(
-                    title: 'PPM over time',
-                    subtitle: 'Target 800 - 1200',
+                    title: local.ppmOverTime,
+                    subtitle: 'Target ${widget.ppmMin} - ${widget.ppmMax}',
                     series: ppmSeries,
                     yMin: 600,
                     yMax: 1400,
                     unit: ' ppm',
                     accent: ColorValues.iotArduinoColor,
+                    timestamps: timestamps,
                   ),
                 ],
               ),

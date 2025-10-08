@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 
 class SparklinePainter extends CustomPainter {
   final List<double> series;
-  final double t; // animation progress 0..1
+  final double t;
   final double yMin;
   final double yMax;
   final Color color;
-  SparklinePainter({required this.series, required this.t, required this.yMin, required this.yMax, required this.color});
+  final int? highlightIndex;
+
+  SparklinePainter({
+    required this.series,
+    required this.t,
+    required this.yMin,
+    required this.yMax,
+    required this.color,
+    this.highlightIndex,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (series.isEmpty) return;
+    if (series.isEmpty || series.length < 2) return;
+
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -22,13 +32,19 @@ class SparklinePainter extends CustomPainter {
     final path = Path();
     final fillPath = Path();
 
-    double dxStep = size.width / (series.length - 1);
-    double normalize(double v) => (v - yMin) / (yMax - yMin);
+    final dxStep = size.width / (series.length - 1);
+    double normalize(double v) {
+      if (yMax - yMin == 0) return 0.5;
+      return (v - yMin) / (yMax - yMin);
+    }
 
-    for (int i = 0; i < (series.length * t).clamp(1, series.length).toInt(); i++) {
-      double x = i * dxStep;
-      double norm = 1 - normalize(series[i]).clamp(0.0, 1.0);
-      double y = norm * size.height;
+    int end = (series.length * t).clamp(2, series.length.toDouble()).toInt();
+
+    for (int i = 0; i < end; i++) {
+      final x = i * dxStep;
+      final norm = 1 - normalize(series[i]).clamp(0.0, 1.0);
+      final y = norm * size.height;
+
       if (i == 0) {
         path.moveTo(x, y);
         fillPath.moveTo(x, size.height);
@@ -37,9 +53,23 @@ class SparklinePainter extends CustomPainter {
         path.lineTo(x, y);
         fillPath.lineTo(x, y);
       }
+
+      // 🎯 Gambar titik highlight kalau index ini dipilih
+      if (highlightIndex != null && i == highlightIndex) {
+        final circlePaint = Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+        final outline = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+
+        canvas.drawCircle(Offset(x, y), 5, circlePaint);
+        canvas.drawCircle(Offset(x, y), 5, outline);
+      }
     }
-    // close fill
-    fillPath.lineTo(((series.length - 1) * dxStep * t), size.height);
+
+    fillPath.lineTo(path.getBounds().right, size.height);
     fillPath.close();
 
     canvas.drawPath(fillPath, fill);
@@ -47,5 +77,6 @@ class SparklinePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant SparklinePainter oldDelegate) => oldDelegate.t != t || oldDelegate.series != series;
+  bool shouldRepaint(covariant SparklinePainter old) =>
+      old.t != t || old.series != series || old.highlightIndex != highlightIndex;
 }
