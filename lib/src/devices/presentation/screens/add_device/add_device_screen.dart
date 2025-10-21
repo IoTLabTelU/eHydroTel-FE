@@ -48,10 +48,9 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
           context.pop();
         },
         error: (err, _) {
-          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
             context.pop();
-            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+            Toast().showErrorToast(context: context, title: local.error, description: err.toString());
           }
         },
         loading: () {

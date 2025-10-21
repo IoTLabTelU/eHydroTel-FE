@@ -79,7 +79,11 @@ class FancyLoadingDialogState extends State<FancyLoadingDialog> with SingleTicke
               ),
             ),
             const SizedBox(height: 16),
-            Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 6),
             Text(
               local.thisMayTakeAMoment,
