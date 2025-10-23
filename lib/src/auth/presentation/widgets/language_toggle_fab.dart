@@ -16,7 +16,7 @@ class LanguageToggleFAB extends ConsumerStatefulWidget {
     super.key,
     this.width = 120,
     this.height = 44,
-    this.padding = const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+    this.padding = const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
   });
 
   @override
@@ -34,7 +34,7 @@ class _LanguageToggleFABState extends ConsumerState<LanguageToggleFAB> with Sing
 
     // Colors (you can override to use ColorValues from your theme)
     final bg = Colors.white;
-    final activeColor = const Color(0xFF00AA96); // iotMainColor
+    final activeColor = const Color(0xFF222222); // iotMainColor
     final inactiveTextColor = Colors.black87;
 
     return Material(
@@ -55,17 +55,6 @@ class _LanguageToggleFABState extends ConsumerState<LanguageToggleFAB> with Sing
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Background pill
-              AnimatedContainer(
-                duration: _animDuration,
-                curve: Curves.easeInOut,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(widget.height / 2),
-                  color: Colors.grey.shade100,
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-              ),
-
               // Labels - EN (left) and ID (right)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,11 +107,6 @@ class _LanguageToggleFABState extends ConsumerState<LanguageToggleFAB> with Sing
                     ),
                   ),
                 ),
-              ),
-
-              // subtle ripple hint area (optional)
-              Positioned.fill(
-                child: AnimatedOpacity(duration: const Duration(milliseconds: 350), opacity: 0.0, child: Container()),
               ),
             ],
           ),

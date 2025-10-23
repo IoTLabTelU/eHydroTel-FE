@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/auth_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/change_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/landing_screen.dart';
@@ -34,6 +35,17 @@ final router = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const LandingScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/${AuthScreen.path}',
+      name: AuthScreen.path,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const AuthScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -309,6 +321,7 @@ final router = GoRouter(
     final publicPaths = [
       '/',
       '/${LandingScreen.path}',
+      '/${AuthScreen.path}',
       '/${LoginScreen.path}',
       '/${RegisterScreen.path}',
       '/${ChangePasswordScreen.path}',
@@ -319,7 +332,7 @@ final router = GoRouter(
       return '/${LandingScreen.path}';
     }
     if (!isLoggedIn && !publicPaths.contains(state.matchedLocation)) {
-      return '/${LoginScreen.path}';
+      return '/${AuthScreen.path}';
     }
     if (isLoggedIn && publicPaths.contains(state.matchedLocation)) {
       return '/${DashboardScreen.path}';

@@ -9,9 +9,14 @@ class IconAssets {
   static const String logout = 'assets/icons/Logout.svg';
   static const String googleIcon = 'assets/icons/GoogleIcon.svg';
   static const String plantIcon = 'assets/icons/PlantIcon.svg';
+  static const String plant = 'assets/icons/Plant.svg';
+  static const String love = 'assets/icons/Love.svg';
 }
 
-class ImageAssets {}
+class ImageAssets {
+  static const String authBackground = 'assets/img/AuthBackgroundImage.png';
+  static const String logo = 'assets/img/Logo.png';
+}
 
 class LottieAssets {
   static const String iotDevice = 'assets/lottie/iotDevice.json';

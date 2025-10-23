@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/auth/presentation/widgets/auth_appbar_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -25,7 +24,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: Scaffold(
           body: CustomScrollView(
             slivers: [
-              appBarWidget(context),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),

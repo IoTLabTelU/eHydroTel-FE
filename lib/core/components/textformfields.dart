@@ -46,45 +46,48 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(),
+        labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral400),
         border: InputBorder.none,
         errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.danger600, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: ColorValues.danger600),
+          borderRadius: BorderRadius.all(Radius.circular(40)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.iotMainColor, width: 2.0),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: ColorValues.iotMainColor),
+          borderRadius: const BorderRadius.all(Radius.circular(40)),
         ),
         focusedErrorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.danger600, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: ColorValues.danger600),
+          borderRadius: BorderRadius.all(Radius.circular(40)),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.neutral300, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: ColorValues.neutral400),
+          borderRadius: BorderRadius.all(Radius.circular(40)),
         ),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral500),
-        suffixIcon: !widget.obscureText
-            ? widget.suffixIcon
-            : isObscured
-            ? IconButton(
-                icon: const Icon(Icons.visibility_off),
-                onPressed: () {
-                  setState(() {
-                    isObscured = false;
-                  });
-                },
-              )
-            : IconButton(
-                icon: const Icon(Icons.visibility),
-                onPressed: () {
-                  setState(() {
-                    isObscured = true;
-                  });
-                },
-              ),
+        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral400),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: !widget.obscureText
+              ? widget.suffixIcon
+              : isObscured
+              ? IconButton(
+                  icon: const Icon(Icons.visibility_off_outlined),
+                  onPressed: () {
+                    setState(() {
+                      isObscured = false;
+                    });
+                  },
+                )
+              : IconButton(
+                  icon: const Icon(Icons.visibility_outlined),
+                  onPressed: () {
+                    setState(() {
+                      isObscured = true;
+                    });
+                  },
+                ),
+        ),
       ),
       onChanged: widget.onChanged,
       readOnly: widget.readOnly ?? false,

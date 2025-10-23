@@ -10,7 +10,7 @@ class AppThemeData {
       primaryColor: ColorValues.iotMainColor,
       brightness: Brightness.light,
       scaffoldBackgroundColor: ColorValues.whiteColor,
-      textTheme: GoogleFonts.dmSansTextTheme(Typography.blackCupertino),
+      textTheme: GoogleFonts.interTextTheme(Typography.blackCupertino),
       colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.whiteColor, brightness: Brightness.light),
     );
   }
@@ -22,7 +22,7 @@ class AppThemeData {
       primaryColor: ColorValues.iotMainColor,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: ColorValues.blackColor,
-      textTheme: GoogleFonts.dmSansTextTheme(Typography.whiteCupertino),
+      textTheme: GoogleFonts.interTextTheme(Typography.whiteCupertino),
       colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.blackColor, brightness: Brightness.dark),
     );
   }

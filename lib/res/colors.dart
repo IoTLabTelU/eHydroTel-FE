@@ -5,8 +5,8 @@ class ColorValues {
   static Color iotMainColor = hexColorize('#00AA96');
   static Color iotArduinoColor = hexColorize('#F06622');
   static Color iotNodeMCUColor = hexColorize('#2668AF');
-  static Color whiteColor = hexColorize('#F6F6F8');
-  static Color blackColor = hexColorize('#1B1C1D');
+  static const Color whiteColor = Color(0xffffffff);
+  static const Color blackColor = Color(0xff222222);
   static const Color neutral700 = Color(0xff1F1F1F);
   static const Color neutral600 = Color(0xff4B4B4B);
   static const Color neutral500 = Color(0xff8E8E8E);
@@ -39,4 +39,5 @@ class ColorValues {
   static const Color success200 = Color(0xffE5F5EC);
   static const Color success100 = Color(0xffF2FAF6);
   static const Color success50 = Color(0xffFBFEFC);
+  static const Color blueLink = Color(0xff468CD4);
 }
