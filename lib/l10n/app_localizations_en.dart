@@ -9,39 +9,51 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get landingAppTitle => 'Hydroponic IoT \nPlatform';
+  String get landingAppTitle => 'Grow Smart,\nLive Green';
 
   @override
   String get landingAppSubtitle =>
-      'is a platform that allows you to monitor and control your hydroponic needs seamlessly.';
+      'Control your hydroponic\nsystem effortlessly';
 
   @override
-  String get getStartedButton => 'GET STARTED';
+  String get getStartedButton => 'Get Started';
 
   @override
-  String get signInTitle => 'SIGN IN';
+  String get anytime => 'Anytime';
+
+  @override
+  String get anywhere => 'Anywhere';
+
+  @override
+  String get signInTitle => 'Login';
 
   @override
   String get signInSubtitle => 'Welcome back! Please sign in to continue.';
 
   @override
-  String get or => 'OR';
+  String get or => 'or';
 
   @override
-  String get signInWithGoogle => 'Sign In with Google';
+  String get signInWithGoogle => 'Sign in with Google';
 
   @override
   String get dontHaveAccount => 'Don\'t have an account?';
 
   @override
-  String get register => 'Register';
+  String get signUp => 'Sign up';
 
   @override
-  String get registerTitle => 'REGISTER';
+  String get registerTitle => 'Sign up with email';
 
   @override
   String get registerSubtitle =>
       'Looks like you don\\\'t have an account! Please fill the form to create an account.';
+
+  @override
+  String get authDisclaimer => 'By continuing, you agree to our';
+
+  @override
+  String get and => 'and';
 
   @override
   String get alreadyHaveAccount => 'Already have an account?';
@@ -72,7 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get creatingYourAccount => 'Creating your account...';
 
   @override
-  String get forgotPassword => 'Forgot Password?';
+  String get forgotPassword => 'Forgot your Account or Password?';
 
   @override
   String get success => 'Success';

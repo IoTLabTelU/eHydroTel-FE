@@ -9,24 +9,30 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get landingAppTitle => 'Platform IoT \nHidroponik';
+  String get landingAppTitle => 'Grow Smart,\nLive Green';
 
   @override
   String get landingAppSubtitle =>
-      'adalah platform yang memungkinkan Anda memantau dan mengontrol kebutuhan hidroponik Anda dengan mudah.';
+      'Kontrol sistem hidroponik Anda dengan mudah';
 
   @override
-  String get getStartedButton => 'MULAI';
+  String get getStartedButton => 'Mulai';
 
   @override
-  String get signInTitle => 'MASUK';
+  String get anytime => 'Kapan Saja';
+
+  @override
+  String get anywhere => 'Di Mana Saja';
+
+  @override
+  String get signInTitle => 'Masuk';
 
   @override
   String get signInSubtitle =>
       'Selamat datang kembali! Silakan masuk untuk melanjutkan.';
 
   @override
-  String get or => 'ATAU';
+  String get or => 'atau';
 
   @override
   String get signInWithGoogle => 'Masuk dengan Google';
@@ -35,14 +41,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get dontHaveAccount => 'Belum punya akun?';
 
   @override
-  String get register => 'Daftar';
+  String get signUp => 'Daftar';
 
   @override
-  String get registerTitle => 'DAFTAR';
+  String get registerTitle => 'Daftar dengan email';
 
   @override
   String get registerSubtitle =>
       'Sepertinya Anda belum punya akun! Silakan isi formulir untuk membuat akun.';
+
+  @override
+  String get authDisclaimer => 'Dengan melanjutkan, Anda telah menyetujui';
+
+  @override
+  String get and => 'dan';
 
   @override
   String get alreadyHaveAccount => 'Sudah punya akun?';
@@ -74,7 +86,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get creatingYourAccount => 'Membuat akun Anda...';
 
   @override
-  String get forgotPassword => 'Lupa Kata Sandi?';
+  String get forgotPassword => 'Lupa Akun atau Kata Sandi kamu?';
 
   @override
   String get success => 'Berhasil';

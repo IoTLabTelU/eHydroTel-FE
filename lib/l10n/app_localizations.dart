@@ -101,25 +101,37 @@ abstract class AppLocalizations {
   /// No description provided for @landingAppTitle.
   ///
   /// In en, this message translates to:
-  /// **'Hydroponic IoT \nPlatform'**
+  /// **'Grow Smart,\nLive Green'**
   String get landingAppTitle;
 
   /// No description provided for @landingAppSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'is a platform that allows you to monitor and control your hydroponic needs seamlessly.'**
+  /// **'Control your hydroponic\nsystem effortlessly'**
   String get landingAppSubtitle;
 
   /// No description provided for @getStartedButton.
   ///
   /// In en, this message translates to:
-  /// **'GET STARTED'**
+  /// **'Get Started'**
   String get getStartedButton;
+
+  /// No description provided for @anytime.
+  ///
+  /// In en, this message translates to:
+  /// **'Anytime'**
+  String get anytime;
+
+  /// No description provided for @anywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Anywhere'**
+  String get anywhere;
 
   /// No description provided for @signInTitle.
   ///
   /// In en, this message translates to:
-  /// **'SIGN IN'**
+  /// **'Login'**
   String get signInTitle;
 
   /// No description provided for @signInSubtitle.
@@ -131,13 +143,13 @@ abstract class AppLocalizations {
   /// No description provided for @or.
   ///
   /// In en, this message translates to:
-  /// **'OR'**
+  /// **'or'**
   String get or;
 
   /// No description provided for @signInWithGoogle.
   ///
   /// In en, this message translates to:
-  /// **'Sign In with Google'**
+  /// **'Sign in with Google'**
   String get signInWithGoogle;
 
   /// No description provided for @dontHaveAccount.
@@ -146,16 +158,16 @@ abstract class AppLocalizations {
   /// **'Don\'t have an account?'**
   String get dontHaveAccount;
 
-  /// No description provided for @register.
+  /// No description provided for @signUp.
   ///
   /// In en, this message translates to:
-  /// **'Register'**
-  String get register;
+  /// **'Sign up'**
+  String get signUp;
 
   /// No description provided for @registerTitle.
   ///
   /// In en, this message translates to:
-  /// **'REGISTER'**
+  /// **'Sign up with email'**
   String get registerTitle;
 
   /// No description provided for @registerSubtitle.
@@ -163,6 +175,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Looks like you don\\\'t have an account! Please fill the form to create an account.'**
   String get registerSubtitle;
+
+  /// No description provided for @authDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our'**
+  String get authDisclaimer;
+
+  /// No description provided for @and.
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get and;
 
   /// No description provided for @alreadyHaveAccount.
   ///
@@ -221,7 +245,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPassword.
   ///
   /// In en, this message translates to:
-  /// **'Forgot Password?'**
+  /// **'Forgot your Account or Password?'**
   String get forgotPassword;
 
   /// No description provided for @success.
