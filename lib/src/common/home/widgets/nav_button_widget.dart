@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:vector_graphics/vector_graphics_compat.dart';
 
 class NavButtonWidget extends StatelessWidget {
   final Function(int) onPressed;
@@ -36,9 +36,9 @@ class NavButtonWidget extends StatelessWidget {
               opacity: (currentIndex == index) ? 1 : 0.4,
               duration: const Duration(milliseconds: 600),
               curve: Curves.easeIn,
-              child: SvgPicture.asset(
-                icon,
-                colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
+              child: VectorGraphic(
+                loader: AssetBytesLoader(icon),
+                colorFilter: const ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
                 width: widthQuery(context) / 100 * 1.5,
                 height: heightQuery(context) / 100 * 4.5,
               ),

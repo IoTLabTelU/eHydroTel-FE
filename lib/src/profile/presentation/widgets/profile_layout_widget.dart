@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hydro_iot/res/assets.dart';
 import 'package:hydro_iot/res/colors.dart';
 import 'package:hydro_iot/res/text_styles.dart';
+import 'package:vector_graphics/vector_graphics_compat.dart';
 
 class ProfileLayoutWidget extends StatelessWidget {
   final Widget? child;
@@ -11,14 +11,7 @@ class ProfileLayoutWidget extends StatelessWidget {
   final String? userName;
   final String? userEmail;
   final String? imgUrl;
-  const ProfileLayoutWidget({
-    super.key,
-    this.child,
-    this.namePage,
-    this.userName,
-    this.userEmail,
-    this.imgUrl,
-  });
+  const ProfileLayoutWidget({super.key, this.child, this.namePage, this.userName, this.userEmail, this.imgUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +33,7 @@ class ProfileLayoutWidget extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               width: double.infinity,
               height: MediaQuery.of(context).size.height / stackingHeight,
-              child: Text(
-                namePage ?? 'Name Page',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text(namePage ?? 'Name Page', style: Theme.of(context).textTheme.titleLarge),
             ),
 
             /// CONTENT
@@ -61,17 +51,9 @@ class ProfileLayoutWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 55.h),
-                      Text(
-                        userName ?? 'User Name',
-                        style: dmSansHeadText(),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      Text(userName ?? 'User Name', style: dmSansHeadText(), overflow: TextOverflow.ellipsis),
                       SizedBox(height: 1.h),
-                      Text(
-                        userEmail ?? 'User Email',
-                        style: dmSansNormalText(),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      Text(userEmail ?? 'User Email', style: dmSansNormalText(), overflow: TextOverflow.ellipsis),
                       SizedBox(height: 10.h),
 
                       Expanded(
@@ -98,10 +80,7 @@ class ProfileLayoutWidget extends StatelessWidget {
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 10),
               height: spaceHeight * 2,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.transparent,
-              ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.transparent),
               child: Stack(
                 alignment: Alignment.bottomRight,
                 children: [
@@ -111,14 +90,8 @@ class ProfileLayoutWidget extends StatelessWidget {
                     height: 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: ColorValues.iotMainColor,
-                        width: 3,
-                      ),
-                      image: DecorationImage(
-                        image: AssetImage(imgUrl ?? ''),
-                        fit: BoxFit.cover,
-                      ),
+                      border: Border.all(color: ColorValues.iotMainColor, width: 3),
+                      image: DecorationImage(image: AssetImage(imgUrl ?? ''), fit: BoxFit.cover),
                     ),
                   ),
 
@@ -127,14 +100,11 @@ class ProfileLayoutWidget extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: ColorValues.iotMainColor,
                       radius: 15,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: SvgPicture.asset(
-                          IconAssets.pencilIcon,
-                          colorFilter: ColorFilter.mode(
-                            ColorValues.whiteColor,
-                            BlendMode.srcIn,
-                          ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: VectorGraphic(
+                          loader: AssetBytesLoader(IconAssets.pencilIcon),
+                          colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
                         ),
                       ),
                     ),
