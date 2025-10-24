@@ -5,6 +5,7 @@ import 'package:hydro_iot/src/auth/presentation/screens/change_password_screen.d
 import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/landing_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/login_screen.dart';
+import 'package:hydro_iot/src/auth/presentation/screens/otp_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/register_screen.dart';
 import 'package:hydro_iot/src/common/error_screen.dart';
 import 'package:hydro_iot/src/common/home/navbar.dart';
@@ -85,17 +86,33 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/${OtpPasswordScreen.path}',
+      name: OtpPasswordScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: OtpPasswordScreen(email: extra?['email'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
       path: '/${ChangePasswordScreen.path}',
       name: ChangePasswordScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const ChangePasswordScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangePasswordScreen(email: extra?['email'] as String, resetToken: extra?['resetToken'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
+      },
     ),
-
     StatefulShellRoute.indexedStack(
       pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
         key: state.pageKey,
@@ -326,6 +343,7 @@ final router = GoRouter(
       '/${RegisterScreen.path}',
       '/${ChangePasswordScreen.path}',
       '/${ForgotPasswordScreen.path}',
+      '/${OtpPasswordScreen.path}',
     ];
 
     if (isLoggedIn == null) {
