@@ -274,4 +274,69 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get harvest => 'Panen';
+
+  @override
+  String get sendCode => 'Kirim Kode';
+
+  @override
+  String get verifyCode => 'Verifikasi Kode';
+
+  @override
+  String get resetPassword => 'Atur Ulang';
+
+  @override
+  String get enterYourRegisteredEmail =>
+      'Masukkan alamat email anda untuk mengatur ulang kata sandi.';
+
+  @override
+  String get youReceiveOneTimeCode =>
+      'Anda akan menerima kode sekali pakai\nmelalui email anda';
+
+  @override
+  String get forgotYourPassword => 'Lupa Kata Sandi';
+
+  @override
+  String get enterVerificationCode => 'Masukkan Kode Verifikasi';
+
+  @override
+  String get check => 'Cek';
+
+  @override
+  String get digitCode => 'dan masukkan kode 6 digit di sini.';
+
+  @override
+  String get noCode => 'Tak ada kode di kotak masuk?';
+
+  @override
+  String get resendCode => 'Kirim Ulang';
+
+  @override
+  String get changeEmail => 'Ganti Email';
+
+  @override
+  String get setNewPassword => 'Atur Kata Sandi Baru';
+
+  @override
+  String get createNewPassword =>
+      'Buat kata sandi baru yang kuat\nuntuk akun anda.';
+
+  @override
+  String get makeSureItsSomething =>
+      'Pastikan kata sandinya yang dapat\nanda ingat dengan mudah.';
+
+  @override
+  String get verifyingCode => 'Memverifikasi kode...';
+
+  @override
+  String get otpResent => 'Kode OTP telah dikirim ulang.';
+
+  @override
+  String get resettingPassword => 'Mengatur ulang kata sandi...';
+
+  @override
+  String get passwordResetSuccessful =>
+      'Kata sandi telah berhasil diatur ulang. Anda sekarang dapat masuk dengan kata sandi baru Anda.';
+
+  @override
+  String get passwordsDoNotMatch => 'Kata sandi tidak sesuai.';
 }

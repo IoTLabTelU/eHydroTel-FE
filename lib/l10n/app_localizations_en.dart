@@ -271,4 +271,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get harvest => 'Harvest';
+
+  @override
+  String get sendCode => 'Send Code';
+
+  @override
+  String get verifyCode => 'Verify Code';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get enterYourRegisteredEmail =>
+      'Enter your registered email to\nreset your password.';
+
+  @override
+  String get youReceiveOneTimeCode =>
+      'You\'ll receive one-time code\nto your email';
+
+  @override
+  String get forgotYourPassword => 'Forgot Password';
+
+  @override
+  String get enterVerificationCode => 'Enter Verification Code';
+
+  @override
+  String get check => 'Check';
+
+  @override
+  String get digitCode => 'and enter the 6-digit code here.';
+
+  @override
+  String get noCode => 'No code in your inbox?';
+
+  @override
+  String get resendCode => 'Resend Code';
+
+  @override
+  String get changeEmail => 'Change Email';
+
+  @override
+  String get setNewPassword => 'Set New Password';
+
+  @override
+  String get createNewPassword =>
+      'Create a new, strong\npassword for your account.';
+
+  @override
+  String get makeSureItsSomething =>
+      'Make sure it\'s something you can\nremember easily.';
+
+  @override
+  String get verifyingCode => 'Verifying code...';
+
+  @override
+  String get otpResent => 'OTP code has been resent successfully.';
+
+  @override
+  String get resettingPassword => 'Resetting password...';
+
+  @override
+  String get passwordResetSuccessful =>
+      'Password has been reset successfully. You can now log in with your new password.';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match.';
 }

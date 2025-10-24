@@ -601,6 +601,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Harvest'**
   String get harvest;
+
+  /// No description provided for @sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Code'**
+  String get sendCode;
+
+  /// No description provided for @verifyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Code'**
+  String get verifyCode;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @enterYourRegisteredEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your registered email to\nreset your password.'**
+  String get enterYourRegisteredEmail;
+
+  /// No description provided for @youReceiveOneTimeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll receive one-time code\nto your email'**
+  String get youReceiveOneTimeCode;
+
+  /// No description provided for @forgotYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgotYourPassword;
+
+  /// No description provided for @enterVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Verification Code'**
+  String get enterVerificationCode;
+
+  /// No description provided for @check.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get check;
+
+  /// No description provided for @digitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'and enter the 6-digit code here.'**
+  String get digitCode;
+
+  /// No description provided for @noCode.
+  ///
+  /// In en, this message translates to:
+  /// **'No code in your inbox?'**
+  String get noCode;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get resendCode;
+
+  /// No description provided for @changeEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Email'**
+  String get changeEmail;
+
+  /// No description provided for @setNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set New Password'**
+  String get setNewPassword;
+
+  /// No description provided for @createNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new, strong\npassword for your account.'**
+  String get createNewPassword;
+
+  /// No description provided for @makeSureItsSomething.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure it\'s something you can\nremember easily.'**
+  String get makeSureItsSomething;
+
+  /// No description provided for @verifyingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying code...'**
+  String get verifyingCode;
+
+  /// No description provided for @otpResent.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP code has been resent successfully.'**
+  String get otpResent;
+
+  /// No description provided for @resettingPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting password...'**
+  String get resettingPassword;
+
+  /// No description provided for @passwordResetSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Password has been reset successfully. You can now log in with your new password.'**
+  String get passwordResetSuccessful;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get passwordsDoNotMatch;
 }
 
 class _AppLocalizationsDelegate
