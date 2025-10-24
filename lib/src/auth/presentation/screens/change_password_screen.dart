@@ -1,67 +1,102 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/core/core.dart';
-import 'package:hydro_iot/utils/utils.dart';
+import 'package:hydro_iot/src/auth/application/controllers/change_password_controller.dart';
+import 'package:hydro_iot/src/auth/presentation/widgets/change_password_content_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({super.key});
+import '../../../../pkg.dart';
+
+class ChangePasswordScreen extends ConsumerStatefulWidget {
+  const ChangePasswordScreen({super.key, required this.email, required this.resetToken});
 
   static const String path = 'change-password';
+  final String email;
+  final String resetToken;
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController newConfirmController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'CHANGE PASSWORD',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      'Create a new, strong password that you don\'t use before.',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-                    ),
-                    SizedBox(height: 20.h),
-                    TextFormFieldComponent(
-                      label: 'New Password',
-                      controller: newPasswordController,
-                      hintText: 'Enter your new password',
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 20.h),
-                    TextFormFieldComponent(
-                      label: 'Confirm Password',
-                      controller: newConfirmController,
-                      hintText: 'Confirm your new password',
-                      obscureText: true,
-                    ),
-                    SizedBox(height: heightQuery(context) * 0.3),
-                    SizedBox(
-                      width: double.infinity,
-                      child: primaryButton(text: 'VERIFY', onPressed: () {}, context: context),
-                    ),
-                    SizedBox(height: 20.h),
-                  ],
+    final local = AppLocalizations.of(context)!;
+    ref.listen<AsyncValue<void>>(changePasswordControllerProvider, (_, next) {
+      next.whenOrNull(
+        error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
+          if (context.mounted) {
+            context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+          }
+        },
+        loading: () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => FancyLoadingDialog(title: local.resettingPassword),
+          );
+        },
+        data: (response) {
+          if (context.mounted) {
+            context.pop();
+            context.pushReplacement('/login');
+            Toast().showSuccessToast(context: context, title: local.success, description: local.passwordResetSuccessful);
+          }
+        },
+      );
+    });
+    void resetPassword() {
+      if (newPasswordController.text.isEmpty || newConfirmController.text.isEmpty) {
+        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
+        return;
+      }
+      if (newPasswordController.text != newConfirmController.text) {
+        Toast().showErrorToast(context: context, title: local.error, description: local.passwordsDoNotMatch);
+        return;
+      }
+      ref
+          .read(changePasswordControllerProvider.notifier)
+          .resetPassword(email: widget.email, newPassword: newPasswordController.text, resetToken: widget.resetToken);
+    }
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Stack(
+        children: [
+          Container(
+            height: heightQuery(context),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageAssets.authBackground),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
+              ),
+            ),
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Container(
+                decoration: const BoxDecoration(color: ColorValues.whiteColor, shape: BoxShape.circle),
+                margin: EdgeInsets.only(left: 16.w),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
+                  onPressed: () {
+                    context.pop();
+                  },
                 ),
               ),
             ),
-          ],
-        ),
+            body: ChangePasswordContentWidget(
+              newPasswordController: newPasswordController,
+              newConfirmController: newConfirmController,
+              reset: resetPassword,
+            ),
+          ),
+        ],
       ),
     );
   }

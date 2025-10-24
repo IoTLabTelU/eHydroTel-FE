@@ -1,108 +1,79 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/core/core.dart';
-import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/utils/utils.dart';
+import 'package:hydro_iot/src/auth/application/controllers/change_password_controller.dart';
+import 'package:hydro_iot/src/auth/presentation/widgets/forgot_password_content_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+import '../../../../pkg.dart';
+
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   static const String path = 'forgot-password';
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+    ref.listen<AsyncValue<void>>(changePasswordControllerProvider, (_, next) {
+      next.whenOrNull(
+        error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
+          if (context.mounted) {
+            context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+          }
+        },
+      );
+    });
+    void sendCode() {
+      if (emailController.text.isEmpty) {
+        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
+        return;
+      }
+      ref.read(changePasswordControllerProvider.notifier).changePasswordRequest(email: emailController.text);
+      context.push('/verify-otp', extra: {'email': emailController.text});
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: SafeArea(
-        child: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: heightQuery(context) * 0.05),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'RECOVER PASSWORD',
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
-                      ),
-                      SizedBox(height: 20.h),
-                      Text(
-                        'Forgot your password? Don\'t worry, enter your email to reset your current password.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
-                      ),
-                      SizedBox(height: 20.h),
-                      TextFormFieldComponent(
-                        label: 'Email',
-                        controller: emailController,
-                        hintText: 'Enter your email',
-                        obscureText: false,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-
-                      SizedBox(height: 150.h),
-                      SizedBox(
-                        width: double.infinity,
-                        child: primaryButton(
-                          text: 'SUBMIT',
-                          onPressed: () {
-                            context.push('/change-password');
-                          },
-                          context: context,
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2.w),
-                            child: Text('OR', style: Theme.of(context).textTheme.bodyLarge?.copyWith()),
-                          ),
-                          Expanded(
-                            child: Divider(color: ColorValues.neutral400, radius: BorderRadius.circular(10)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                      Center(
-                        child: Text(
-                          'Don\'t have an account?',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyLarge?.copyWith(color: ColorValues.neutral400, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
-                      SizedBox(
-                        width: double.infinity,
-                        child: secondaryButton(
-                          text: 'REGISTER',
-                          onPressed: () {
-                            context.pushReplacement('/register');
-                          },
-                          context: context,
-                        ),
-                      ),
-                    ],
-                  ),
+      child: Stack(
+        children: [
+          Container(
+            height: heightQuery(context),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageAssets.authBackground),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
+              ),
+            ),
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Container(
+                decoration: const BoxDecoration(color: ColorValues.whiteColor, shape: BoxShape.circle),
+                margin: EdgeInsets.only(left: 16.w),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
+                  onPressed: () {
+                    context.pop();
+                  },
                 ),
               ),
-            ],
+            ),
+            body: ForgotPasswordContentWidget(emailController: emailController, send: sendCode),
           ),
-        ),
+        ],
       ),
     );
   }

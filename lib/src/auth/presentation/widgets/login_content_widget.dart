@@ -75,7 +75,9 @@ class LoginContentWidget extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  context.push('/forgot-password');
+                },
                 child: Text(
                   local.forgotPassword,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink),

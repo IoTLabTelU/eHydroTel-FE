@@ -27,10 +27,12 @@ class AuthController extends _$AuthController {
         return user.data!;
       } else {
         state = AsyncValue.error('Session expired, please login again', StackTrace.current);
+        await ref.read(authRepositoryProvider).signOut();
         throw Exception('Session expired, please login again');
       }
     } else {
       state = AsyncValue.error('No active session, please login', StackTrace.current);
+      await ref.read(authRepositoryProvider).signOut();
       throw Exception('No active session, please login');
     }
   }
