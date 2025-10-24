@@ -1,8 +1,8 @@
-# Hydro-IoT
+# ꫀHydrotel
 
 Characteristics:
 
-- Clean Architecture
+- Clean Architecture w/ Code Generation
 - State Management: riverpod
 - Routing: go_router
 - Data Modelling: freezed & json_serializable
@@ -19,7 +19,7 @@ Characteristics:
 
 ## Referensi
 
-- [Riverpod Docs](https://riverpod.dev/docs/essentials/first_request)
+- [Riverpod Docs](https://riverpod.dev/docs/concepts/about_code_generation)
 - [Clean Architecture Introduction](https://codewithandrea.com/articles/flutter-app-architecture-riverpod-introduction/)
 - [Flutter Packages](https://pub.dev/)
 
