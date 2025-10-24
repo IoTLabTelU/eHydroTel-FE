@@ -24,6 +24,8 @@ class Toast {
       toastDuration: const Duration(seconds: 5),
       animationDuration: const Duration(milliseconds: 150),
       width: widthQuery(context) * 0.8,
+      borderRadius: 40,
+      displayCloseButton: false,
     ).show(context);
   }
 
@@ -40,6 +42,8 @@ class Toast {
       toastDuration: const Duration(seconds: 5),
       animationDuration: const Duration(milliseconds: 150),
       width: widthQuery(context) * 0.8,
+      borderRadius: 40,
+      displayCloseButton: false,
     ).show(context);
   }
 
@@ -56,6 +60,8 @@ class Toast {
       toastDuration: const Duration(seconds: 5),
       animationDuration: const Duration(milliseconds: 150),
       width: widthQuery(context) * 0.8,
+      borderRadius: 40,
+      displayCloseButton: false,
     ).show(context);
   }
 }
