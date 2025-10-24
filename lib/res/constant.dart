@@ -19,7 +19,7 @@ class EndpointStrings {
   static final login = '$baseUrl/auth/login';
   static final googleLogin = '$baseUrl/auth/google';
   static final register = '$baseUrl/auth/register';
-  static final resetPassword = '$baseUrl/auth/reset-password';
+  static final resetPassword = '$baseUrl/auth/password/reset';
   static final userProfile = '$baseUrl/auth/profile';
   static final updateProfile = '$baseUrl/users/profile';
   static final devices = '$baseUrl/devices';
@@ -31,6 +31,8 @@ class EndpointStrings {
   static final cropcycleByDevice = '$cropcycle/device';
   static final sensors = '$baseUrl/sensors';
   static final historySensor = '$sensors/history';
+  static final sendEmail = '$resetPassword/request';
+  static final verifyOtp = '$resetPassword/verify';
 }
 
 enum DeviceStatus { active, idle, critical }
