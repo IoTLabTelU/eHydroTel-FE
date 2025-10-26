@@ -6,7 +6,7 @@ import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_for_devices_controller.dart';
 import 'package:hydro_iot/src/dashboard/domain/entities/crop_cycle_entity.dart';
-import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 

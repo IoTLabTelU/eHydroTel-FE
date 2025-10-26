@@ -44,7 +44,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: searchButton(onPressed: () => context.push('/dashboard/${SearchDeviceScreen.path}'), context: context),
+              child: searchButton(
+                onPressed: () => context.push('/dashboard/${SearchDeviceScreen.path}'),
+                context: context,
+                text: '${local.searchDevices}...',
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
