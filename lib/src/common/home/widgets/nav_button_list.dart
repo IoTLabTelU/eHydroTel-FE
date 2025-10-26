@@ -1,8 +1,8 @@
-import 'package:hydro_iot/res/assets.dart';
+import 'package:hydro_iot/res/nav_icons.dart';
 
-List<Map<String, String>> navButtonList = [
-  {'icon': IconAssets.dashboardIcon, 'text': 'Dashboard'},
-  {'icon': IconAssets.deviceIcon, 'text': 'Devices'},
-  {'icon': IconAssets.historyIcon, 'text': 'Notification'},
-  {'icon': IconAssets.profileIcon, 'text': 'Profile'},
+List<Map<String, dynamic>> navButtonList = [
+  {'icon': NavIcons.plant, 'text': 'Plants'},
+  {'icon': NavIcons.device, 'text': 'Devices'},
+  {'icon': NavIcons.notification2, 'text': 'Activity'},
+  {'icon': NavIcons.profile, 'text': 'Account'},
 ];
