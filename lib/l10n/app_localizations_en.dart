@@ -124,7 +124,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addSession => 'Add Session';
 
   @override
-  String get welcome => 'Welcome';
+  String get welcome => 'Hi there';
+
+  @override
+  String get letsgrow => 'Let\'s grow something';
+
+  @override
+  String get amazing => 'amazing';
 
   @override
   String get yourDevices => 'Your Devices';
@@ -142,7 +148,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
-  String get addNewSession => 'Add New Session';
+  String get newSession => 'New Session';
 
   @override
   String get addDevice => 'Add Device';
@@ -336,4 +342,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Passwords do not match.';
+
+  @override
+  String get searchSessionOrPlants => 'Search sessions or plants';
+
+  @override
+  String get findAndManage => 'Find and manage your growing spaces';
+
+  @override
+  String get noResultsFound => 'No results found';
+
+  @override
+  String get tryAnotherName => 'Try another name or check your spelling';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get autoSetBasedOnPlantType => 'Auto-set based on your plant type';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get thresholdSettings => 'Threshold Settings';
+
+  @override
+  String get rangeAvailable => 'Range Available';
+
+  @override
+  String get customizeValues => 'Customize values';
+
+  @override
+  String get revertToAutoValues => 'Revert to auto values';
+
+  @override
+  String get editSession => 'Edit Session';
 }

@@ -40,4 +40,15 @@ class ColorValues {
   static const Color success100 = Color(0xffF2FAF6);
   static const Color success50 = Color(0xffFBFEFC);
   static const Color blueLink = Color(0xff468CD4);
+  static const Color blueProgress = Color(0xff2B93FF);
+  static const Color green50 = Color(0xffF6F9F0);
+  static const Color green100 = Color(0xffe2eed0);
+  static const Color green200 = Color(0xffd4e5b9);
+  static const Color green300 = Color(0xffc0d998);
+  static const Color green400 = Color(0xffb4d285);
+  static const Color green500 = Color(0xffa1c766);
+  static const Color green600 = Color(0xff93b55d);
+  static const Color green700 = Color(0xff728d48);
+  static const Color green800 = Color(0xff596d38);
+  static const Color green900 = Color(0xff44542b);
 }

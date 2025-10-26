@@ -126,7 +126,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get addSession => 'Tambah Sesi';
 
   @override
-  String get welcome => 'Selamat Datang';
+  String get welcome => 'Haiii';
+
+  @override
+  String get letsgrow => 'Ayo tanam sesuatu';
+
+  @override
+  String get amazing => 'yang menakjubkan';
 
   @override
   String get yourDevices => 'Perangkat Anda';
@@ -144,7 +150,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get logout => 'Keluar';
 
   @override
-  String get addNewSession => 'Tambah Sesi Baru';
+  String get newSession => 'Sesi Tanam Baru';
 
   @override
   String get addDevice => 'Tambah';
@@ -339,4 +345,41 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Kata sandi tidak sesuai.';
+
+  @override
+  String get searchSessionOrPlants => 'Cari sesi atau tanaman';
+
+  @override
+  String get findAndManage => 'Temukan dan kelola ruang tanam Anda';
+
+  @override
+  String get noResultsFound => 'Tidak ada hasil ditemukan';
+
+  @override
+  String get tryAnotherName => 'Coba nama lain atau periksa ejaan Anda';
+
+  @override
+  String get cancel => 'Batal';
+
+  @override
+  String get autoSetBasedOnPlantType =>
+      'Diatur otomatis berdasarkan jenis tanaman Anda';
+
+  @override
+  String get save => 'Simpan';
+
+  @override
+  String get thresholdSettings => 'Pengaturan Ambang Batas';
+
+  @override
+  String get rangeAvailable => 'Rentang Tersedia';
+
+  @override
+  String get customizeValues => 'Sesuaikan nilai';
+
+  @override
+  String get revertToAutoValues => 'Kembalikan ke nilai otomatis';
+
+  @override
+  String get editSession => 'Ubah Sesi';
 }

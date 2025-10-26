@@ -27,7 +27,7 @@ class DeviceCard extends StatelessWidget {
 
   String _getStatusText() {
     if (!isOnline) return getDeviceStatusText(DeviceStatus.idle);
-    if (ssid.isEmpty) return getDeviceStatusText(DeviceStatus.critical);
+    if (ssid.isEmpty) return getDeviceStatusText(DeviceStatus.error);
     return getDeviceStatusText(DeviceStatus.active);
   }
 

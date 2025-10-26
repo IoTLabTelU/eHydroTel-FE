@@ -1,3 +1,4 @@
+import 'package:hydro_iot/src/dashboard/data/models/edit_session_data.dart';
 import 'package:hydro_iot/src/dashboard/data/models/session_data.dart';
 
 import '../../domain/entities/crop_cycle_response.dart';
@@ -50,20 +51,32 @@ class CropCycleRepositoryImpl implements CropCycleRepository {
   }
 
   @override
-  Future<bool> deleteCropCycle(String id) {
-    // TODO: implement deleteCropCycle
-    throw UnimplementedError();
+  Future<bool> deleteCropCycle(String id) async {
+    try {
+      final response = await apiService.deleteCropCycle(id);
+      return response.isSuccess;
+    } catch (e) {
+      throw Exception('Failed to delete crop cycle: $e');
+    }
   }
 
   @override
-  Future<bool> endCropCycle(String id) {
-    // TODO: implement endCropCycle
-    throw UnimplementedError();
+  Future<bool> endCropCycle(String id) async {
+    try {
+      final response = await apiService.endCropCycle(id);
+      return response.isSuccess;
+    } catch (e) {
+      throw Exception('Failed to end crop cycle: $e');
+    }
   }
 
   @override
-  Future<bool> updateCropCycle(String id, SessionData cropCycleData) {
-    // TODO: implement updateCropCycle
-    throw UnimplementedError();
+  Future<bool> updateCropCycle(String id, EditSessionData cropCycleData) async {
+    try {
+      final response = await apiService.updateCropCycle(id, cropCycleData);
+      return response.isSuccess;
+    } catch (e) {
+      throw Exception('Failed to update crop cycle: $e');
+    }
   }
 }

@@ -16,6 +16,7 @@ sealed class PlantEntity with _$PlantEntity {
     required String? imageUrl,
     required String? createdBy,
     required bool isGlobal,
+    required int? expectedDurationDays,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _PlantEntity;

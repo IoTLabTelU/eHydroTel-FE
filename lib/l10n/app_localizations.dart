@@ -323,8 +323,20 @@ abstract class AppLocalizations {
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome'**
+  /// **'Hi there'**
   String get welcome;
+
+  /// No description provided for @letsgrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s grow something'**
+  String get letsgrow;
+
+  /// No description provided for @amazing.
+  ///
+  /// In en, this message translates to:
+  /// **'amazing'**
+  String get amazing;
 
   /// No description provided for @yourDevices.
   ///
@@ -356,11 +368,11 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get logout;
 
-  /// No description provided for @addNewSession.
+  /// No description provided for @newSession.
   ///
   /// In en, this message translates to:
-  /// **'Add New Session'**
-  String get addNewSession;
+  /// **'New Session'**
+  String get newSession;
 
   /// No description provided for @addDevice.
   ///
@@ -721,6 +733,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match.'**
   String get passwordsDoNotMatch;
+
+  /// No description provided for @searchSessionOrPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Search sessions or plants'**
+  String get searchSessionOrPlants;
+
+  /// No description provided for @findAndManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Find and manage your growing spaces'**
+  String get findAndManage;
+
+  /// No description provided for @noResultsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResultsFound;
+
+  /// No description provided for @tryAnotherName.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name or check your spelling'**
+  String get tryAnotherName;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @autoSetBasedOnPlantType.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-set based on your plant type'**
+  String get autoSetBasedOnPlantType;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @thresholdSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Threshold Settings'**
+  String get thresholdSettings;
+
+  /// No description provided for @rangeAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Range Available'**
+  String get rangeAvailable;
+
+  /// No description provided for @customizeValues.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize values'**
+  String get customizeValues;
+
+  /// No description provided for @revertToAutoValues.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert to auto values'**
+  String get revertToAutoValues;
+
+  /// No description provided for @editSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Session'**
+  String get editSession;
 }
 
 class _AppLocalizationsDelegate

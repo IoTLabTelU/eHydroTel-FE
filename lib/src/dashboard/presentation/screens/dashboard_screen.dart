@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_controller.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_screen.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
-import 'package:hydro_iot/src/dashboard/presentation/widgets/session_modal.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/status_filter_overlay_widget.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 import '../../application/providers/crop_cycle_providers.dart';
 import '../../application/state/crop_cycle_state.dart';
 
@@ -24,13 +28,9 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  var items = [
-    DropdownItem(label: 'All', value: 'All'),
-    DropdownItem(label: 'Active Only', value: 'Active'),
-    DropdownItem(label: 'Inactive Only', value: 'Inactive'),
-  ];
-  final controller = MultiSelectController<String>();
   bool isStopped = false;
+
+  DeviceStatus? get filterDevices => ref.watch(filterDevicesProvider);
 
   @override
   void initState() {
@@ -54,87 +54,84 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           userProvider.when(
             data: (user) => DashboardHeaderWidget(username: user!.name.split(' ').first),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, _) => Center(child: Text('Error: $err')),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: searchButton(
-                  onPressed: () => context.push('/dashboard/${SearchCropCycleScreen.path}'),
-                  context: context,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 6,
-                child: MultiDropdown<String>(
-                  items: items,
-                  controller: controller,
-                  enabled: true,
-                  singleSelect: true,
-                  fieldDecoration: FieldDecoration(
-                    backgroundColor: ColorValues.whiteColor,
-                    hintText: local.filterSessions,
-                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.blackColor, weight: FontWeight.w500),
-                    showClearIcon: false,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorValues.iotNodeMCUColor, width: 2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
-                    ),
-                  ),
-                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
-                  dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-                    disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                    textColor: ColorValues.blackColor,
-                    selectedTextColor: ColorValues.iotMainColor,
-                  ),
-                ),
-              ),
-            ],
+            error: (err, _) => Center(child: Text('${local.error} $err')),
           ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(local.plantSessions, style: Theme.of(context).textTheme.titleLarge?.copyWith()),
-              ElevatedButton.icon(
-                onPressed: () {
-                  showModalBottomSheet(
-                    constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
-                    useRootNavigator: true,
-                    isScrollControlled: true,
+              Expanded(
+                flex: 5,
+                child: searchButton(
+                  onPressed: () => context.push('/dashboard/${SearchCropCycleScreen.path}'),
+                  context: context,
+                  text: '${local.searchSessionOrPlants}...',
+                ),
+              ),
+              const SizedBox(width: 2),
+              Flexible(
+                child: SizedBox(
+                  width: 40.w,
+                  height: 40.h,
+                  child: filterButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        barrierColor: Colors.transparent,
+                        builder: (_) => Dialog(
+                          insetPadding: EdgeInsets.only(
+                            left: widthQuery(context) * 0.2,
+                            bottom: heightQuery(context) * 0.35,
+                          ),
+                          backgroundColor: Colors.transparent,
+                          child: StatefulBuilder(
+                            builder: (context, setState) {
+                              return GestureDetector(
+                                onTap: () => FocusScope.of(context).unfocus(),
+                                child: StatusFilterPopup(
+                                  onStatusSelected: (status) {
+                                    ref.read(filterDevicesProvider.notifier).setPlantStatus(status);
+                                  },
+                                  selectedStatus: ref.watch(filterDevicesProvider),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                     context: context,
-                    builder: (context) => Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: SessionModal(
-                        onSessionAdded: (sessionData) {
-                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
-                        },
-                      ),
-                    ),
-                  );
-                },
-                label: Text(local.addSession),
-                icon: const Icon(Icons.add),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorValues.iotMainColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 2),
+              Flexible(
+                child: SizedBox(
+                  width: 40.w,
+                  height: 40.h,
+                  child: addButton(
+                    context: context,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        context: context,
+                        builder: (context) => SessionModal(
+                          onSessionAdded: (sessionData) {
+                            ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-
+          const SizedBox(height: 20),
           _buildCropCycleContent(cropCycleState),
-
-          SizedBox(height: heightQuery(context) * 0.3),
         ],
       ),
     );
@@ -163,61 +160,79 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     if (state.cropCycleResponse != null && state.cropCycleResponse!.data.isNotEmpty) {
       return Column(
-        children: state.cropCycleResponse!.data.map((cropCycle) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: PlantSessionCard(
-              onDashboard: true,
-              deviceName: cropCycle.device.name,
-              plantName: cropCycle.plant.name,
-              startDate: cropCycle.startedAt,
-              totalDays: cropCycle.expectedEnd != null ? DateTime.now().difference(cropCycle.expectedEnd!).inDays : 30,
-              minPh: cropCycle.phMin,
-              maxPh: cropCycle.phMax,
-              minPpm: cropCycle.ppmMin.toDouble(),
-              maxPpm: cropCycle.ppmMax.toDouble(),
-              onHistoryTap: () => context.push(
-                '/devices/${cropCycle.device.serialNumber}/history',
-                extra: {
-                  'deviceName': cropCycle.device.name,
-                  'phMin': cropCycle.phMin,
-                  'ppmMin': cropCycle.ppmMin,
-                  'phMax': cropCycle.phMax,
-                  'ppmMax': cropCycle.ppmMax,
-                },
-              ),
-              onStopSession: () {
-                showAdaptiveDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (context) {
-                    return alertDialog(
+        children: state.cropCycleResponse!.data
+            .where((e) {
+              if (filterDevices != null) return e.device.status == getDeviceStatusText(filterDevices!);
+              return true;
+            })
+            .map((cropCycle) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: CropCycleCard(
+                  deviceName: cropCycle.device.name,
+                  onEditPressed: () {
+                    showModalBottomSheet(
+                      useRootNavigator: true,
+                      isScrollControlled: true,
+                      useSafeArea: true,
                       context: context,
-                      title: 'Stop Session',
-                      content: 'Are you sure you want to stop this session?',
-                      onConfirm: () {
-                        Navigator.of(context).pop();
+                      builder: (context) => EditSessionModal(
+                        cropCycleId: cropCycle.id,
+                        device: cropCycle.device.name,
+                        plant: cropCycle.plant.name,
+                        sessionName: cropCycle.name,
+                        phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
+                        ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
+                        onSessionEdited: (sessionData) {
+                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                        },
+                      ),
+                    );
+                  },
+                  cropCycleName: cropCycle.name,
+                  cropCycleType: cropCycle.plant.name,
+                  plantedAt: cropCycle.startedAt,
+                  phValue: 4.5.toString(),
+                  ppmValue: 900.toString(),
+                  phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
+                  ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
+                  deviceStatus: cropCycle.device.status,
+                  progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
+                  totalDay: cropCycle.expectedEnd != null
+                      ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays
+                      : 30,
+                  onHistoryPressed: () {
+                    context.push(
+                      '/devices/${cropCycle.device.serialNumber}/history',
+                      extra: {
+                        'deviceName': cropCycle.device.name,
+                        'phMin': cropCycle.phMin,
+                        'ppmMin': cropCycle.ppmMin,
+                        'phMax': cropCycle.phMax,
+                        'ppmMax': cropCycle.ppmMax,
                       },
                     );
                   },
-                );
-              },
-              onTap: () {},
-              // onTap: () => context.push(
-              //   '/devices/${cropCycle.device.serialNumber}',
-              //   extra: {
-              //     'deviceName': cropCycle.device.name,
-              //     'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-              //     'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-              //     'deviceDescription':
-              //         'This is the Description of ${cropCycle.device.name}',
-              //   },
-              // ),
-              isStopped: !cropCycle.active,
-              onRestartSession: () {},
-            ),
-          );
-        }).toList(),
+                  onHarvestPressed: () {
+                    showAdaptiveDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (context) {
+                        return alertDialog(
+                          context: context,
+                          title: 'Harvest',
+                          content: 'Are you sure you want to harvest this crops?',
+                          onConfirm: () {
+                            ref.read(cropCycleControllerProvider.notifier).endCropCycleSession(cropCycle.id);
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            })
+            .toList(),
       );
     }
 
@@ -246,7 +261,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 }
-
 
 
         //  PlantSessionCard(

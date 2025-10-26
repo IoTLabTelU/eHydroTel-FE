@@ -35,28 +35,30 @@ class EndpointStrings {
   static final verifyOtp = '$resetPassword/verify';
 }
 
-enum DeviceStatus { active, idle, critical }
+enum DeviceStatus { active, idle, error }
 
 String getDeviceStatusText(DeviceStatus status) {
   switch (status) {
     case DeviceStatus.active:
-      return 'Active';
+      return 'ACTIVE';
     case DeviceStatus.idle:
-      return 'Idle';
-    case DeviceStatus.critical:
-      return 'Critical';
+      return 'IDLE';
+    case DeviceStatus.error:
+      return 'ERROR';
   }
 }
 
-enum PlantSessionStatus { active, completed, stopped }
+enum PlantStatus { planned, ongoing, finished, failed }
 
-String getPlantSessionStatusText(PlantSessionStatus status) {
+String getPlantStatusText(PlantStatus status) {
   switch (status) {
-    case PlantSessionStatus.active:
-      return 'Active';
-    case PlantSessionStatus.completed:
-      return 'Completed';
-    case PlantSessionStatus.stopped:
-      return 'Stopped';
+    case PlantStatus.planned:
+      return 'PLANNED';
+    case PlantStatus.ongoing:
+      return 'ONGOING';
+    case PlantStatus.finished:
+      return 'FINISHED';
+    case PlantStatus.failed:
+      return 'FAILED';
   }
 }

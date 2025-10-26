@@ -1,4 +1,5 @@
 import 'package:hydro_iot/src/dashboard/application/providers/crop_cycle_providers.dart';
+import 'package:hydro_iot/src/dashboard/data/models/edit_session_data.dart';
 import 'package:hydro_iot/src/dashboard/data/models/session_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,12 +13,28 @@ class CropCycleController extends _$CropCycleController {
   Future<void> addCropCycleSession(SessionData sessionData) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final res = await ref
-          .read(cropCycleRepositoryProvider)
-          .addCropCycle(sessionData);
-      if (!res) {
-        throw Exception('Failed to add crop cycle session');
-      }
+      await ref.read(cropCycleRepositoryProvider).addCropCycle(sessionData);
+    });
+  }
+
+  Future<void> updateCropCycleSession(String id, EditSessionData sessionData) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(cropCycleRepositoryProvider).updateCropCycle(id, sessionData);
+    });
+  }
+
+  Future<void> deleteCropCycleSession(String id) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(cropCycleRepositoryProvider).deleteCropCycle(id);
+    });
+  }
+
+  Future<void> endCropCycleSession(String id) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(cropCycleRepositoryProvider).endCropCycle(id);
     });
   }
 }

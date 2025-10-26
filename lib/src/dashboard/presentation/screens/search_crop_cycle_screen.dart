@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
-import 'package:hydro_iot/core/components/plant_session_card.dart';
-import 'package:hydro_iot/l10n/app_localizations.dart';
-import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/utils/utils.dart';
+import 'package:vector_graphics/vector_graphics.dart';
+import '../../../../pkg.dart';
 import '../../application/providers/crop_cycle_providers.dart';
 import '../../application/state/crop_cycle_state.dart';
 import 'dart:async';
@@ -53,52 +51,93 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
     final local = AppLocalizations.of(context)!;
     final searchState = ref.watch(searchCropCycleNotifierProvider);
 
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 18.w),
-      children: [
-        const SizedBox(height: 20),
-        SearchBar(
-          hintText: local.searchCropCycles,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 5.w),
-            child: const Icon(Icons.search),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: heightQuery(context) * 0.1,
+        backgroundColor: Colors.transparent,
+        leading: null,
+        automaticallyImplyLeading: false,
+        actionsPadding: EdgeInsets.symmetric(horizontal: 18.w),
+        flexibleSpace: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 2,
+                child: searchButton(
+                  onPressed: () {},
+                  context: context,
+                  enabled: true,
+                  controller: searchController,
+                  text: local.searchSessionOrPlants,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Flexible(
+                child: cancelButton(
+                  context: context,
+                  onPressed: () {
+                    setState(() {
+                      searchController.clear();
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
-          autoFocus: true,
-          keyboardType: TextInputType.text,
-          controller: searchController,
-          onTapOutside: (event) {
-            FocusScope.of(context).unfocus();
-            if (searchController.text.isEmpty) {
-              context.pop();
-            }
-          },
-          backgroundColor: const WidgetStateColor.fromMap({
-            WidgetState.any: ColorValues.neutral200,
-            WidgetState.focused: ColorValues.neutral100,
-            WidgetState.hovered: ColorValues.neutral300,
-          }),
         ),
-        const SizedBox(height: 20),
-        _buildSearchResults(searchState),
-      ],
+      ),
+      body: searchState is CropCycleStateInitial
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.searchPlant), width: 40, height: 40),
+                  const SizedBox(height: 16),
+                  Text(
+                    local.searchSessionOrPlants,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    local.findAndManage,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          : searchState is CropCycleStateLoaded && searchState.cropCycleResponse!.data.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.notfoundSearch), width: 40, height: 40),
+                  const SizedBox(height: 16),
+                  Text(
+                    local.noResultsFound,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    local.tryAnotherName,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          : ListView(
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              children: [const SizedBox(height: 20), _buildSearchResults(searchState)],
+            ),
     );
   }
 
   Widget _buildSearchResults(CropCycleState state) {
-    final local = AppLocalizations.of(context)!;
-    if (state is CropCycleStateInitial) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.search, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(local.startTypingToSearch, style: TextStyle(fontSize: 16, color: Colors.grey.shade600)),
-          ],
-        ),
-      );
-    }
-
     if (state is CropCycleStateLoading) {
       return const Center(child: FancyLoading(title: 'Searching crop cycles...'));
     }
@@ -131,52 +170,47 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
         children: cropCycles.map((cropCycle) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: PlantSessionCard(
-              onDashboard: true,
+            child: CropCycleCard(
               deviceName: cropCycle.device.name,
-              plantName: cropCycle.plant.name,
-              startDate: cropCycle.startedAt,
-              totalDays: DateTime.now().difference(cropCycle.startedAt).inDays,
-              minPh: cropCycle.phMin,
-              maxPh: cropCycle.phMax,
-              minPpm: cropCycle.ppmMin.toDouble(),
-              maxPpm: cropCycle.ppmMax.toDouble(),
-              onHistoryTap: () => context.push(
-                '/devices/${cropCycle.device.serialNumber}/history',
-                extra: {
-                  'deviceName': cropCycle.device.name,
-                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
-                },
-              ),
-              onStopSession: () {
+              onEditPressed: () {},
+              cropCycleName: cropCycle.name,
+              cropCycleType: cropCycle.plant.name,
+              plantedAt: cropCycle.startedAt,
+              phValue: 4.5.toString(),
+              ppmValue: 900.toString(),
+              phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
+              ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
+              deviceStatus: cropCycle.status,
+              progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
+              totalDay: cropCycle.expectedEnd != null ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays : 30,
+              onHistoryPressed: () {
+                context.push(
+                  '/devices/${cropCycle.device.serialNumber}/history',
+                  extra: {
+                    'deviceName': cropCycle.device.name,
+                    'phMin': cropCycle.phMin,
+                    'ppmMin': cropCycle.ppmMin,
+                    'phMax': cropCycle.phMax,
+                    'ppmMax': cropCycle.ppmMax,
+                  },
+                );
+              },
+              onHarvestPressed: () {
                 showAdaptiveDialog(
                   barrierDismissible: true,
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Stop Session'),
-                      content: const Text('Are you sure you want to stop this session?'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-                        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Stop')),
-                      ],
+                    return alertDialog(
+                      context: context,
+                      title: 'Harvest',
+                      content: 'Are you sure you want to harvest this crops?',
+                      onConfirm: () {
+                        Navigator.of(context).pop();
+                      },
                     );
                   },
                 );
               },
-              onTap: () => context.push(
-                '/devices/${cropCycle.device.serialNumber}',
-                extra: {
-                  'deviceName': cropCycle.device.name,
-                  'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-                  'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-                  'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
-                },
-              ),
-              isStopped: !cropCycle.active,
-              onRestartSession: () {},
             ),
           );
         }).toList(),
