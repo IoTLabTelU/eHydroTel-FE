@@ -1,3 +1,4 @@
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:vector_graphics/vector_graphics_compat.dart';
 
 import '../../../../pkg.dart';
@@ -26,9 +27,11 @@ class DashboardHeaderWidget extends StatelessWidget {
               children: [
                 Text(local.amazing, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                 SizedBox(width: widthQuery(context) * 0.02),
-                const VectorGraphic(
-                  loader: AssetBytesLoader(IconAssets.plant),
-                  colorFilter: ColorFilter.mode(ColorValues.green500, BlendMode.srcIn),
+                const Skeleton.shade(
+                  child: VectorGraphic(
+                    loader: AssetBytesLoader(IconAssets.plant),
+                    colorFilter: ColorFilter.mode(ColorValues.green500, BlendMode.srcIn),
+                  ),
                 ),
               ],
             ),

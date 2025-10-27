@@ -27,18 +27,25 @@ class _NavbarState extends State<Navbar> {
       onPopInvokedWithResult: (didPop, result) {
         return;
       },
-      child: SafeArea(
-        child: Scaffold(
-          body: widget.navigationShell,
-          bottomNavigationBar: NavButtonWidget(
-            currentIndex: currentIndex,
-            onPressed: (index) {
-              setState(() {
-                currentIndex = index;
-                widget.navigationShell.goBranch(index);
-              });
-            },
-          ),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Positioned.fill(child: widget.navigationShell),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 10,
+              child: NavButtonWidget(
+                currentIndex: currentIndex,
+                onPressed: (index) {
+                  setState(() {
+                    currentIndex = index;
+                    widget.navigationShell.goBranch(index);
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

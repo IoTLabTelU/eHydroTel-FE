@@ -83,7 +83,7 @@ class CropCycleCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
                   child: Column(
@@ -96,7 +96,7 @@ class CropCycleCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 3),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -104,7 +104,7 @@ class CropCycleCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       DeviceStatusCard(status: deviceStatus, deviceName: deviceName),
                       const SizedBox(height: 8),
                       Row(
@@ -297,7 +297,7 @@ class DeviceStatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: heightQuery(context) * 0.055),
+            SizedBox(height: heightQuery(context) * 0.06),
             Text(deviceName, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           ],
         ),

@@ -14,11 +14,7 @@ class NavButtonWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(widthQuery(context) * 0.02),
       margin: EdgeInsets.symmetric(vertical: heightQuery(context) * 0.02, horizontal: widthQuery(context) * 0.03),
-      decoration: BoxDecoration(
-        color: ColorValues.neutral200,
-        boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black.withValues(alpha: .1))],
-        borderRadius: BorderRadius.circular(40),
-      ),
+      decoration: BoxDecoration(color: ColorValues.neutral200, borderRadius: BorderRadius.circular(40)),
       child: GNav(
         gap: 8,
         activeColor: Colors.black,

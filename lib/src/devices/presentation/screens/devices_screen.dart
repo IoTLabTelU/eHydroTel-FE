@@ -37,152 +37,155 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     final devices = ref.watch(devicesControllerProvider);
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: searchButton(
-                onPressed: () => context.push('/dashboard/${SearchDeviceScreen.path}'),
-                context: context,
-                text: '${local.searchDevices}...',
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 18.w),
+      child: ListView(
+        children: [
+          const SizedBox(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: searchButton(
+                  onPressed: () => context.push('/dashboard/${SearchDeviceScreen.path}'),
+                  context: context,
+                  text: '${local.searchDevices}...',
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 6,
-              child: MultiDropdown<String>(
-                items: items,
-                controller: controller,
-                enabled: true,
-                singleSelect: true,
-                fieldDecoration: FieldDecoration(
-                  backgroundColor: ColorValues.whiteColor,
-                  hintText: local.filterDevices,
-                  hintStyle: dmSansSmallText(size: 12, color: ColorValues.blackColor, weight: FontWeight.w500),
-                  showClearIcon: false,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: ColorValues.iotNodeMCUColor, width: 2),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 6,
+                child: MultiDropdown<String>(
+                  items: items,
+                  controller: controller,
+                  enabled: true,
+                  singleSelect: true,
+                  fieldDecoration: FieldDecoration(
+                    backgroundColor: ColorValues.whiteColor,
+                    hintText: local.filterDevices,
+                    hintStyle: dmSansSmallText(size: 12, color: ColorValues.blackColor, weight: FontWeight.w500),
+                    showClearIcon: false,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: ColorValues.iotNodeMCUColor, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: ColorValues.iotMainColor, width: 3),
+                  dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
+                  dropdownItemDecoration: DropdownItemDecoration(
+                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+                    disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+                    textColor: ColorValues.blackColor,
+                    selectedTextColor: ColorValues.iotMainColor,
                   ),
                 ),
-                dropdownDecoration: const DropdownDecoration(marginTop: 2, maxHeight: 500),
-                dropdownItemDecoration: DropdownItemDecoration(
-                  selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-                  disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                  textColor: ColorValues.blackColor,
-                  selectedTextColor: ColorValues.iotMainColor,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(local.yourDevices, style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
+              Flexible(
+                child: ElevatedButton.icon(
+                  onPressed: () => context.push('/devices/create'),
+                  label: Text(local.addDevice, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  icon: const Icon(Icons.add),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorValues.iotMainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(local.yourDevices, style: Theme.of(context).textTheme.headlineSmall?.copyWith()),
-            Flexible(
-              child: ElevatedButton.icon(
-                onPressed: () => context.push('/devices/create'),
-                label: Text(local.addDevice, maxLines: 2, overflow: TextOverflow.ellipsis),
-                icon: const Icon(Icons.add),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorValues.iotMainColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ),
-          ],
-        ),
-        // Add your device list or other widgets here
-        const SizedBox(height: 10),
-        devices.when(
-          data: (device) {
-            if (devices.isLoading) context.pop();
-            setState(() {
-              isOnList = List<bool>.generate(device.length, (index) => false);
-            });
-            if (device.isEmpty) {
+            ],
+          ),
+          // Add your device list or other widgets here
+          const SizedBox(height: 10),
+          devices.when(
+            data: (device) {
+              if (devices.isLoading) context.pop();
+              setState(() {
+                isOnList = List<bool>.generate(device.length, (index) => false);
+              });
+              if (device.isEmpty) {
+                return SizedBox(
+                  height: heightQuery(context) * 0.65,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
+                        Text(
+                          local.warning,
+                          style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          local.warningNoDeviceFound,
+                          style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
               return SizedBox(
                 height: heightQuery(context) * 0.65,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
-                      Text(
-                        local.warning,
-                        style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        local.warningNoDeviceFound,
-                        style: dmSansSmallText(size: 14, weight: FontWeight.w700),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            return SizedBox(
-              height: heightQuery(context) * 0.65,
-              child: ListView.builder(
-                itemCount: device.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                    child: GestureDetector(
-                      onTap: () => context.push(
-                        '/devices/${device[index].serialNumber}/view',
-                        extra: {'deviceName': device[index].name, 'deviceId': device[index].id},
-                      ),
-                      child: DeviceCard(
-                        deviceName: device[index].name,
-                        serialNumber: device[index].serialNumber,
-                        isOnline: isOnList[index],
-                        ssid: device[index].ssid ?? 'Unknown SSID',
-                        createdAt: device[index].createdAt,
-                        lastUpdated: device[index].updatedAt,
-                        onTapSetting: () => context.push(
-                          '/devices/${device[index].serialNumber}/settings',
-                          extra: {
-                            'deviceName': device[index].name,
-                            'deviceDescription': device[index].description,
-                            'ssid': device[index].ssid ?? 'Unknown SSID',
+                child: ListView.builder(
+                  itemCount: device.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: GestureDetector(
+                        onTap: () => context.push(
+                          '/devices/${device[index].serialNumber}/view',
+                          extra: {'deviceName': device[index].name, 'deviceId': device[index].id},
+                        ),
+                        child: DeviceCard(
+                          deviceName: device[index].name,
+                          serialNumber: device[index].serialNumber,
+                          isOnline: isOnList[index],
+                          ssid: device[index].ssid ?? 'Unknown SSID',
+                          createdAt: device[index].createdAt,
+                          lastUpdated: device[index].updatedAt,
+                          onTapSetting: () => context.push(
+                            '/devices/${device[index].serialNumber}/settings',
+                            extra: {
+                              'deviceName': device[index].name,
+                              'deviceDescription': device[index].description,
+                              'ssid': device[index].ssid ?? 'Unknown SSID',
+                            },
+                          ),
+                          onTapPower: () {
+                            setState(() {
+                              toggleStart(index);
+                            });
                           },
                         ),
-                        onTapPower: () {
-                          setState(() {
-                            toggleStart(index);
-                          });
-                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-          error: (error, stackTrace) {
-            context.pop();
-            return Center(child: Text('Error: $error'));
-          },
-          loading: () {
-            return FancyLoading(title: local.loadingDevice);
-          },
-        ),
-      ],
+                    );
+                  },
+                ),
+              );
+            },
+            error: (error, stackTrace) {
+              context.pop();
+              return Center(child: Text('Error: $error'));
+            },
+            loading: () {
+              return FancyLoading(title: local.loadingDevice);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

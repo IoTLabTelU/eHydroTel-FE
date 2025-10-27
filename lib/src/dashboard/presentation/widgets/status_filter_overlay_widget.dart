@@ -18,7 +18,7 @@ class StatusFilterPopup extends StatelessWidget {
           child: Wrap(
             spacing: 10,
             runSpacing: 10,
-            alignment: WrapAlignment.end,
+            alignment: WrapAlignment.center,
             children: [
               _buildFilterChip(context, 'ALL', null),
               _buildFilterChip(context, getDeviceStatusText(DeviceStatus.active), DeviceStatus.active),
@@ -40,7 +40,7 @@ class StatusFilterPopup extends StatelessWidget {
               : status == DeviceStatus.idle
               ? ColorValues.blueProgress
               : status == DeviceStatus.error
-              ? ColorValues.danger200
+              ? ColorValues.danger700
               : ColorValues.blackColor)
         : ColorValues.whiteColor;
 
@@ -68,7 +68,7 @@ class StatusFilterPopup extends StatelessWidget {
                       : status == DeviceStatus.idle
                       ? ColorValues.blueProgress.withValues(alpha: 0.2)
                       : status == DeviceStatus.error
-                      ? ColorValues.danger200
+                      ? ColorValues.danger700.withValues(alpha: 0.2)
                       : ColorValues.blackColor.withValues(alpha: 0.2),
                 ),
         ),

@@ -3,7 +3,7 @@ import 'package:hydro_iot/res/constant.dart';
 
 class FilterDevices extends Notifier<DeviceStatus?> {
   @override
-  DeviceStatus? build() => null;
+  DeviceStatus? build() => DeviceStatus.active;
 
   void setPlantStatus(DeviceStatus? status) {
     state = status;
