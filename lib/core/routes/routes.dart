@@ -359,7 +359,7 @@ final router = GoRouter(
       if (context.mounted) {
         Toast().showErrorToast(context: context, title: local.error, description: local.accountNotSupported);
       }
-      return '/${LoginScreen.path}';
+      return '/${AuthScreen.path}';
     }
     return null;
   },
