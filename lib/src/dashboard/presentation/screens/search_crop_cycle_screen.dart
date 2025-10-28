@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
@@ -55,36 +56,44 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
       appBar: AppBar(
         toolbarHeight: heightQuery(context) * 0.1,
         backgroundColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: ColorValues.green500,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         leading: null,
         automaticallyImplyLeading: false,
         actionsPadding: EdgeInsets.symmetric(horizontal: 18.w),
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 2,
-                child: searchButton(
-                  onPressed: () {},
-                  context: context,
-                  enabled: true,
-                  controller: searchController,
-                  text: local.searchSessionOrPlants,
+        flexibleSpace: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: searchButton(
+                    onPressed: () {},
+                    context: context,
+                    enabled: true,
+                    controller: searchController,
+                    text: local.searchSessionOrPlants,
+                  ),
                 ),
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: cancelButton(
-                  context: context,
-                  onPressed: () {
-                    setState(() {
-                      searchController.clear();
-                    });
-                  },
+                SizedBox(width: 8.w),
+                Flexible(
+                  child: cancelButton(
+                    context: context,
+                    onPressed: () {
+                      setState(() {
+                        searchController.clear();
+                        context.pop();
+                      });
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
