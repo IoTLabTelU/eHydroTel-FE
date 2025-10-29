@@ -49,11 +49,6 @@ class StatusFilterPopup extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         onStatusSelected(status);
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        });
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),

@@ -43,9 +43,12 @@ class CropCycleCard extends StatelessWidget {
     final local = AppLocalizations.of(context)!;
     final String plantedAtFormatted = DateFormat.yMMMd().format(plantedAt);
 
-    return Card(
-      color: ColorValues.whiteColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(31)),
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorValues.whiteColor,
+        borderRadius: BorderRadius.circular(31),
+        border: Border.all(color: ColorValues.neutral100),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
         child: Column(

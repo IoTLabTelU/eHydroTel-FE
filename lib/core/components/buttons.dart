@@ -12,6 +12,7 @@ Widget primaryButton({
   required BuildContext context,
   ButtonType buttonType = ButtonType.medium,
   Color? color,
+  Color textColor = ColorValues.whiteColor,
 }) {
   return ElevatedButton(
     onPressed: onPressed,
@@ -23,12 +24,12 @@ Widget primaryButton({
     child: Text(
       text,
       style: buttonType == ButtonType.small
-          ? Theme.of(context).textTheme.labelMedium?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w600)
+          ? Theme.of(context).textTheme.labelMedium?.copyWith(color: textColor, fontWeight: FontWeight.w600)
           : buttonType == ButtonType.medium
-          ? Theme.of(context).textTheme.titleSmall?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w600)
+          ? Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor, fontWeight: FontWeight.w600)
           : buttonType == ButtonType.large
-          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w600)
-          : Theme.of(context).textTheme.titleLarge?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w500),
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor, fontWeight: FontWeight.w600)
+          : Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor, fontWeight: FontWeight.w500),
       textAlign: TextAlign.center,
     ),
   );
@@ -133,11 +134,25 @@ Widget editButton({required BuildContext context, required VoidCallback onPresse
       backgroundColor: ColorValues.warning200,
       shape: const CircleBorder(),
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+      elevation: 0,
     ),
     child: const VectorGraphic(
       loader: AssetBytesLoader(IconAssets.edit),
       colorFilter: ColorFilter.mode(ColorValues.warning700, BlendMode.srcIn),
     ),
+  );
+}
+
+Widget settingButton({required BuildContext context, required VoidCallback onPressed}) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: ColorValues.neutral200,
+      shape: const CircleBorder(),
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+      elevation: 0,
+    ),
+    child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.setting), width: 16, height: 16),
   );
 }
 
@@ -148,6 +163,7 @@ Widget historyButton({required BuildContext context, required VoidCallback onPre
       backgroundColor: ColorValues.neutral200,
       shape: const CircleBorder(),
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+      elevation: 0,
     ),
     child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.history), width: 16, height: 16),
   );
@@ -161,6 +177,7 @@ Widget harvestButton({required BuildContext context, required VoidCallback onPre
       backgroundColor: ColorValues.green600,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40))),
       padding: EdgeInsets.symmetric(vertical: 8.h),
+      elevation: 0,
     ),
     child: Row(
       mainAxisSize: MainAxisSize.max,
@@ -180,7 +197,11 @@ Widget harvestButton({required BuildContext context, required VoidCallback onPre
   );
 }
 
-Widget cancelButton({required BuildContext context, required VoidCallback onPressed}) {
+Widget cancelButton({
+  required BuildContext context,
+  required VoidCallback onPressed,
+  Color textColor = ColorValues.blueProgress,
+}) {
   final local = AppLocalizations.of(context)!;
   return ElevatedButton(
     onPressed: onPressed,
@@ -192,7 +213,7 @@ Widget cancelButton({required BuildContext context, required VoidCallback onPres
     ),
     child: Text(
       local.cancel,
-      style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.blueProgress, fontWeight: FontWeight.w600),
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(color: textColor, fontWeight: FontWeight.w600),
     ),
   );
 }

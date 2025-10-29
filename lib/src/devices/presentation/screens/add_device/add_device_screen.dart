@@ -4,7 +4,7 @@ import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
-import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_pairing_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_pairing_step_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/add_device_form_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/add_device_summary_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
@@ -150,19 +150,17 @@ class _AddDeviceScreenState extends ConsumerState<AddDeviceScreen> {
               title: const Text(''),
               content: SizedBox(
                 height: heightQuery(context) * 0.6,
-                child: AddDeviceFormScreen(
-                  deviceNameController: _deviceNameController,
-                  deviceDescriptionController: _deviceDescriptionController,
-                  deviceIdController: _serialNumberController,
-                  formKey: _formKey,
-                ),
+                child: AddDeviceFormScreen(serialNumber: _serialNumberController.text),
               ),
               isActive: _currentStep >= 0,
               state: _currentStep >= 0 ? StepState.complete : StepState.indexed,
             ),
             Step(
               title: const Text(''),
-              content: SizedBox(height: heightQuery(context) * 0.6, child: const AddDevicePairingScreen()),
+              content: SizedBox(
+                height: heightQuery(context) * 0.6,
+                child: const AddDevicePairingStepScreen(serialNumber: '', deviceName: '', deviceDescription: ''),
+              ),
               isActive: _currentStep >= 1,
               state: _currentStep >= 1 ? StepState.complete : StepState.indexed,
             ),

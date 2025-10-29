@@ -1,116 +1,70 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/res/res.dart';
-// import 'package:hydro_iot/utils/utils.dart';
-import 'package:intl/intl.dart';
+import 'package:vector_graphics/vector_graphics.dart';
+import '../../pkg.dart';
+import 'blinking_dot.dart';
 
 class DeviceCard extends StatelessWidget {
   final String deviceName;
   final String serialNumber;
-  final bool isOnline;
+  final String status;
   final String ssid;
-  final DateTime createdAt;
-  final DateTime lastUpdated;
-  final VoidCallback onTapSetting;
-  final VoidCallback onTapPower;
+  final VoidCallback onSettingPressed;
 
   const DeviceCard({
     super.key,
     required this.deviceName,
     required this.serialNumber,
-    required this.isOnline,
     required this.ssid,
-    required this.lastUpdated,
-    required this.onTapSetting,
-    required this.onTapPower,
-    required this.createdAt,
+    required this.onSettingPressed,
+    required this.status,
   });
-
-  String _getStatusText() {
-    if (!isOnline) return getDeviceStatusText(DeviceStatus.idle);
-    if (ssid.isEmpty) return getDeviceStatusText(DeviceStatus.error);
-    return getDeviceStatusText(DeviceStatus.active);
-  }
-
-  Color get statusColor {
-    if (!isOnline) return ColorValues.neutral500;
-    if (ssid.isEmpty) return ColorValues.danger600;
-    return ColorValues.success600;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final statusText = _getStatusText();
-    String formattedTime(DateTime time) => DateFormat.yMMMd().format(time);
-
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
+    final local = AppLocalizations.of(context)!;
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorValues.whiteColor,
+        borderRadius: BorderRadius.circular(31),
+        border: Border.all(color: ColorValues.neutral100),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Row: Title + Online Status
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                deviceName,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: ColorValues.blackColor),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Serial: $serialNumber', style: dmSansNormalText(size: 12, color: ColorValues.neutral500)),
-            ),
-            const SizedBox(height: 12),
-
-            // Center Row: pH, ppm, chart
-            _buildSensorTile('SSID', ssid),
-            const SizedBox(height: 12),
-
-            // Status + Last updated
             Row(
               children: [
-                Icon(Icons.info_outline, color: statusColor, size: 18),
-                const SizedBox(width: 6),
-                Text('Status: $statusText', style: dmSansSmallText(size: 14, color: statusColor)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Added at: ${formattedTime(createdAt)}',
-                style: dmSansNormalText(size: 12, color: ColorValues.neutral500),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Last updated: ${formattedTime(lastUpdated)}',
-                style: dmSansNormalText(size: 12, color: ColorValues.neutral500),
-              ),
-            ),
-
-            const Divider(height: 24, color: ColorValues.neutral200),
-
-            // Bottom Row: Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 8),
-                TextButton.icon(
-                  onPressed: onTapSetting,
-                  icon: const Icon(Icons.settings),
-                  label: const Text('Setting'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: ColorValues.iotNodeMCUColor,
-                    textStyle: dmSansNormalText(weight: FontWeight.w700),
+                Expanded(
+                  child: Text(
+                    deviceName,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
-                // _buildPowerButton(context, onTapPower, isOnline),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: settingButton(context: context, onPressed: onSettingPressed),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text('Serial : $serialNumber', style: Theme.of(context).textTheme.labelSmall),
+            ),
+            SizedBox(height: 12.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: InfoCard(info: ssid, withBlinkingDot: false, iconPath: IconAssets.wifi, title: 'SSID'),
+                ),
+                SizedBox(width: 5.w),
+                Expanded(
+                  child: InfoCard(info: status, withBlinkingDot: true, iconPath: IconAssets.device, title: local.device),
+                ),
               ],
             ),
           ],
@@ -118,48 +72,87 @@ class DeviceCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSensorTile(String label, String value) {
-    return Row(
-      children: [
-        Text(
-          '$label:',
-          style: dmSansNormalText(weight: FontWeight.w500, color: ColorValues.neutral700),
+class InfoCard extends StatelessWidget {
+  const InfoCard({
+    super.key,
+    required this.info,
+    required this.withBlinkingDot,
+    required this.iconPath,
+    required this.title,
+  });
+  final String title;
+  final String info;
+  final bool withBlinkingDot;
+  final String iconPath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(25)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                const SizedBox(width: 8),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: ColorValues.green400, width: 2),
+                  ),
+                  child: Center(
+                    child: withBlinkingDot
+                        ? Stack(
+                            children: [
+                              VectorGraphic(loader: AssetBytesLoader(iconPath), width: 16, height: 16),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: BlinkingDot(
+                                  size: 5,
+                                  color: info == getDeviceStatusText(DeviceStatus.active)
+                                      ? ColorValues.success700
+                                      : info == getDeviceStatusText(DeviceStatus.idle)
+                                      ? ColorValues.blueProgress
+                                      : ColorValues.danger700,
+                                  duration: const Duration(milliseconds: 800),
+                                ),
+                              ),
+                            ],
+                          )
+                        : VectorGraphic(loader: AssetBytesLoader(iconPath), width: 16, height: 16),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              info,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: withBlinkingDot
+                    ? (info == getDeviceStatusText(DeviceStatus.active)
+                          ? ColorValues.success700
+                          : info == getDeviceStatusText(DeviceStatus.idle)
+                          ? ColorValues.blueProgress
+                          : ColorValues.danger700)
+                    : ColorValues.blackColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 6),
-        Text(
-          value,
-          style: dmSansNormalText(weight: FontWeight.bold, color: ColorValues.blackColor, size: 16),
-        ),
-      ],
+      ),
     );
   }
-
-  // Widget _buildPowerButton(BuildContext context, VoidCallback onPressed, bool isOn) {
-  //   return GestureDetector(
-  //     onTap: onPressed,
-  //     child: Padding(
-  //       padding: EdgeInsets.symmetric(horizontal: widthQuery(context) * 0.1),
-  //       child: AnimatedContainer(
-  //         padding: EdgeInsets.all(6.r),
-  //         height: 50.h,
-  //         duration: const Duration(milliseconds: 100),
-  //         decoration: BoxDecoration(
-  //           color: isOn ? ColorValues.iotMainColor : ColorValues.neutral500,
-  //           shape: BoxShape.circle,
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: isOn
-  //                   ? ColorValues.iotMainColor.withValues(alpha: 0.6)
-  //                   : ColorValues.neutral500.withValues(alpha: 0.6),
-  //               blurRadius: 8,
-  //               offset: const Offset(0, 4),
-  //             ),
-  //           ],
-  //         ),
-  //         child: Icon(Icons.power_settings_new, color: isOn ? ColorValues.whiteColor : ColorValues.neutral100, size: 30.r),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

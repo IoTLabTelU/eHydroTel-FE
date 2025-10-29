@@ -382,4 +382,70 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get editSession => 'Ubah Sesi';
+
+  @override
+  String get keepYourDevices => 'Jaga perangkat Anda';
+
+  @override
+  String get connected => 'terhubung';
+
+  @override
+  String get heresYourLatest => 'Ini pembaruan tanaman terbaru';
+
+  @override
+  String get updates => 'anda';
+
+  @override
+  String get noDevicesFound =>
+      'Tidak ada perangkat ditemukan. Silakan daftarkan perangkat untuk memulai.';
+
+  @override
+  String get scanQrCode => 'Pindai Kode QR';
+
+  @override
+  String get scanTheQrCode => 'Pindai kode QR pada bodi perangkat.';
+
+  @override
+  String get inputYourDeviceSerial => 'Masukkan Seri Perangkat anda';
+
+  @override
+  String get newDevice => 'Perangkat Baru';
+
+  @override
+  String get preparingNextStep => 'Mempersiapkan langkah berikutnya';
+
+  @override
+  String get skip => 'Lewati';
+
+  @override
+  String get finish => 'Selesai';
+
+  @override
+  String get getReadyToPair => 'Bersiap untuk Memasangkan';
+
+  @override
+  String get makeSureEverythingIsReady =>
+      'Pastikan semuanya siap sebelum kita mulai.';
+
+  @override
+  String get turnOnYourIoTDevice => 'Nyalakan perangkat IoT Anda.';
+
+  @override
+  String get makeSureYourDeviceSwitchedOn =>
+      'Pastikan perangkat IoT Anda sudah dinyalakan.';
+
+  @override
+  String get connectToDeviceWifi =>
+      'Sambungkan ke jaringan Wi-Fi perangkat Anda.';
+
+  @override
+  String get openYourPhonesWifi =>
+      'Buka pengaturan Wi-Fi ponsel Anda dan sambungkan ke';
+
+  @override
+  String get finishSetupInBrowser => 'Selesaikan pengaturan di browser Anda.';
+
+  @override
+  String get youllBeRedirected =>
+      'Anda akan diarahkan ke halaman pengaturan untuk memasukkan informasi perangkat Anda.';
 }

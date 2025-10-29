@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/crop_cycle_card.dart';
+import 'package:hydro_iot/core/components/filter_button_overlay.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -8,10 +9,9 @@ import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart'
 import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_screen.dart';
-import 'package:hydro_iot/src/dashboard/presentation/widgets/dashboard_header_widget.dart';
+import 'package:hydro_iot/core/components/screen_header.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.dart';
-import 'package:hydro_iot/src/dashboard/presentation/widgets/status_filter_overlay_widget.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -28,8 +28,6 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  bool isOpeningDialog = false;
-
   DeviceStatus? get filterDevices => ref.watch(filterDevicesProvider);
 
   @override
@@ -46,21 +44,35 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final cropCycleState = ref.watch(cropCycleNotifierProvider);
     final userProvider = ref.watch(authControllerProvider);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 18.w),
-      child: Skeletonizer(
-        enabled: cropCycleState.isLoading || userProvider.isLoading,
-        enableSwitchAnimation: true,
-        child: ListView(
-          children: [
-            const SizedBox(height: 20),
-            userProvider.when(
-              data: (user) => DashboardHeaderWidget(username: user!.name.split(' ').first),
-              loading: () => const SizedBox.shrink(),
-              error: (err, _) => Center(child: Text('${local.error} $err')),
+    return Skeletonizer(
+      enabled: cropCycleState.isLoading || userProvider.isLoading,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverSafeArea(
+            bottom: false,
+            sliver: SliverToBoxAdapter(
+              child: userProvider.when(
+                data: (user) => ScreenHeader(
+                  username: user!.name.split(' ')[0],
+                  plantAsset: IconAssets.plant,
+                  line1: local.letsgrow,
+                  line2: local.amazing,
+                ),
+                loading: () => const SizedBox.shrink(),
+                error: (err, _) => Center(child: Text('${local.error} $err')),
+              ),
             ),
-            const SizedBox(height: 20),
-            Skeleton.shade(
+          ),
+          SliverAppBar(
+            pinned: true,
+            floating: false,
+            automaticallyImplyLeading: false,
+            backgroundColor: ColorValues.whiteColor,
+            forceMaterialTransparency: true,
+            toolbarHeight: 42.h,
+            collapsedHeight: 42.h,
+            title: Skeleton.shade(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,47 +86,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                   ),
                   const SizedBox(width: 2),
-                  Flexible(
-                    child: SizedBox(
-                      width: 40.w,
-                      height: 40.h,
-                      child: filterButton(
-                        onPressed: () {
-                          setState(() {
-                            isOpeningDialog = true;
-                          });
-                          showAdaptiveDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            barrierColor: Colors.transparent,
-                            builder: (_) => Dialog(
-                              insetPadding: EdgeInsets.only(
-                                left: widthQuery(context) * 0.2,
-                                bottom: heightQuery(context) * 0.35,
-                              ),
-                              alignment: Alignment.center,
-                              constraints: BoxConstraints.tight(
-                                Size(widthQuery(context) * 0.6, heightQuery(context) * 0.16),
-                              ),
-                              backgroundColor: Colors.transparent,
-                              child: StatefulBuilder(
-                                builder: (context, setState) {
-                                  return StatusFilterPopup(
-                                    onStatusSelected: (status) {
-                                      ref.read(filterDevicesProvider.notifier).setPlantStatus(status);
-                                      setState(() {});
-                                    },
-                                    selectedStatus: ref.watch(filterDevicesProvider),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        context: context,
-                      ),
-                    ),
-                  ),
+                  const Flexible(child: FilterButtonWithOverlay()),
                   const SizedBox(width: 2),
                   Flexible(
                     child: SizedBox(
@@ -141,11 +113,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            _buildCropCycleContent(cropCycleState),
-            SizedBox(height: heightQuery(context) * 0.15),
-          ],
-        ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              child: Skeleton.leaf(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    _buildCropCycleContent(cropCycleState),
+                    SizedBox(height: heightQuery(context) * 0.15),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -159,7 +143,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (state.error != null) {
       return Column(
         children: [
-          Center(child: Text('Error: ${state.error}')),
+          const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
+          Text(
+            local.error,
+            style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            state.error!,
+            style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+            textAlign: TextAlign.center,
+          ),
+
           const SizedBox(height: 10),
           AnimatedRefreshButton(
             onRefresh: () async {
@@ -180,7 +175,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             })
             .map((cropCycle) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
+                padding: EdgeInsets.only(bottom: 10.h),
                 child: CropCycleCard(
                   deviceName: cropCycle.device.name,
                   onEditPressed: () {

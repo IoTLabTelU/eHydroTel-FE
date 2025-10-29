@@ -14,44 +14,30 @@ class DevicesController extends _$DevicesController {
   Future<List<DeviceEntity>> fetchDevices() async {
     state = const AsyncValue.loading();
 
-    final res = await ref.read(devicesRepositoryProvider).getMyDevices();
-
-    if (!res.isSuccess) {
-      state = AsyncValue.error(
-        res.message ?? 'Failed to fetch devices',
-        StackTrace.current,
-      );
-      return [];
-    }
-    if (res.data == null) {
-      state = const AsyncValue.data([]);
-      return [];
-    }
-    state = AsyncValue.data(res.data!);
-    return res.data!;
+    state = await AsyncValue.guard(() async {
+      final res = await ref.read(devicesRepositoryProvider).getMyDevices();
+      if (!res.isSuccess) {
+        state = AsyncValue.error(res.message ?? 'Failed to fetch devices', StackTrace.current);
+        return [];
+      }
+      if (res.data == null) {
+        state = const AsyncValue.data([]);
+        return [];
+      }
+      state = AsyncValue.data(res.data!);
+      return res.data!;
+    });
+    return state.value ?? [];
   }
 
-  Future<void> registerDevice({
-    required String name,
-    required String description,
-    required String serialNumber,
-  }) async {
+  Future<void> registerDevice({required String name, required String description, required String serialNumber}) async {
     state = const AsyncValue.loading();
-    final res = await ref
-        .read(devicesRepositoryProvider)
-        .registerDevice(
-          name: name,
-          description: description,
-          serialNumber: serialNumber,
-        );
-
-    if (!res.isSuccess) {
-      state = AsyncValue.error(
-        res.message ?? 'Failed to register device',
-        StackTrace.current,
-      );
-      return;
-    }
+    state = await AsyncValue.guard(() async {
+      await ref
+          .read(devicesRepositoryProvider)
+          .registerDevice(name: name, description: description, serialNumber: serialNumber);
+      return state.value ?? [];
+    });
 
     // Refresh the devices list after successful registration
     await fetchDevices();
@@ -59,17 +45,10 @@ class DevicesController extends _$DevicesController {
 
   Future<DeviceEntity?> getDeviceDetails(String deviceId) async {
     state = const AsyncValue.loading();
-    final res = await ref
-        .read(devicesRepositoryProvider)
-        .getDeviceDetails(deviceId);
-
-    if (!res.isSuccess) {
-      state = AsyncValue.error(
-        res.message ?? 'Failed to fetch device details',
-        StackTrace.current,
-      );
-      return null;
-    }
-    return res.data;
+    state = await AsyncValue.guard(() async {
+      await ref.read(devicesRepositoryProvider).getDeviceDetails(deviceId);
+      return state.value ?? [];
+    });
+    return null;
   }
 }

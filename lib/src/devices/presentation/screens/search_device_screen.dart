@@ -124,11 +124,8 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
                 child: DeviceCard(
                   deviceName: device.name,
                   serialNumber: device.serialNumber,
-                  isOnline: isOnList[index],
                   ssid: device.ssid ?? 'Unknown SSID',
-                  createdAt: device.createdAt,
-                  lastUpdated: device.updatedAt,
-                  onTapSetting: () => context.push(
+                  onSettingPressed: () => context.push(
                     '/devices/${device.serialNumber}/settings',
                     extra: {
                       'deviceName': device.name,
@@ -136,9 +133,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
                       'ssid': device.ssid ?? 'Unknown SSID',
                     },
                   ),
-                  onTapPower: () {
-                    toggleStart(index);
-                  },
+                  status: device.status,
                 ),
               ),
             );

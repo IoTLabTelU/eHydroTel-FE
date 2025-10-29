@@ -4,11 +4,16 @@ import 'package:hydro_iot/core/components/components.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_for_devices_controller.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/crop_cycle_providers.dart';
 import 'package:hydro_iot/src/dashboard/domain/entities/crop_cycle_entity.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
+
+import '../../../../core/components/crop_cycle_card.dart';
 
 class ViewAllPlantSessionScreen extends ConsumerStatefulWidget {
   final String deviceId;
@@ -94,54 +99,65 @@ class _ViewAllPlantSessionScreenState extends ConsumerState<ViewAllPlantSessionS
         children: data.map((cropCycle) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: PlantSessionCard(
-              onDashboard: false,
+            child: CropCycleCard(
               deviceName: cropCycle.device.name,
-              plantName: cropCycle.plant.name,
-              startDate: cropCycle.startedAt,
-              totalDays: DateTime.now().difference(cropCycle.startedAt).inDays,
-              minPh: cropCycle.phMin,
-              maxPh: cropCycle.phMax,
-              minPpm: cropCycle.ppmMin.toDouble(),
-              maxPpm: cropCycle.ppmMax.toDouble(),
-              onHistoryTap: () => context.push(
-                '/devices/${cropCycle.device.serialNumber}/history',
-                extra: {
-                  'deviceName': cropCycle.device.name,
-                  'phMin': cropCycle.phMin,
-                  'ppmMin': cropCycle.ppmMin,
-                  'phMax': cropCycle.phMax,
-                  'ppmMax': cropCycle.ppmMax,
-                },
-              ),
-              onStopSession: () {
+              onEditPressed: () {
+                showModalBottomSheet(
+                  useRootNavigator: true,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  context: context,
+                  builder: (context) => EditSessionModal(
+                    cropCycleId: cropCycle.id,
+                    device: cropCycle.device.name,
+                    plant: cropCycle.plant.name,
+                    sessionName: cropCycle.name,
+                    phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
+                    ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
+                    onSessionEdited: (sessionData) {
+                      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                    },
+                  ),
+                );
+              },
+              cropCycleName: cropCycle.name,
+              cropCycleType: cropCycle.plant.name,
+              plantedAt: cropCycle.startedAt,
+              phValue: 4.5.toString(),
+              ppmValue: 900.toString(),
+              phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
+              ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
+              deviceStatus: cropCycle.device.status,
+              progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
+              totalDay: cropCycle.expectedEnd != null ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays : 30,
+              onHistoryPressed: () {
+                context.push(
+                  '/devices/${cropCycle.device.serialNumber}/history',
+                  extra: {
+                    'deviceName': cropCycle.device.name,
+                    'phMin': cropCycle.phMin,
+                    'ppmMin': cropCycle.ppmMin,
+                    'phMax': cropCycle.phMax,
+                    'ppmMax': cropCycle.ppmMax,
+                  },
+                );
+              },
+              onHarvestPressed: () {
                 showAdaptiveDialog(
                   barrierDismissible: true,
                   context: context,
                   builder: (context) {
                     return alertDialog(
                       context: context,
-                      title: 'Stop Session',
-                      content: 'Are you sure you want to stop this session?',
+                      title: 'Harvest',
+                      content: 'Are you sure you want to harvest this crops?',
                       onConfirm: () {
-                        Navigator.of(context).pop();
+                        ref.read(cropCycleControllerProvider.notifier).endCropCycleSession(cropCycle.id);
                       },
                     );
                   },
                 );
               },
-              onTap: () {},
-              // onTap: () => context.push(
-              //   '/devices/${cropCycle.device.serialNumber}',
-              //   extra: {
-              //     'deviceName': cropCycle.device.name,
-              //     'pH': (cropCycle.phMin + cropCycle.phMax) / 2,
-              //     'ppm': (cropCycle.ppmMin + cropCycle.ppmMax) / 2,
-              //     'deviceDescription': 'This is the Description of ${cropCycle.device.name}',
-              //   },
-              // ),
-              isStopped: !cropCycle.active,
-              onRestartSession: () {},
             ),
           );
         }).toList(),

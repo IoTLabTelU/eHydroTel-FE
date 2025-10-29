@@ -378,4 +378,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editSession => 'Edit Session';
+
+  @override
+  String get keepYourDevices => 'Keep your devices';
+
+  @override
+  String get connected => 'connected';
+
+  @override
+  String get heresYourLatest => 'Here\'s your latest plant';
+
+  @override
+  String get updates => 'updates';
+
+  @override
+  String get noDevicesFound =>
+      'No devices found. Please register a device to get started.';
+
+  @override
+  String get scanQrCode => 'Scan QR Code';
+
+  @override
+  String get scanTheQrCode => 'Scan the QR code in the device body.';
+
+  @override
+  String get inputYourDeviceSerial => 'Input your Device Serial';
+
+  @override
+  String get newDevice => 'New Device';
+
+  @override
+  String get preparingNextStep => 'Preparing next step';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get getReadyToPair => 'Get Ready to Pair';
+
+  @override
+  String get makeSureEverythingIsReady =>
+      'Make sure everything is ready before we start.';
+
+  @override
+  String get turnOnYourIoTDevice => 'Turn on your IoT device';
+
+  @override
+  String get makeSureYourDeviceSwitchedOn =>
+      'Make sure your IoT device is switched on before continuing';
+
+  @override
+  String get connectToDeviceWifi => 'Connect to your device\'s Wi-Fi network';
+
+  @override
+  String get openYourPhonesWifi =>
+      'Open your phone\'s Wi-Fi settings and connect to';
+
+  @override
+  String get finishSetupInBrowser => 'Finish setup in your browser';
+
+  @override
+  String get youllBeRedirected =>
+      'You\'ll be redirected to a setup page to enter your device information.';
 }

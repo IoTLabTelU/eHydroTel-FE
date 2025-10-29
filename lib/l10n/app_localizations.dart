@@ -805,6 +805,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Session'**
   String get editSession;
+
+  /// No description provided for @keepYourDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your devices'**
+  String get keepYourDevices;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get connected;
+
+  /// No description provided for @heresYourLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s your latest plant'**
+  String get heresYourLatest;
+
+  /// No description provided for @updates.
+  ///
+  /// In en, this message translates to:
+  /// **'updates'**
+  String get updates;
+
+  /// No description provided for @noDevicesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices found. Please register a device to get started.'**
+  String get noDevicesFound;
+
+  /// No description provided for @scanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code'**
+  String get scanQrCode;
+
+  /// No description provided for @scanTheQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code in the device body.'**
+  String get scanTheQrCode;
+
+  /// No description provided for @inputYourDeviceSerial.
+  ///
+  /// In en, this message translates to:
+  /// **'Input your Device Serial'**
+  String get inputYourDeviceSerial;
+
+  /// No description provided for @newDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'New Device'**
+  String get newDevice;
+
+  /// No description provided for @preparingNextStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing next step'**
+  String get preparingNextStep;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @getReadyToPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Ready to Pair'**
+  String get getReadyToPair;
+
+  /// No description provided for @makeSureEverythingIsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure everything is ready before we start.'**
+  String get makeSureEverythingIsReady;
+
+  /// No description provided for @turnOnYourIoTDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on your IoT device'**
+  String get turnOnYourIoTDevice;
+
+  /// No description provided for @makeSureYourDeviceSwitchedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure your IoT device is switched on before continuing'**
+  String get makeSureYourDeviceSwitchedOn;
+
+  /// No description provided for @connectToDeviceWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to your device\'s Wi-Fi network'**
+  String get connectToDeviceWifi;
+
+  /// No description provided for @openYourPhonesWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your phone\'s Wi-Fi settings and connect to'**
+  String get openYourPhonesWifi;
+
+  /// No description provided for @finishSetupInBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish setup in your browser'**
+  String get finishSetupInBrowser;
+
+  /// No description provided for @youllBeRedirected.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll be redirected to a setup page to enter your device information.'**
+  String get youllBeRedirected;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,7 @@ class IconAssets {
   static const String plant = 'assets/icons/Plant.svg';
   static const String love = 'assets/icons/Love.svg';
   static const String device = 'assets/icons/Device.svg';
-  static const String notification = 'assets/icons/Notification.svg';
+  static const String notification = 'assets/icons/Notification2.svg';
   static const String profile = 'assets/icons/Profile.svg';
   static const String search = 'assets/icons/Search.svg';
   static const String filter = 'assets/icons/Filter.svg';
@@ -31,11 +31,20 @@ class IconAssets {
   static const String ppmMin = 'assets/icons/PPMMin.svg';
   static const String ppmMax = 'assets/icons/PPMMax.svg';
   static const String dropdown = 'assets/icons/Dropdown.svg';
+  static const String setting = 'assets/icons/Setting.svg';
+  static const String wifi = 'assets/icons/WIFI.svg';
+  static const String flashlightOn = 'assets/icons/Flashlight-On.svg';
+  static const String flashlightOff = 'assets/icons/Flashlight-Off.svg';
+  static const String checkTrue = 'assets/icons/Check-True.svg';
 }
 
 class ImageAssets {
   static const String authBackground = 'assets/img/AuthBackgroundImage.png';
   static const String logo = 'assets/img/Logo.png';
+  static const String scanTutorial = 'assets/img/ScanTutorial.png';
+  static const String pairStep1 = 'assets/img/PairStep_1.png';
+  static const String pairStep2 = 'assets/img/PairStep_2.png';
+  static const String pairStep3 = 'assets/img/PairStep_3.png';
 }
 
 class LottieAssets {
