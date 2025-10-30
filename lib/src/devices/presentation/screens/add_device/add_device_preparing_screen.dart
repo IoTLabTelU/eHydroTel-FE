@@ -51,6 +51,7 @@ class _AddDevicePreparingScreenState extends State<AddDevicePreparingScreen> {
             Text(
               local.preparingNextStep,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: ColorValues.green500),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             const BlinkingDotIndicator(),

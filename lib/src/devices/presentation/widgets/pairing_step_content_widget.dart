@@ -9,7 +9,8 @@ class PairingStepContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         color: ColorValues.whiteColor,
         borderRadius: BorderRadius.circular(33),

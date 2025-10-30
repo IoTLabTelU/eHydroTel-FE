@@ -258,7 +258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startTypingToSearch => 'Start typing to search...';
 
   @override
-  String get searchDevices => 'Search by device name, serial, or SSID...';
+  String get searchDevices => 'Search by name, serial, or SSID';
 
   @override
   String get accountNotSupported => 'Account not supported';
@@ -443,4 +443,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get youllBeRedirected =>
       'You\'ll be redirected to a setup page to enter your device information.';
+
+  @override
+  String get editDevice => 'Edit Device';
+
+  @override
+  String get addedOn => 'Added on';
+
+  @override
+  String get updatedOn => 'Updated on';
+
+  @override
+  String get confirmHarvest => 'Are you sure you want to harvest this crops?';
+
+  @override
+  String get switchLanguage => 'Switch Language';
+
+  @override
+  String get cropCycleHistory => 'Crop Cycle History';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get activity => 'Activity';
+
+  @override
+  String get devices => 'Devices';
+
+  @override
+  String get continues => 'Continue';
 }

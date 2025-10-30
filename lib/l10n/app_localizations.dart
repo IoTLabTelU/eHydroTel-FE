@@ -575,7 +575,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchDevices.
   ///
   /// In en, this message translates to:
-  /// **'Search by device name, serial, or SSID...'**
+  /// **'Search by name, serial, or SSID'**
   String get searchDevices;
 
   /// No description provided for @accountNotSupported.
@@ -925,6 +925,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'ll be redirected to a setup page to enter your device information.'**
   String get youllBeRedirected;
+
+  /// No description provided for @editDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Device'**
+  String get editDevice;
+
+  /// No description provided for @addedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Added on'**
+  String get addedOn;
+
+  /// No description provided for @updatedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated on'**
+  String get updatedOn;
+
+  /// No description provided for @confirmHarvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to harvest this crops?'**
+  String get confirmHarvest;
+
+  /// No description provided for @switchLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Language'**
+  String get switchLanguage;
+
+  /// No description provided for @cropCycleHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop Cycle History'**
+  String get cropCycleHistory;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @activity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activity;
+
+  /// No description provided for @devices.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devices;
+
+  /// No description provided for @continues.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continues;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,7 @@ import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_s
 import 'package:hydro_iot/core/components/screen_header.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.dart';
-import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
+import 'package:hydro_iot/core/components/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../application/providers/crop_cycle_providers.dart';

@@ -251,6 +251,32 @@ final router = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: '/${SettingDeviceScreen.path}',
+      name: SettingDeviceScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: SettingDeviceScreen(
+            deviceId: extra['serialNumber'] as String,
+            deviceName: extra['deviceName'] as String,
+            deviceDescription: extra['deviceDescription'] as String,
+            addedAt: extra['addedAt'] as String,
+            updatedAt: extra['updatedAt'] as String,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        );
+      },
+    ),
     StatefulShellRoute.indexedStack(
       pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
         key: state.pageKey,
@@ -333,26 +359,6 @@ final router = GoRouter(
                     );
                   },
                   routes: [
-                    GoRoute(
-                      path: '/${SettingDeviceScreen.path}',
-                      name: SettingDeviceScreen.path,
-                      pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
-                        final extra = state.extra as Map<String, dynamic>;
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: SettingDeviceScreen(
-                            deviceId: serialNumber,
-                            deviceName: extra['deviceName'] as String,
-                            deviceDescription: extra['deviceDescription'] as String,
-                            ssid: extra['ssid'] as String,
-                          ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
-                        );
-                      },
-                    ),
                     GoRoute(
                       path: '/${ViewAllPlantSessionScreen.path}',
                       name: ViewAllPlantSessionScreen.path,

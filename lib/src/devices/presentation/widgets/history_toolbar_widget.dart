@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/devices/presentation/widgets/animated_refresh_button_widget.dart';
+import 'package:hydro_iot/core/components/animated_refresh_button_widget.dart';
 
 class HistoryToolbar extends StatelessWidget {
   final String rangeText;

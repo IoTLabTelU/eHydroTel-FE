@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hydro_iot/res/assets.dart';
-import 'package:hydro_iot/res/colors.dart';
-import 'package:hydro_iot/res/text_styles.dart';
 import 'package:vector_graphics/vector_graphics_compat.dart';
+
+import '../../../../pkg.dart';
 
 class ProfileLayoutWidget extends StatelessWidget {
   final Widget? child;
@@ -15,53 +12,116 @@ class ProfileLayoutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double stackingHeight = 8;
-    double spaceHeight = MediaQuery.of(context).size.height / stackingHeight;
+    double stackingHeight = 3.8;
 
     return Stack(
       children: [
-        ///Background
         Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height / stackingHeight + 100,
-          color: ColorValues.neutral300,
+          width: widthQuery(context),
+          height: heightQuery(context) / stackingHeight,
+          decoration: const BoxDecoration(
+            image: DecorationImage(image: AssetImage(ImageAssets.accountBackground), fit: BoxFit.cover),
+          ),
         ),
         Column(
           children: [
-            ///Name Page
             Container(
-              padding: const EdgeInsets.all(10),
               width: double.infinity,
               height: MediaQuery.of(context).size.height / stackingHeight,
-              child: Text(namePage ?? 'Name Page', style: Theme.of(context).textTheme.titleLarge),
-            ),
-
-            /// CONTENT
-            Flexible(
-              child: Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
-                  color: ColorValues.neutral100,
-                ),
-
-                ///ini usernamenya bg
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+              alignment: Alignment.topCenter,
+              child: SafeArea(
+                child: Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 55.h),
-                      Text(userName ?? 'User Name', style: dmSansHeadText(), overflow: TextOverflow.ellipsis),
-                      SizedBox(height: 1.h),
-                      Text(userEmail ?? 'User Email', style: dmSansNormalText(), overflow: TextOverflow.ellipsis),
+                      Text(
+                        namePage ?? 'Account',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w600),
+                      ),
                       SizedBox(height: 10.h),
-
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-
-                          ///ini CHILD contentnya bg
-                          child: SingleChildScrollView(child: child),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(59), color: Colors.transparent),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(59),
+                          child: Material(
+                            color: ColorValues.whiteColor,
+                            child: InkWell(
+                              onTap: () {},
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    imgUrl != null
+                                        ? Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: const BoxDecoration(
+                                              color: ColorValues.green50,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            padding: const EdgeInsets.all(10),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(30),
+                                              child: Image.network(
+                                                imgUrl!,
+                                                fit: BoxFit.cover,
+                                                cacheWidth: 60,
+                                                cacheHeight: 60,
+                                              ),
+                                            ),
+                                          )
+                                        : Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: const BoxDecoration(
+                                              color: ColorValues.green50,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            padding: const EdgeInsets.all(10),
+                                            child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.grassAvatar)),
+                                          ),
+                                    const SizedBox(width: 15),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          userName ?? '',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          userEmail ?? '',
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            color: ColorValues.neutral500,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: VectorGraphic(
+                                        fit: BoxFit.scaleDown,
+                                        loader: AssetBytesLoader(IconAssets.moreInfo),
+                                        colorFilter: ColorFilter.mode(ColorValues.neutral500, BlendMode.srcIn),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -69,47 +129,23 @@ class ProfileLayoutWidget extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
-
-        ///STACKING
-        Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              height: spaceHeight * 2,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.transparent),
-              child: Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  ///PROFILE
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: ColorValues.iotMainColor, width: 3),
-                      image: DecorationImage(image: AssetImage(imgUrl ?? ''), fit: BoxFit.cover),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: CircleAvatar(
-                      backgroundColor: ColorValues.iotMainColor,
-                      radius: 15,
-                      child: const Padding(
-                        padding: EdgeInsets.all(5),
-                        child: VectorGraphic(
-                          loader: AssetBytesLoader(IconAssets.pencilIcon),
-                          colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
+            Flexible(
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(color: ColorValues.whiteColor),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: SingleChildScrollView(child: child),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],

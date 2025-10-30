@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/components/filter_button_overlay.dart';
 import '../../../../pkg.dart';
 import '../../../../core/components/screen_header.dart';
-import '../widgets/animated_refresh_button_widget.dart';
+import '../../../../core/components/animated_refresh_button_widget.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
   const DevicesScreen({super.key});
@@ -138,11 +138,13 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                     status: e.status,
                                     onSettingPressed: () {
                                       context.push(
-                                        '/devices/${e.serialNumber}/settings',
+                                        '/settings',
                                         extra: {
                                           'deviceName': e.name,
                                           'deviceDescription': e.description,
-                                          'ssid': e.ssid ?? 'N/A',
+                                          'serialNumber': e.serialNumber,
+                                          'addedAt': DateFormat('dd MMM yyyy').format(e.createdAt),
+                                          'updatedAt': DateFormat('dd MMM yyyy').format(e.updatedAt),
                                         },
                                       );
                                     },

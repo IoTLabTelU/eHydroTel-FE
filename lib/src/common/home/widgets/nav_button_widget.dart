@@ -23,7 +23,7 @@ class NavButtonWidget extends StatelessWidget {
         duration: const Duration(milliseconds: 400),
         tabBackgroundColor: ColorValues.whiteColor,
         color: ColorValues.neutral500,
-        tabs: navButtonList.map((item) {
+        tabs: navButtonList(context).map((item) {
           return GButton(icon: item['icon']!, text: item['text']!);
         }).toList(),
         selectedIndex: currentIndex,

@@ -260,8 +260,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get startTypingToSearch => 'Mulai ketik untuk mencari...';
 
   @override
-  String get searchDevices =>
-      'Cari berdasarkan nama perangkat, seri, atau SSID...';
+  String get searchDevices => 'Cari berdasarkan nama, seri, atau SSID';
 
   @override
   String get accountNotSupported => 'Akun tidak didukung';
@@ -390,10 +389,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get connected => 'terhubung';
 
   @override
-  String get heresYourLatest => 'Ini pembaruan tanaman terbaru';
+  String get heresYourLatest => 'Ini pembaruan tanaman';
 
   @override
-  String get updates => 'anda';
+  String get updates => 'terbaru anda';
 
   @override
   String get noDevicesFound =>
@@ -435,8 +434,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Pastikan perangkat IoT Anda sudah dinyalakan.';
 
   @override
-  String get connectToDeviceWifi =>
-      'Sambungkan ke jaringan Wi-Fi perangkat Anda.';
+  String get connectToDeviceWifi => 'Sambungkan ke jaringan Wi-Fi Anda.';
 
   @override
   String get openYourPhonesWifi =>
@@ -448,4 +446,40 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get youllBeRedirected =>
       'Anda akan diarahkan ke halaman pengaturan untuk memasukkan informasi perangkat Anda.';
+
+  @override
+  String get editDevice => 'Ubah Perangkat';
+
+  @override
+  String get addedOn => 'Ditambahkan pada';
+
+  @override
+  String get updatedOn => 'Diperbarui pada';
+
+  @override
+  String get confirmHarvest => 'Apakah Anda yakin ingin memanen tanaman ini?';
+
+  @override
+  String get switchLanguage => 'Ganti Bahasa';
+
+  @override
+  String get cropCycleHistory => 'Riwayat Siklus Tanam';
+
+  @override
+  String get changePassword => 'Ganti Kata Sandi';
+
+  @override
+  String get account => 'Akun';
+
+  @override
+  String get home => 'Beranda';
+
+  @override
+  String get activity => 'Aktivitas';
+
+  @override
+  String get devices => 'Perangkat';
+
+  @override
+  String get continues => 'Lanjut';
 }

@@ -147,6 +147,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
   }
 
   Widget _buildSearchResults(CropCycleState state) {
+    final local = AppLocalizations.of(context)!;
     if (state is CropCycleStateLoading) {
       return const Center(child: FancyLoading(title: 'Searching crop cycles...'));
     }
@@ -154,13 +155,16 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
     if (state is CropCycleStateError) {
       return Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade400),
-            const SizedBox(height: 16),
+            const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
             Text(
-              'Error: ${state.error}',
-              style: TextStyle(fontSize: 16, color: Colors.red.shade600),
+              local.error,
+              style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              state.error!,
+              style: dmSansSmallText(size: 14, weight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
           ],
@@ -211,8 +215,8 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
                   builder: (context) {
                     return alertDialog(
                       context: context,
-                      title: 'Harvest',
-                      content: 'Are you sure you want to harvest this crops?',
+                      title: local.harvest,
+                      content: local.confirmHarvest,
                       onConfirm: () {
                         Navigator.of(context).pop();
                       },

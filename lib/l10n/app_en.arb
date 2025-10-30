@@ -79,7 +79,7 @@
   "noCropCyclesFound": "No crop cycles found. Please add crop cycle session first.",
   "searchCropCycles": "Search crop cycles...",
   "startTypingToSearch": "Start typing to search...",
-  "searchDevices": "Search by device name, serial, or SSID...",
+  "searchDevices": "Search by name, serial, or SSID",
   "accountNotSupported": "Account not supported",
   "history": "History",
   "last7Days": "Last 7 Days",
@@ -137,5 +137,17 @@
   "connectToDeviceWifi": "Connect to your device's Wi-Fi network",
   "openYourPhonesWifi": "Open your phone's Wi-Fi settings and connect to",
   "finishSetupInBrowser": "Finish setup in your browser",
-  "youllBeRedirected": "You'll be redirected to a setup page to enter your device information."
+  "youllBeRedirected": "You'll be redirected to a setup page to enter your device information.",
+  "editDevice": "Edit Device",
+  "addedOn": "Added on",
+  "updatedOn": "Updated on",
+  "confirmHarvest": "Are you sure you want to harvest this crops?",
+  "switchLanguage": "Switch Language",
+  "cropCycleHistory": "Crop Cycle History",
+  "changePassword": "Change Password",
+  "account": "Account",
+  "home": "Home",
+  "activity": "Activity",
+  "devices": "Devices",
+  "continues": "Continue"
 }

@@ -1,14 +1,5 @@
 class IconAssets {
-  static const String logo = 'assets/icons/DummyLogo.svg';
-  static const String dashboardIcon = 'assets/icons/DashboardPageIcon.svg';
-  static const String deviceIcon = 'assets/icons/DevicePageIcon.svg';
-  static const String historyIcon = 'assets/icons/HistoryPageIcon.svg';
-  static const String profileIcon = 'assets/icons/ProfilePageIcon.svg';
-  static const String pencilIcon = 'assets/icons/Pencil.svg';
-  static const String profileSettingIcon = 'assets/icons/ProfileSetting.svg';
-  static const String logout = 'assets/icons/Logout.svg';
   static const String googleIcon = 'assets/icons/GoogleIcon.svg';
-  static const String plantIcon = 'assets/icons/PlantIcon.svg';
   static const String plant = 'assets/icons/Plant.svg';
   static const String love = 'assets/icons/Love.svg';
   static const String device = 'assets/icons/Device.svg';
@@ -36,15 +27,24 @@ class IconAssets {
   static const String flashlightOn = 'assets/icons/Flashlight-On.svg';
   static const String flashlightOff = 'assets/icons/Flashlight-Off.svg';
   static const String checkTrue = 'assets/icons/Check-True.svg';
+  static const String password = 'assets/icons/Password.svg';
+  static const String language = 'assets/icons/Language.svg';
+  static const String terms = 'assets/icons/Terms of Service.svg';
+  static const String privacy = 'assets/icons/Policy.svg';
+  static const String logout = 'assets/icons/Log Out.svg';
+  static const String grassAvatar = 'assets/icons/GrassAvatar.svg';
+  static const String multipleChoose = 'assets/icons/Multiple Choose.svg';
 }
 
 class ImageAssets {
   static const String authBackground = 'assets/img/AuthBackgroundImage.png';
+  static const String accountBackground = 'assets/img/AccountBackgroundImage.png';
   static const String logo = 'assets/img/Logo.png';
   static const String scanTutorial = 'assets/img/ScanTutorial.png';
   static const String pairStep1 = 'assets/img/PairStep_1.png';
   static const String pairStep2 = 'assets/img/PairStep_2.png';
   static const String pairStep3 = 'assets/img/PairStep_3.png';
+  static const String multipleChoose = 'assets/img/Multiple Choose.png';
 }
 
 class LottieAssets {

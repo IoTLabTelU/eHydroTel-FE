@@ -47,17 +47,17 @@ class FancyLoadingState extends State<FancyLoading> with SingleTickerProviderSta
                       CustomPaint(
                         size: const Size(60, 60),
                         painter: SpinnerPainter(_controller.value, [
-                          const Color(0xFF360033),
-                          const Color(0xFF0B8793),
-                          const Color(0xFF360033),
-                          const Color(0xFF0B8793),
-                          const Color(0xFF360033),
-                          const Color(0xFF0B8793),
+                          ColorValues.green900,
+                          ColorValues.green500,
+                          ColorValues.green900,
+                          ColorValues.green500,
+                          ColorValues.green900,
+                          ColorValues.green500,
                         ]),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.cloud_sync,
-                        color: ColorValues.iotMainColor,
+                        color: ColorValues.green500,
                         size: 60 * 0.5, // icon setengah diameter spinner
                       ),
                     ],

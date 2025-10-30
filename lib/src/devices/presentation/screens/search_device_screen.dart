@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/device_card.dart';
 import 'package:hydro_iot/core/core.dart';
@@ -7,6 +8,7 @@ import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/domain/entities/device_entity.dart';
 import 'package:hydro_iot/utils/utils.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 class SearchDeviceScreen extends ConsumerStatefulWidget {
   const SearchDeviceScreen({super.key});
@@ -50,6 +52,14 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      _filterDevices(searchController.text);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     final devicesAsync = ref.watch(devicesControllerProvider);
@@ -58,51 +68,121 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
       data: (devices) {
         _allDevices = devices;
 
-        return ListView(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          children: [
-            const SizedBox(height: 20),
-            SearchBar(
-              hintText: local.searchDevices,
-              leading: Padding(
-                padding: EdgeInsets.only(left: 5.w),
-                child: const Icon(Icons.search),
-              ),
-              autoFocus: true,
-              keyboardType: TextInputType.text,
-              controller: searchController,
-              onChanged: (value) {
-                _filterDevices(value);
-              },
-              onTapOutside: (event) {
-                FocusScope.of(context).unfocus();
-                if (searchController.text.isEmpty) {
-                  context.pop();
-                }
-              },
-              backgroundColor: const WidgetStateColor.fromMap({
-                WidgetState.any: ColorValues.neutral200,
-                WidgetState.focused: ColorValues.neutral100,
-                WidgetState.hovered: ColorValues.neutral300,
-              }),
+        return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: heightQuery(context) * 0.1,
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: ColorValues.green500,
+              statusBarBrightness: Brightness.light,
+              statusBarIconBrightness: Brightness.dark,
             ),
-            const SizedBox(height: 20),
-            _buildSearchResults(),
-          ],
+            leading: null,
+            automaticallyImplyLeading: false,
+            actionsPadding: EdgeInsets.symmetric(horizontal: 18.w),
+            flexibleSpace: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: searchButton(
+                        onPressed: () {},
+                        context: context,
+                        enabled: true,
+                        controller: searchController,
+                        text: local.searchDevices,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Flexible(
+                      child: cancelButton(
+                        context: context,
+                        onPressed: () {
+                          setState(() {
+                            searchController.clear();
+                            context.pop();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          body: _buildSearchResults(),
         );
       },
       loading: () => Center(child: CircularProgressIndicator(color: ColorValues.iotMainColor)),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => Center(
+        child: Column(
+          children: [
+            const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
+            Text(
+              local.error,
+              style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              error.toString(),
+              style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildSearchResults() {
+    final local = AppLocalizations.of(context)!;
     if (searchController.text.trim().isEmpty) {
-      return const SizedBox();
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const VectorGraphic(loader: AssetBytesLoader(IconAssets.searchPlant), width: 40, height: 40),
+            const SizedBox(height: 16),
+            Text(
+              local.searchDevices,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              local.findAndManage,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
 
     if (_filteredDevices.isEmpty) {
-      return const SizedBox();
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const VectorGraphic(loader: AssetBytesLoader(IconAssets.notfoundSearch), width: 40, height: 40),
+            const SizedBox(height: 16),
+            Text(
+              local.noResultsFound,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              local.tryAnotherName,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
 
     return Column(
@@ -110,31 +190,26 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
       children: [
         ListView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
           itemCount: _filteredDevices.length,
           itemBuilder: (context, index) {
             final device = _filteredDevices[index];
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: GestureDetector(
-                onTap: () => context.push(
-                  '/devices/${device.serialNumber}/view',
-                  extra: {'deviceName': device.name, 'deviceId': device.id},
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
+              child: DeviceCard(
+                deviceName: device.name,
+                serialNumber: device.serialNumber,
+                ssid: device.ssid ?? 'N/A',
+                onSettingPressed: () => context.push(
+                  '/settings',
+                  extra: {
+                    'deviceName': device.name,
+                    'deviceDescription': device.description,
+                    'serialNumber': device.serialNumber,
+                    'addedAt': device.createdAt,
+                    'updatedAt': device.updatedAt,
+                  },
                 ),
-                child: DeviceCard(
-                  deviceName: device.name,
-                  serialNumber: device.serialNumber,
-                  ssid: device.ssid ?? 'Unknown SSID',
-                  onSettingPressed: () => context.push(
-                    '/devices/${device.serialNumber}/settings',
-                    extra: {
-                      'deviceName': device.name,
-                      'deviceDescription': device.description,
-                      'ssid': device.ssid ?? 'Unknown SSID',
-                    },
-                  ),
-                  status: device.status,
-                ),
+                status: device.status,
               ),
             );
           },

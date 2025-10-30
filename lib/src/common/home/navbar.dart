@@ -28,6 +28,7 @@ class _NavbarState extends State<Navbar> {
         return;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Positioned.fill(child: widget.navigationShell),

@@ -13,6 +13,7 @@ Widget primaryButton({
   ButtonType buttonType = ButtonType.medium,
   Color? color,
   Color textColor = ColorValues.whiteColor,
+  double? elevation,
 }) {
   return ElevatedButton(
     onPressed: onPressed,
@@ -20,6 +21,7 @@ Widget primaryButton({
       backgroundColor: color ?? ColorValues.blackColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 5.w),
+      elevation: elevation ?? 0,
     ),
     child: Text(
       text,

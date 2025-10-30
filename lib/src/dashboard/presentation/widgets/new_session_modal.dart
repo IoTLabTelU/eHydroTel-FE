@@ -575,13 +575,12 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                               children: [
                                 Expanded(
                                   flex: 1,
-                                  child: secondaryButton(
+                                  child: cancelButton(
                                     context: context,
                                     onPressed: () {
                                       context.pop();
                                     },
-                                    text: local.cancel,
-                                    color: ColorValues.neutral200,
+                                    textColor: ColorValues.green900,
                                   ),
                                 ),
                                 SizedBox(width: 12.w),
@@ -594,6 +593,7 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                                     },
                                     context: context,
                                     color: ColorValues.green500,
+                                    textColor: ColorValues.green900,
                                   ),
                                 ),
                               ],

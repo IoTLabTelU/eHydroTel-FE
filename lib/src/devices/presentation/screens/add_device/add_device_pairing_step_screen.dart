@@ -29,6 +29,13 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
   PageController buttonPageController = PageController();
 
   @override
+  void dispose() {
+    pageController.dispose();
+    buttonPageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     ref.listen<AsyncValue>(devicesControllerProvider, (previous, next) {
@@ -184,22 +191,31 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                 ),
                 SizedBox(height: heightQuery(context) * 0.3),
                 SizedBox(
-                  height: heightQuery(context) * 0.08,
+                  height: heightQuery(context) * 0.1,
                   child: PageView(
                     controller: buttonPageController,
                     children: [
-                      primaryButton(
-                        text: 'Continue',
-                        onPressed: () {
-                          pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                          buttonPageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                        context: context,
-                        color: ColorValues.green500,
-                        textColor: ColorValues.green900,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: primaryButton(
+                              text: local.continues,
+                              onPressed: () {
+                                pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                                buttonPageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                              context: context,
+                              color: ColorValues.green500,
+                              textColor: ColorValues.green900,
+                            ),
+                          ),
+                        ],
                       ),
                       Row(
                         children: [
@@ -221,7 +237,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                           Expanded(
                             flex: 5,
                             child: primaryButton(
-                              text: 'Continue',
+                              text: local.continues,
                               onPressed: () {
                                 pageController.nextPage(
                                   duration: const Duration(milliseconds: 300),
