@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
-import 'package:hydro_iot/src/auth/presentation/screens/login_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/switch_language_modal.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/edit_profile.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/ssid.dart';
@@ -39,7 +38,6 @@ class ProfileScreen extends ConsumerWidget {
         data: (u) {
           if (u == null && context.mounted) {
             context.pop();
-            context.pushReplacement('/${LoginScreen.path}');
           }
         },
       );
