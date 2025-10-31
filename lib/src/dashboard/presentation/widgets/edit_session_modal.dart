@@ -121,8 +121,21 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () {
-                context.pop();
+              onPressed: () async {
+                await showAdaptiveDialog(
+                  context: context,
+                  builder: (_) {
+                    return alertDialog(
+                      context: context,
+                      title: local.discardYourChanges,
+                      content: local.anyUnsavedChangesWillBeLost,
+                      confirmText: local.discardChanges,
+                      onConfirm: () {
+                        context.pop();
+                      },
+                    );
+                  },
+                );
               },
             ),
           ),

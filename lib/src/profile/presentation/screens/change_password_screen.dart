@@ -1,26 +1,23 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/change_password_controller.dart';
-import 'package:hydro_iot/src/auth/presentation/widgets/otp_password_content_widget.dart';
+import 'package:hydro_iot/src/auth/presentation/widgets/change_password_content_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../pkg.dart';
 
-class OtpPasswordScreen extends ConsumerStatefulWidget {
-  const OtpPasswordScreen({super.key, required this.email});
+class AuthedChangePasswordScreen extends ConsumerStatefulWidget {
+  const AuthedChangePasswordScreen({super.key, required this.email, required this.resetToken});
 
-  static const String path = 'verify-otp';
+  static const String path = 'authed-change-password';
   final String email;
+  final String resetToken;
 
   @override
-  ConsumerState<OtpPasswordScreen> createState() => _OtpPasswordScreenState();
+  ConsumerState<AuthedChangePasswordScreen> createState() => _AuthedChangePasswordScreenState();
 }
 
-class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
-  List<TextEditingController?> otpControllers = [];
-  String get otpCode => otpControllers.map((e) => e == null ? '' : e.text).toList().join();
-  void otpController(List<TextEditingController?> controllers) {
-    otpControllers = controllers;
-  }
-
+class _AuthedChangePasswordScreenState extends ConsumerState<AuthedChangePasswordScreen> {
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController newConfirmController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
@@ -29,51 +26,41 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: AppLocalizations.of(context)!.error, description: errorMessage);
             context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
         loading: () {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => FancyLoadingDialog(title: local.verifyingCode),
+            builder: (context) => FancyLoadingDialog(title: local.resettingPassword),
           );
         },
         data: (response) {
           if (context.mounted) {
             context.pop();
+            Toast().showSuccessToast(context: context, title: local.success, description: local.passwordResetSuccessful);
           }
         },
       );
     });
-    void verifyCode() async {
-      if (otpCode.length < 6 && otpCode.contains('')) {
+    void resetPassword() {
+      if (newPasswordController.text.isEmpty || newConfirmController.text.isEmpty) {
         Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
         return;
       }
-      try {
-        final data = await ref.read(changePasswordControllerProvider.notifier).verifyOtp(email: widget.email, otp: otpCode);
-        if (data != null && context.mounted) {
-          context.push('/change-password', extra: {'email': widget.email, 'resetToken': data.resetToken});
-        }
-      } catch (e) {
-        final errorMessage = (e as Exception).toString().replaceAll('Exception: ', '');
-        if (context.mounted) {
-          Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
-        }
+      if (newPasswordController.text != newConfirmController.text) {
+        Toast().showErrorToast(context: context, title: local.error, description: local.passwordsDoNotMatch);
+        return;
       }
-    }
-
-    void resendCode() {
-      ref.read(changePasswordControllerProvider.notifier).changePasswordRequest(email: widget.email);
-      Toast().showSuccessToast(context: context, title: local.success, description: local.otpResent);
+      ref
+          .read(changePasswordControllerProvider.notifier)
+          .resetPassword(email: widget.email, newPassword: newPasswordController.text, resetToken: widget.resetToken);
     }
 
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Stack(
         children: [
           Container(
@@ -102,11 +89,10 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
                 ),
               ),
             ),
-            body: OtpPasswordContentWidget(
-              email: widget.email,
-              verify: verifyCode,
-              controllers: otpController,
-              resendCode: resendCode,
+            body: ChangePasswordContentWidget(
+              newPasswordController: newPasswordController,
+              newConfirmController: newConfirmController,
+              reset: resetPassword,
             ),
           ),
         ],

@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/profile/presentation/modals/crop_cycle_history_modal.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/switch_language_modal.dart';
-import 'package:hydro_iot/src/profile/presentation/screens/edit_profile.dart';
-import 'package:hydro_iot/src/profile/presentation/screens/ssid.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_list.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_widget.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_layout_widget.dart';
@@ -19,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     final local = AppLocalizations.of(context)!;
     final userData = ref.watch(authControllerProvider);
 
-    List<Widget> pages = [const EditProfile(), const Ssid(), const SwitchLanguageModal()];
+    List<Widget> pages = [const CropCycleHistoryModal(), const SizedBox(), const SwitchLanguageModal()];
 
     ref.listen(authControllerProvider, (previous, next) {
       next.whenOrNull(
@@ -43,7 +42,21 @@ class ProfileScreen extends ConsumerWidget {
       );
     });
     void logout() async {
-      await ref.read(authControllerProvider.notifier).logout();
+      await showAdaptiveDialog(
+        context: context,
+        builder: (_) {
+          return alertDialog(
+            context: context,
+            title: local.logout,
+            content: local.logoutConfirmation,
+            confirmText: local.logout,
+            onConfirm: () async {
+              context.pop();
+              await ref.read(authControllerProvider.notifier).logout();
+            },
+          );
+        },
+      );
     }
 
     return userData.when(
@@ -82,13 +95,19 @@ class ProfileScreen extends ConsumerWidget {
                         title: item['title'] ?? '',
                         icon: item['icon'] ?? '',
                         iconColor: item['iconColor'] ?? ColorValues.neutral200,
-                        onTap: () => showModalBottomSheet(
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          context: context,
-                          useSafeArea: true,
-                          builder: (context) => pages[index],
-                        ),
+                        onTap: () {
+                          if (index == 1) {
+                            context.push('/authed-change-password-request', extra: {'email': data.email});
+                          } else {
+                            showModalBottomSheet(
+                              useRootNavigator: true,
+                              isScrollControlled: true,
+                              context: context,
+                              useSafeArea: true,
+                              builder: (context) => pages[index],
+                            );
+                          }
+                        },
                       );
                     }),
                   ),

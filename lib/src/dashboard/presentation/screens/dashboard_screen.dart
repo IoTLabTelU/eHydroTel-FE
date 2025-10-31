@@ -7,7 +7,7 @@ import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_controller.dart';
-import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_screen.dart';
 import 'package:hydro_iot/core/components/screen_header.dart';
 import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
@@ -141,6 +141,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
 
     if (state.error != null) {
+      final errorMessage = (state.error as Exception).toString().replaceAll('Exception: ', '');
       return Column(
         children: [
           const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
@@ -150,7 +151,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             textAlign: TextAlign.center,
           ),
           Text(
-            state.error!,
+            errorMessage,
             style: dmSansSmallText(size: 14, weight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),

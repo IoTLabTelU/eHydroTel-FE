@@ -5,7 +5,7 @@ class FilterDevices extends Notifier<DeviceStatus?> {
   @override
   DeviceStatus? build() => DeviceStatus.active;
 
-  void setPlantStatus(DeviceStatus? status) {
+  void setDeviceStatus(DeviceStatus? status) {
     state = status;
   }
 }

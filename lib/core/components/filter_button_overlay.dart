@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import '../../pkg.dart';
-import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
 
 import '../../src/dashboard/presentation/widgets/status_filter_overlay_widget.dart';
 
@@ -39,7 +39,7 @@ class _FilterButtonWithOverlayState extends ConsumerState<FilterButtonWithOverla
                   builder: (context, setState) {
                     return StatusFilterPopup(
                       onStatusSelected: (status) {
-                        ref.read(filterDevicesProvider.notifier).setPlantStatus(status);
+                        ref.read(filterDevicesProvider.notifier).setDeviceStatus(status);
                         setState(() {});
                       },
                       selectedStatus: ref.watch(filterDevicesProvider),

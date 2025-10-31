@@ -7,11 +7,18 @@ class PlantApiService {
   PlantApiService({required this.apiClient});
 
   Future<Responses<List<PlantEntity>>> getAllPlants() async {
-    return await apiClient.get(
-      Params<List<PlantEntity>>(
-        path: EndpointStrings.plants,
-        fromJson: (json) => (json['data'] as List).map((e) => PlantEntity.fromJson(e)).toList(),
-      ),
-    );
+    return await apiClient
+        .get(
+          Params<List<PlantEntity>>(
+            path: EndpointStrings.plants,
+            fromJson: (json) => (json['data'] as List).map((e) => PlantEntity.fromJson(e)).toList(),
+          ),
+        )
+        .then((response) {
+          if (!response.isSuccess) {
+            throw Exception(response.message ?? 'Failed to fetch plants');
+          }
+          return response;
+        });
   }
 }

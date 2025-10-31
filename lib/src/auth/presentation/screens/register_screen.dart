@@ -26,8 +26,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     ref.listen<AsyncValue<bool>>(registerWithPasswordControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: local.error, description: err.toString());
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+            context.pop();
           }
         },
         loading: () {

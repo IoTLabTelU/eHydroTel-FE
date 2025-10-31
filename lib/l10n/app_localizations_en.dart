@@ -145,7 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get logout => 'Logout';
+  String get logout => 'Log Out';
 
   @override
   String get newSession => 'New Session';
@@ -479,4 +479,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continues => 'Continue';
+
+  @override
+  String get logoutConfirmation =>
+      'You\'ll be signed out from your account. Are you sure you want to continue?';
+
+  @override
+  String get discardYourChanges => 'Discard your changes?';
+
+  @override
+  String get discardYourEntries => 'Discard your entries?';
+
+  @override
+  String get anyUnsavedChangesWillBeLost => 'Any unsaved edits will be lost.';
+
+  @override
+  String get anyUnsavedEntriesWillBeLost => 'Any unsaved entries will be lost.';
+
+  @override
+  String get discardChanges => 'Discard Changes';
+
+  @override
+  String get discardEntries => 'Discard Entries';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get changePicture => 'Change Picture';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully.';
+
+  @override
+  String get updatingProfile => 'Updating profile...';
+
+  @override
+  String get deviceUpdatedSuccessfully => 'Device updated successfully.';
+
+  @override
+  String get updatingDevice => 'Updating device...';
 }

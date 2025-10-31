@@ -51,4 +51,15 @@ class DevicesController extends _$DevicesController {
     });
     return null;
   }
+
+  Future<void> updateDevice({required String deviceId, required String name, required String description}) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(devicesRepositoryProvider).updateDevice(deviceId: deviceId, name: name, description: description);
+      return state.value ?? [];
+    });
+
+    // Refresh the devices list after successful update
+    await fetchDevices();
+  }
 }

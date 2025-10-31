@@ -12,71 +12,43 @@ class CropCycleRepositoryImpl implements CropCycleRepository {
 
   @override
   Future<CropCycleResponse> getCropCyclesForDashboard() async {
-    try {
-      final response = await apiService.getCropCyclesForDashboard();
-      return response.data!;
-    } catch (e) {
-      throw Exception('Failed to get crop cycles: $e');
-    }
+    final response = await apiService.getCropCyclesForDashboard();
+    return response.data!;
   }
 
   @override
   Future<CropCycleResponse> getCropCyclesForDevices(String deviceId) async {
-    try {
-      final response = await apiService.getCropCyclesForDevices(deviceId);
-      return response.data!;
-    } catch (e) {
-      throw Exception('Failed to get crop cycles: $e');
-    }
+    final response = await apiService.getCropCyclesForDevices(deviceId);
+    return response.data!;
   }
 
   @override
   Future<CropCycleResponse> searchCropCycles(String query) async {
-    try {
-      final response = await apiService.searchCropCycles(query);
-      return response.data!;
-    } catch (e) {
-      throw Exception('Failed to search crop cycles: $e');
-    }
+    final response = await apiService.searchCropCycles(query);
+    return response.data!;
   }
 
   @override
   Future<bool> addCropCycle(SessionData cropCycleData) async {
-    try {
-      final response = await apiService.addCropCycle(cropCycleData);
-      return response.isSuccess;
-    } catch (e) {
-      throw Exception('Failed to add crop cycle: $e');
-    }
+    final response = await apiService.addCropCycle(cropCycleData);
+    return response.isSuccess;
   }
 
   @override
   Future<bool> deleteCropCycle(String id) async {
-    try {
-      final response = await apiService.deleteCropCycle(id);
-      return response.isSuccess;
-    } catch (e) {
-      throw Exception('Failed to delete crop cycle: $e');
-    }
+    final response = await apiService.deleteCropCycle(id);
+    return response.isSuccess;
   }
 
   @override
   Future<bool> endCropCycle(String id) async {
-    try {
-      final response = await apiService.endCropCycle(id);
-      return response.isSuccess;
-    } catch (e) {
-      throw Exception('Failed to end crop cycle: $e');
-    }
+    final response = await apiService.endCropCycle(id);
+    return response.isSuccess;
   }
 
   @override
   Future<bool> updateCropCycle(String id, EditSessionData cropCycleData) async {
-    try {
-      final response = await apiService.updateCropCycle(id, cropCycleData);
-      return response.isSuccess;
-    } catch (e) {
-      throw Exception('Failed to update crop cycle: $e');
-    }
+    final response = await apiService.updateCropCycle(id, cropCycleData);
+    return response.isSuccess;
   }
 }

@@ -136,8 +136,21 @@ class _SessionModalState extends ConsumerState<SessionModal> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () {
-                context.pop();
+              onPressed: () async {
+                await showAdaptiveDialog(
+                  context: context,
+                  builder: (_) {
+                    return alertDialog(
+                      context: context,
+                      title: local.discardYourEntries,
+                      content: local.anyUnsavedEntriesWillBeLost,
+                      confirmText: local.discardEntries,
+                      onConfirm: () {
+                        context.pop();
+                      },
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -235,6 +248,10 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                                 const SizedBox(height: 8),
                                 plantTypes.when(
                                   data: (data) {
+                                    debugPrint('Plant types loaded: $data');
+                                    debugPrint(
+                                      'Test plants: ${data.map((plant) => DropdownItem(label: plant.name, value: plant)).toList()}',
+                                    );
                                     return MultiDropdown<PlantEntity>(
                                       items: data.map((plant) => DropdownItem(label: plant.name, value: plant)).toList(),
                                       controller: plantsController,

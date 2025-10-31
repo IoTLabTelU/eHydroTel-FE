@@ -23,8 +23,8 @@ class AuthScreen extends ConsumerWidget {
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            context.pop();
             Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+            context.pop();
           }
         },
         loading: () {

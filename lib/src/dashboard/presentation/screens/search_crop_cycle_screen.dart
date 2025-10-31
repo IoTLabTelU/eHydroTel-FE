@@ -153,6 +153,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
     }
 
     if (state is CropCycleStateError) {
+      final errorMessage = (state.error as Exception).toString().replaceAll('Exception: ', '');
       return Center(
         child: Column(
           children: [
@@ -163,7 +164,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
               textAlign: TextAlign.center,
             ),
             Text(
-              state.error!,
+              errorMessage,
               style: dmSansSmallText(size: 14, weight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),

@@ -482,4 +482,48 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get continues => 'Lanjut';
+
+  @override
+  String get logoutConfirmation =>
+      'Anda akan keluar dari akun Anda. Apakah Anda yakin ingin melanjutkan?';
+
+  @override
+  String get discardYourChanges => 'Buang ubahan Anda?';
+
+  @override
+  String get discardYourEntries => 'Discard your entries?';
+
+  @override
+  String get anyUnsavedChangesWillBeLost =>
+      'Setiap perubahan yang belum disimpan akan hilang.';
+
+  @override
+  String get anyUnsavedEntriesWillBeLost => 'Any unsaved entries will be lost.';
+
+  @override
+  String get discardChanges => 'Buang Ubahan';
+
+  @override
+  String get discardEntries => 'Discard Entries';
+
+  @override
+  String get editProfile => 'Ubah Profil';
+
+  @override
+  String get changePicture => 'Ganti Foto';
+
+  @override
+  String get name => 'Nama';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profil berhasil diperbarui.';
+
+  @override
+  String get updatingProfile => 'Memperbarui profil...';
+
+  @override
+  String get deviceUpdatedSuccessfully => 'Perangkat berhasil diperbarui.';
+
+  @override
+  String get updatingDevice => 'Memperbarui perangkat...';
 }

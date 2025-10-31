@@ -12,7 +12,6 @@ class SearchCropCycleNotifier extends StateNotifier<CropCycleState> {
       state = const CropCycleStateInitial();
       return;
     }
-    
     state = const CropCycleStateLoading();
     try {
       final response = await searchCropCyclesUsecase.call(query);

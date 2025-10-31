@@ -1,20 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/change_password_controller.dart';
-import 'package:hydro_iot/src/auth/presentation/widgets/otp_password_content_widget.dart';
+import 'package:hydro_iot/src/profile/presentation/widgets/change_password_verify_otp_content_widget.dart';
 
 import '../../../../pkg.dart';
 
-class OtpPasswordScreen extends ConsumerStatefulWidget {
-  const OtpPasswordScreen({super.key, required this.email});
+class ChangePasswordVerifyOtpScreen extends ConsumerStatefulWidget {
+  const ChangePasswordVerifyOtpScreen({super.key, required this.email});
 
-  static const String path = 'verify-otp';
+  static const String path = 'authed-verify-otp';
   final String email;
 
   @override
-  ConsumerState<OtpPasswordScreen> createState() => _OtpPasswordScreenState();
+  ConsumerState<ChangePasswordVerifyOtpScreen> createState() => _ChangePasswordVerifyOtpScreenState();
 }
 
-class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
+class _ChangePasswordVerifyOtpScreenState extends ConsumerState<ChangePasswordVerifyOtpScreen> {
   List<TextEditingController?> otpControllers = [];
   String get otpCode => otpControllers.map((e) => e == null ? '' : e.text).toList().join();
   void otpController(List<TextEditingController?> controllers) {
@@ -29,8 +29,8 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: AppLocalizations.of(context)!.error, description: errorMessage);
             context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
         loading: () {
@@ -55,7 +55,7 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
       try {
         final data = await ref.read(changePasswordControllerProvider.notifier).verifyOtp(email: widget.email, otp: otpCode);
         if (data != null && context.mounted) {
-          context.push('/change-password', extra: {'email': widget.email, 'resetToken': data.resetToken});
+          context.pushReplacement('/authed-change-password', extra: {'email': widget.email, 'resetToken': data.resetToken});
         }
       } catch (e) {
         final errorMessage = (e as Exception).toString().replaceAll('Exception: ', '');
@@ -102,7 +102,7 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
                 ),
               ),
             ),
-            body: OtpPasswordContentWidget(
+            body: ChangePasswordVerifyOtpContentWidget(
               email: widget.email,
               verify: verifyCode,
               controllers: otpController,

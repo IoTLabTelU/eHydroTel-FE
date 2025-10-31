@@ -1,9 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/cardlike_container_widget.dart';
 import 'package:vector_graphics/vector_graphics_compat.dart';
 
 import '../../../../pkg.dart';
 
-class SettingDeviceScreen extends StatefulWidget {
+class SettingDeviceScreen extends ConsumerStatefulWidget {
   const SettingDeviceScreen({
     super.key,
     required this.deviceName,
@@ -22,10 +24,10 @@ class SettingDeviceScreen extends StatefulWidget {
   static const String path = 'settings';
 
   @override
-  State<SettingDeviceScreen> createState() => _SettingDeviceScreenState();
+  ConsumerState<SettingDeviceScreen> createState() => _SettingDeviceScreenState();
 }
 
-class _SettingDeviceScreenState extends State<SettingDeviceScreen> {
+class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   late TextEditingController _deviceNameController;
   late TextEditingController _deviceIdController;
   late TextEditingController _deviceDescriptionController;
@@ -65,8 +67,42 @@ class _SettingDeviceScreenState extends State<SettingDeviceScreen> {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
+    ref.listen(devicesControllerProvider, (_, next) {
+      next.whenOrNull(
+        error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
+          if (context.mounted) {
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
+            context.pop();
+          }
+        },
+        data: (data) {
+          if (context.mounted) {
+            Toast().showSuccessToast(context: context, title: local.success, description: local.deviceUpdatedSuccessfully);
+            context.pop();
+            context.pop();
+          }
+        },
+        loading: () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => FancyLoadingDialog(title: local.updatingDevice),
+          );
+        },
+      );
+    });
     void saveDevice() {
-      context.pop();
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+      ref
+          .read(devicesControllerProvider.notifier)
+          .updateDevice(
+            deviceId: widget.deviceId,
+            name: _deviceNameController.text,
+            description: _deviceDescriptionController.text,
+          );
     }
 
     return GestureDetector(

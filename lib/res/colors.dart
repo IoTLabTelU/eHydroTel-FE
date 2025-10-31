@@ -51,4 +51,5 @@ class ColorValues {
   static const Color green700 = Color(0xff728d48);
   static const Color green800 = Color(0xff596d38);
   static const Color green900 = Color(0xff44542b);
+  static const Color whiteIoT = Color(0xffF6F6F8);
 }

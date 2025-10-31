@@ -1,20 +1,21 @@
 import 'package:hydro_iot/src/auth/application/controllers/change_password_controller.dart';
-import 'package:hydro_iot/src/auth/presentation/widgets/forgot_password_content_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/profile/presentation/widgets/change_password_request_content_widget.dart';
 
 import '../../../../pkg.dart';
 
-class ForgotPasswordScreen extends ConsumerStatefulWidget {
-  const ForgotPasswordScreen({super.key});
+class ChangePasswordRequestScreen extends ConsumerStatefulWidget {
+  const ChangePasswordRequestScreen({super.key, required this.email});
 
-  static const String path = 'forgot-password';
+  final String email;
+  static const String path = 'authed-change-password-request';
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ChangePasswordRequestScreen> createState() => _ChangePasswordRequestScreenState();
 }
 
-class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
-  TextEditingController emailController = TextEditingController();
+class _ChangePasswordRequestScreenState extends ConsumerState<ChangePasswordRequestScreen> {
+  TextEditingController get emailController => TextEditingController(text: widget.email);
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +25,15 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
             context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
       );
     });
     void sendCode() {
-      if (emailController.text.isEmpty) {
-        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
-        return;
-      }
       ref.read(changePasswordControllerProvider.notifier).changePasswordRequest(email: emailController.text);
-      context.push('/verify-otp', extra: {'email': emailController.text});
+      context.pushReplacement('/authed-verify-otp', extra: {'email': emailController.text});
     }
 
     return GestureDetector(
@@ -71,7 +68,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
               ),
             ),
-            body: ForgotPasswordContentWidget(emailController: emailController, send: sendCode),
+            body: ChangePasswordRequestContentWidget(emailController: emailController, send: sendCode),
           ),
         ],
       ),

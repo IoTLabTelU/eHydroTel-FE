@@ -365,7 +365,7 @@ abstract class AppLocalizations {
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
-  /// **'Logout'**
+  /// **'Log Out'**
   String get logout;
 
   /// No description provided for @newSession.
@@ -997,6 +997,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get continues;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll be signed out from your account. Are you sure you want to continue?'**
+  String get logoutConfirmation;
+
+  /// No description provided for @discardYourChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard your changes?'**
+  String get discardYourChanges;
+
+  /// No description provided for @discardYourEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard your entries?'**
+  String get discardYourEntries;
+
+  /// No description provided for @anyUnsavedChangesWillBeLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Any unsaved edits will be lost.'**
+  String get anyUnsavedChangesWillBeLost;
+
+  /// No description provided for @anyUnsavedEntriesWillBeLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Any unsaved entries will be lost.'**
+  String get anyUnsavedEntriesWillBeLost;
+
+  /// No description provided for @discardChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get discardChanges;
+
+  /// No description provided for @discardEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Entries'**
+  String get discardEntries;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @changePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Picture'**
+  String get changePicture;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully.'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @updatingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating profile...'**
+  String get updatingProfile;
+
+  /// No description provided for @deviceUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Device updated successfully.'**
+  String get deviceUpdatedSuccessfully;
+
+  /// No description provided for @updatingDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating device...'**
+  String get updatingDevice;
 }
 
 class _AppLocalizationsDelegate

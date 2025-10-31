@@ -8,11 +8,7 @@ class PlantRepositoryImpl implements PlantRepositoryInterface {
   PlantRepositoryImpl(this.apiService);
   @override
   Future<List<PlantEntity>> getAllPlants() async {
-    try {
-      final response = await apiService.getAllPlants();
-      return response.data!;
-    } catch (e) {
-      throw Exception('Failed to get plants: $e');
-    }
+    final response = await apiService.getAllPlants();
+    return response.data!;
   }
 }

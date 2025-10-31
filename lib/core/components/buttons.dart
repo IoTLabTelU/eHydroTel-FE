@@ -203,13 +203,14 @@ Widget cancelButton({
   required BuildContext context,
   required VoidCallback onPressed,
   Color textColor = ColorValues.blueProgress,
+  Color backgroundColor = ColorValues.neutral100,
 }) {
   final local = AppLocalizations.of(context)!;
   return ElevatedButton(
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
       elevation: 0,
-      backgroundColor: ColorValues.neutral100,
+      backgroundColor: backgroundColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40))),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
     ),

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
-import 'package:hydro_iot/src/dashboard/application/providers/filter_plants_providers.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -22,6 +22,14 @@ class DevicesScreen extends ConsumerStatefulWidget {
 
 class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   DeviceStatus? get filterDevices => ref.watch(filterDevicesProvider);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(filterDevicesProvider.notifier).setDeviceStatus(null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
@@ -155,6 +163,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                         );
                       },
                       error: (err, stk) {
+                        final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
                         return Column(
                           children: [
                             const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
@@ -164,7 +173,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                               textAlign: TextAlign.center,
                             ),
                             Text(
-                              err.toString(),
+                              errorMessage,
                               style: dmSansSmallText(size: 14, weight: FontWeight.w700),
                               textAlign: TextAlign.center,
                             ),

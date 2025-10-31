@@ -23,6 +23,9 @@ import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_session_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/serial_number_scanner_screen.dart';
 import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
+import 'package:hydro_iot/src/profile/presentation/screens/change_password_request_screen.dart';
+import 'package:hydro_iot/src/profile/presentation/screens/change_password_screen.dart';
+import 'package:hydro_iot/src/profile/presentation/screens/change_password_verify_otp_screen.dart';
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
@@ -61,7 +64,7 @@ final router = GoRouter(
         key: state.pageKey,
         child: const LoginScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0);
+          const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 
@@ -78,7 +81,7 @@ final router = GoRouter(
         key: state.pageKey,
         child: const RegisterScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0);
+          const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 
@@ -267,6 +270,66 @@ final router = GoRouter(
           ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/${ChangePasswordRequestScreen.path}',
+      name: ChangePasswordRequestScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangePasswordRequestScreen(email: extra?['email'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/${ChangePasswordVerifyOtpScreen.path}',
+      name: ChangePasswordVerifyOtpScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangePasswordVerifyOtpScreen(email: extra?['email'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/${AuthedChangePasswordScreen.path}',
+      name: AuthedChangePasswordScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: AuthedChangePasswordScreen(email: extra['email'] as String, resetToken: extra['resetToken'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
             const curve = Curves.easeInOut;
 

@@ -15,17 +15,9 @@ class LoginWithPasswordController extends _$LoginWithPasswordController {
 
   Future<void> loginWithEmailPassword(String email, String password) async {
     state = const AsyncValue.loading();
-
     state = await AsyncValue.guard(() async {
       final loginResponse = await ref.read(authRepositoryProvider).signIn(email: email, password: password);
-      if (!ref.mounted) {
-        return const AuthResponse(user: null, tokens: null);
-      }
-      if (loginResponse.isSuccess && loginResponse.data != null) {
-        return loginResponse.data!;
-      } else {
-        throw Exception(loginResponse.message ?? 'Login failed');
-      }
+      return loginResponse.data!;
     });
   }
 

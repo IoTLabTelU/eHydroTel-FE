@@ -5,9 +5,6 @@ import '../entities/device_entity.dart';
 abstract class DeviceRepository {
   Future<Responses<List<DeviceEntity>>> getMyDevices();
   Future<Responses<DeviceEntity>> getDeviceDetails(String deviceId);
-  Future<Responses<bool>> registerDevice({
-    required String name,
-    required String description,
-    required String serialNumber,
-  });
+  Future<Responses<bool>> registerDevice({required String name, required String description, required String serialNumber});
+  Future<Responses<bool>> updateDevice({required String deviceId, required String name, required String description});
 }

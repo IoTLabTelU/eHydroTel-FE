@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/device_card.dart';
+import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -116,24 +117,27 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
           body: _buildSearchResults(),
         );
       },
-      loading: () => Center(child: CircularProgressIndicator(color: ColorValues.iotMainColor)),
-      error: (error, stack) => Center(
-        child: Column(
-          children: [
-            const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
-            Text(
-              local.error,
-              style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              error.toString(),
-              style: dmSansSmallText(size: 14, weight: FontWeight.w700),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+      loading: () => Center(child: FancyLoading(title: local.loadingDevice)),
+      error: (error, stack) {
+        final errorMessage = (error as Exception).toString().replaceAll('Exception: ', '');
+        return Center(
+          child: Column(
+            children: [
+              const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
+              Text(
+                local.error,
+                style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                errorMessage,
+                style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

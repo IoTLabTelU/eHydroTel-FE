@@ -149,5 +149,16 @@
     "home": "Beranda",
     "activity": "Aktivitas",
     "devices": "Perangkat",
-    "continues": "Lanjut"
+    "continues": "Lanjut",
+    "logoutConfirmation": "Anda akan keluar dari akun Anda. Apakah Anda yakin ingin melanjutkan?",
+    "discardChanges": "Buang Ubahan",
+    "anyUnsavedChangesWillBeLost": "Setiap perubahan yang belum disimpan akan hilang.",
+    "discardYourChanges": "Buang ubahan Anda?",
+    "editProfile": "Ubah Profil",
+    "changePicture": "Ganti Foto",
+    "name": "Nama",
+    "profileUpdatedSuccessfully": "Profil berhasil diperbarui.",
+    "updatingProfile": "Memperbarui profil...",
+    "deviceUpdatedSuccessfully": "Perangkat berhasil diperbarui.",
+    "updatingDevice": "Memperbarui perangkat..."
 }

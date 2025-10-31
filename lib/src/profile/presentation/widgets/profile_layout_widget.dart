@@ -1,3 +1,4 @@
+import 'package:hydro_iot/src/profile/presentation/modals/edit_profile_modal.dart';
 import 'package:vector_graphics/vector_graphics_compat.dart';
 
 import '../../../../pkg.dart';
@@ -50,41 +51,37 @@ class ProfileLayoutWidget extends StatelessWidget {
                           child: Material(
                             color: ColorValues.whiteColor,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                showModalBottomSheet(
+                                  useRootNavigator: true,
+                                  isScrollControlled: true,
+                                  context: context,
+                                  useSafeArea: true,
+                                  builder: (context) =>
+                                      EditProfileModal(imgUrl: imgUrl, name: userName ?? '', email: userEmail ?? ''),
+                                );
+                              },
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    imgUrl != null
-                                        ? Container(
-                                            width: 60,
-                                            height: 60,
-                                            decoration: const BoxDecoration(
-                                              color: ColorValues.green50,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            padding: const EdgeInsets.all(10),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(30),
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: const BoxDecoration(color: ColorValues.green50, shape: BoxShape.circle),
+                                      padding: const EdgeInsets.all(10),
+                                      child: imgUrl != null
+                                          ? ClipOval(
                                               child: Image.network(
                                                 imgUrl!,
                                                 fit: BoxFit.cover,
                                                 cacheWidth: 60,
                                                 cacheHeight: 60,
                                               ),
-                                            ),
-                                          )
-                                        : Container(
-                                            width: 60,
-                                            height: 60,
-                                            decoration: const BoxDecoration(
-                                              color: ColorValues.green50,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            padding: const EdgeInsets.all(10),
-                                            child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.grassAvatar)),
-                                          ),
+                                            )
+                                          : const VectorGraphic(loader: AssetBytesLoader(IconAssets.grassAvatar)),
+                                    ),
                                     const SizedBox(width: 15),
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,

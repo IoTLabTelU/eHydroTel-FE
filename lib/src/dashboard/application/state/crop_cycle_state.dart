@@ -5,17 +5,9 @@ class CropCycleState {
   final CropCycleResponse? cropCycleResponse;
   final String? error;
 
-  const CropCycleState({
-    this.isLoading = false,
-    this.cropCycleResponse,
-    this.error,
-  });
+  const CropCycleState({this.isLoading = false, this.cropCycleResponse, this.error});
 
-  CropCycleState copyWith({
-    bool? isLoading,
-    CropCycleResponse? cropCycleResponse,
-    String? error,
-  }) {
+  CropCycleState copyWith({bool? isLoading, CropCycleResponse? cropCycleResponse, String? error}) {
     return CropCycleState(
       isLoading: isLoading ?? this.isLoading,
       cropCycleResponse: cropCycleResponse ?? this.cropCycleResponse,
@@ -33,8 +25,7 @@ class CropCycleStateLoading extends CropCycleState {
 }
 
 class CropCycleStateLoaded extends CropCycleState {
-  const CropCycleStateLoaded(CropCycleResponse response)
-    : super(cropCycleResponse: response);
+  const CropCycleStateLoaded(CropCycleResponse response) : super(cropCycleResponse: response);
 }
 
 class CropCycleStateError extends CropCycleState {

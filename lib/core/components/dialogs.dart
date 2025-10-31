@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/pkg.dart';
 
 Widget alertDialog({
   required BuildContext context,
@@ -11,23 +10,32 @@ Widget alertDialog({
   VoidCallback? onCancel,
 }) {
   return AlertDialog(
-    title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-    content: Text(content, style: Theme.of(context).textTheme.bodyMedium),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+    actionsAlignment: MainAxisAlignment.spaceBetween,
+    title: Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+    content: Text(content, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral600)),
+    backgroundColor: ColorValues.whiteIoT,
     actions: [
-      TextButton(
+      cancelButton(
+        context: context,
         onPressed: () {
-          Navigator.of(context).pop();
+          context.pop();
           if (onCancel != null) onCancel();
         },
-        child: Text(cancelText, style: dmSansNormalText(color: ColorValues.iotMainColor)),
+        backgroundColor: ColorValues.whiteColor,
       ),
-      ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-          if (onConfirm != null) onConfirm();
-        },
-        style: ElevatedButton.styleFrom(backgroundColor: ColorValues.iotMainColor),
-        child: Text(confirmText, style: dmSansNormalText(color: ColorValues.whiteColor)),
+      SizedBox(
+        width: widthQuery(context) * 0.4,
+        child: primaryButton(
+          text: confirmText,
+          onPressed: () {
+            context.pop();
+            if (onConfirm != null) onConfirm();
+          },
+          context: context,
+          textColor: ColorValues.danger700,
+          color: ColorValues.whiteColor,
+        ),
       ),
     ],
   );
