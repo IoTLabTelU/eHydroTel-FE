@@ -29,10 +29,8 @@ import 'package:hydro_iot/src/profile/presentation/screens/change_password_verif
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-
 final router = GoRouter(
-  navigatorKey: _rootNavigatorKey,
+  navigatorKey: NavigationService.rootNavigatorKey,
   initialLocation: '/${LandingScreen.path}',
   routes: [
     GoRoute(
@@ -507,8 +505,8 @@ final router = GoRouter(
   errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
   redirect: (context, state) async {
     final local = AppLocalizations.of(context)!;
-    final isLoggedIn = await Storage.readIsLoggedIn();
-    final role = await Storage.readRole();
+    final isLoggedIn = await Storage().readIsLoggedIn;
+    final role = await Storage().readRole();
     debugPrint('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
     final publicPaths = [
       '/',

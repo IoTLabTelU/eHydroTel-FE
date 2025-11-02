@@ -45,7 +45,7 @@ class LandingScreen extends StatelessWidget {
                       color: ColorValues.whiteColor.withValues(alpha: 0.3),
                       text: local.getStartedButton,
                       onPressed: () async {
-                        await Storage.setIsLoggedIn('false');
+                        await Storage().setIsLoggedIn('false');
                         if (context.mounted) context.pushReplacement('/auth');
                       },
                       context: context,

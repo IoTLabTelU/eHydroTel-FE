@@ -28,10 +28,13 @@ class AuthRepository implements AuthRepositoryInterface {
             if (tokens == null || user == null) {
               throw Exception('Invalid login response: tokens or user is null');
             }
-            await Storage.writeAccessToken(tokens.accessToken);
-            await Storage.writeRefreshToken(tokens.refreshToken);
-            await Storage.setIsLoggedIn('true');
-            await Storage.writeRole(user.role);
+            await Storage().writeTokens(
+              accessToken: tokens.accessToken,
+              refreshToken: tokens.refreshToken,
+              expiresInSeconds: tokens.expiresIn,
+            );
+            await Storage().setIsLoggedIn('true');
+            await Storage().writeRole(user.role);
             return response;
           } else {
             throw Exception(response.message ?? AppStrings.errorMessage);
@@ -57,10 +60,13 @@ class AuthRepository implements AuthRepositoryInterface {
             if (tokens == null || user == null) {
               throw Exception('Invalid login response: tokens or user is null');
             }
-            await Storage.writeAccessToken(tokens.accessToken);
-            await Storage.writeRefreshToken(tokens.refreshToken);
-            await Storage.setIsLoggedIn('true');
-            await Storage.writeRole(user.role);
+            await Storage().writeTokens(
+              accessToken: tokens.accessToken,
+              refreshToken: tokens.refreshToken,
+              expiresInSeconds: tokens.expiresIn,
+            );
+            await Storage().setIsLoggedIn('true');
+            await Storage().writeRole(user.role);
             return response;
           } else {
             throw Exception(response.message ?? AppStrings.errorMessage);
@@ -70,7 +76,7 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   Future<void> signOut() async {
-    await Storage.clearSession();
+    await Storage().clearSession();
   }
 
   @override

@@ -1,62 +1,76 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
-  static final _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
+  Storage({FlutterSecureStorage? storage}) : _storage = storage ?? const FlutterSecureStorage();
 
-  static const accessToken = 'ACCESS_TOKEN';
-  static const refreshToken = 'REFRESH_TOKEN';
-  static const isLoggedIn = 'IS_LOGGED_IN';
-  static const role = 'ROLE';
-  static const locale = 'LOCALE';
+  static const _kAccessToken = 'ACCESS_TOKEN';
+  static const _kRefreshToken = 'REFRESH_TOKEN';
+  static const _kExpiresAt = 'EXPIRES_AT';
+  static const _kIsLoggedIn = 'IS_LOGGED_IN';
+  static const _kRole = 'ROLE';
+  static const _kLocale = 'LOCALE';
 
-  static Future<void> writeAccessToken(String value) async {
-    await _storage.write(key: accessToken, value: value);
+  Future<void> writeTokens({
+    required String accessToken,
+    required String refreshToken,
+    required int expiresInSeconds,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final expiresAt = now.add(Duration(seconds: expiresInSeconds)).millisecondsSinceEpoch.toString();
+    await Future.wait([
+      _storage.write(key: _kAccessToken, value: accessToken),
+      _storage.write(key: _kRefreshToken, value: refreshToken),
+      _storage.write(key: _kExpiresAt, value: expiresAt),
+    ]);
   }
 
-  static Future<String?> readAccessToken() async {
-    return await _storage.read(key: accessToken);
+  Future<String?> get readAccessToken => _storage.read(key: _kAccessToken);
+  Future<String?> get readRefreshToken => _storage.read(key: _kRefreshToken);
+
+  Future<DateTime?> readExpiresAt() async {
+    final s = await _storage.read(key: _kExpiresAt);
+    if (s == null) return null;
+    final ms = int.tryParse(s);
+    if (ms == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(ms, isUtc: true);
   }
 
-  static Future<void> writeRefreshToken(String value) async {
-    await _storage.write(key: refreshToken, value: value);
+  Future<void> setIsLoggedIn(String value) async {
+    await _storage.write(key: _kIsLoggedIn, value: value);
   }
 
-  static Future<String?> readRefreshToken() async {
-    return await _storage.read(key: refreshToken);
+  Future<bool?> get readIsLoggedIn => _storage
+      .read(key: _kIsLoggedIn)
+      .then(
+        (value) => value == 'true'
+            ? true
+            : value == 'false'
+            ? false
+            : null,
+      );
+
+  Future<void> clearSession() async {
+    await _storage.delete(key: _kAccessToken);
+    await _storage.delete(key: _kRefreshToken);
+    await _storage.write(key: _kIsLoggedIn, value: 'false');
+    await _storage.delete(key: _kRole);
+    await _storage.delete(key: _kExpiresAt);
   }
 
-  static Future<void> setIsLoggedIn(String value) async {
-    await _storage.write(key: isLoggedIn, value: value);
+  Future<void> writeRole(String value) async {
+    await _storage.write(key: _kRole, value: value);
   }
 
-  static Future<bool?> readIsLoggedIn() async {
-    final check = await _storage.read(key: isLoggedIn);
-    if (check == null) {
-      return null;
-    }
-    return check == 'true';
+  Future<String?> readRole() async {
+    return await _storage.read(key: _kRole);
   }
 
-  static Future<void> clearSession() async {
-    await _storage.delete(key: accessToken);
-    await _storage.delete(key: refreshToken);
-    await _storage.write(key: isLoggedIn, value: 'false');
-    await _storage.delete(key: role);
+  Future<void> writeLocale(String value) async {
+    await _storage.write(key: _kLocale, value: value);
   }
 
-  static Future<void> writeRole(String value) async {
-    await _storage.write(key: role, value: value);
-  }
-
-  static Future<String?> readRole() async {
-    return await _storage.read(key: role);
-  }
-
-  static Future<void> writeLocale(String value) async {
-    await _storage.write(key: locale, value: value);
-  }
-
-  static Future<String?> readLocale() async {
-    return await _storage.read(key: locale);
+  Future<String?> readLocale() async {
+    return await _storage.read(key: _kLocale);
   }
 }

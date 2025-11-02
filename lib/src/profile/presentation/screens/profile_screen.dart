@@ -25,14 +25,14 @@ class ProfileScreen extends ConsumerWidget {
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
-            context.pop();
-            Toast().showErrorToast(context: context, title: 'Error', description: errorMessage);
+            if (Navigator.canPop(context)) context.pop();
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
-        loading: () async => await showDialog(
+        loading: () => showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const FancyLoadingDialog(title: 'Logging you out...'),
+          builder: (context) => FancyLoadingDialog(title: local.loggingYouOut),
         ),
         data: (u) {
           if (u == null && context.mounted) {
@@ -51,7 +51,6 @@ class ProfileScreen extends ConsumerWidget {
             content: local.logoutConfirmation,
             confirmText: local.logout,
             onConfirm: () async {
-              context.pop();
               await ref.read(authControllerProvider.notifier).logout();
             },
           );
@@ -74,7 +73,7 @@ class ProfileScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 8.w),
                   child: Text(
-                    'Settings',
+                    local.settings,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),

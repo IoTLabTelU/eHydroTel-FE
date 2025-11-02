@@ -1,8 +1,13 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/api/interceptor.dart';
 import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+
+import '../../utils/storage.dart';
+import '../config/config.dart';
 
 class Params<T> {
   final String path;
@@ -29,9 +34,27 @@ enum ResponseStatus { normal, waiting, success, connectionError, serverError, no
 
 class ApiClient {
   final Dio _dio = Dio();
+  final Storage _storage = Storage();
+  final Dio _refreshDio = Dio();
 
   ApiClient() {
-    _dio.interceptors.add(DioInterceptor(_dio));
+    _dio.interceptors.add(
+      DioInterceptor(
+        _dio,
+        _storage,
+        (refreshToken) async {
+          final r = await _refreshDio.post(
+            '${BaseConfigs.baseUrl}/auth/refresh-token',
+            data: {'refresh_token': refreshToken},
+          );
+          return r.data['data'] ?? r.data;
+        },
+        () {
+          final container = ProviderContainer();
+          container.read(authControllerProvider.notifier).forceLogout(reason: 'Token expired');
+        },
+      ),
+    );
   }
 
   Future<Responses<T>> _responseHandler<T>(Response response, Params<T> param) async {

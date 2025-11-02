@@ -160,5 +160,6 @@
     "profileUpdatedSuccessfully": "Profil berhasil diperbarui.",
     "updatingProfile": "Memperbarui profil...",
     "deviceUpdatedSuccessfully": "Perangkat berhasil diperbarui.",
-    "updatingDevice": "Memperbarui perangkat..."
+    "updatingDevice": "Memperbarui perangkat...",
+    "loggingYouOut": "Mengeluarkan Anda..."
 }

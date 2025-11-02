@@ -526,4 +526,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get updatingDevice => 'Memperbarui perangkat...';
+
+  @override
+  String get loggingYouOut => 'Mengeluarkan Anda...';
 }

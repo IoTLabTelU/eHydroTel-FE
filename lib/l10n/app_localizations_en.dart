@@ -522,4 +522,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updatingDevice => 'Updating device...';
+
+  @override
+  String get loggingYouOut => 'Logging you out...';
 }

@@ -14,14 +14,14 @@ class LocaleNotifier extends StateNotifier<Locale> {
   }
 
   Future<void> _loadLocale() async {
-    final String? languageCode = await Storage.readLocale();
+    final String? languageCode = await Storage().readLocale();
     if (languageCode != null) {
       state = Locale(languageCode);
     }
   }
 
   Future<void> changeLanguage(Locale newLocale) async {
-    await Storage.writeLocale(newLocale.languageCode);
+    await Storage().writeLocale(newLocale.languageCode);
     state = newLocale;
   }
 }

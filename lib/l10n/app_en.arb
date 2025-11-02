@@ -163,5 +163,6 @@
   "profileUpdatedSuccessfully": "Profile updated successfully.",
   "updatingProfile": "Updating profile...",
   "deviceUpdatedSuccessfully": "Device updated successfully.",
-  "updatingDevice": "Updating device..."
+  "updatingDevice": "Updating device...",
+  "loggingYouOut": "Logging you out..."
 }

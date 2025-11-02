@@ -1081,6 +1081,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Updating device...'**
   String get updatingDevice;
+
+  /// No description provided for @loggingYouOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Logging you out...'**
+  String get loggingYouOut;
 }
 
 class _AppLocalizationsDelegate
