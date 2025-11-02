@@ -119,6 +119,7 @@ class HistoryCropCycleCard extends StatelessWidget {
                                 color: ColorValues.neutral100,
                                 borderRadius: BorderRadius.circular(31),
                               ),
+                              padding: EdgeInsets.symmetric(vertical: 5.h),
                               child: Column(
                                 children: [
                                   Text('Harvested on', style: Theme.of(context).textTheme.bodySmall),

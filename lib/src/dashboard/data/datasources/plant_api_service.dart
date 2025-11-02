@@ -1,5 +1,6 @@
-import 'package:hydro_iot/core/api/api.dart';
-import 'package:hydro_iot/res/constant.dart';
+import 'dart:developer';
+
+import 'package:hydro_iot/pkg.dart';
 import 'package:hydro_iot/src/dashboard/domain/entities/plant_entity.dart';
 
 class PlantApiService {
@@ -8,7 +9,7 @@ class PlantApiService {
 
   Future<Responses<List<PlantEntity>>> getAllPlants() async {
     return await apiClient
-        .get(
+        .get<List<PlantEntity>>(
           Params<List<PlantEntity>>(
             path: EndpointStrings.plants,
             fromJson: (json) => (json['data'] as List).map((e) => PlantEntity.fromJson(e)).toList(),
@@ -16,8 +17,9 @@ class PlantApiService {
         )
         .then((response) {
           if (!response.isSuccess) {
-            throw Exception(response.message ?? 'Failed to fetch plants');
+            throw Exception(response.message ?? 'Failed to fetch plant types');
           }
+          log('Fetchedddddd plants: ${response.data}');
           return response;
         });
   }

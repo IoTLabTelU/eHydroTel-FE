@@ -9,17 +9,30 @@ sealed class PlantEntity with _$PlantEntity {
   const factory PlantEntity({
     required String id,
     required String name,
-    required double? phMin,
-    required double? phMax,
-    required int? ppmMin,
-    required int? ppmMax,
+    @JsonKey(fromJson: _toDouble) required double? phMin,
+    @JsonKey(fromJson: _toDouble) required double? phMax,
+    @JsonKey(fromJson: _toInt) required int? ppmMin,
+    @JsonKey(fromJson: _toInt) required int? ppmMax,
     required String? imageUrl,
     required String? createdBy,
     required bool isGlobal,
-    required int? expectedDurationDays,
+    @JsonKey(fromJson: _toInt) required int? expectedDurationDays,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _PlantEntity;
 
   factory PlantEntity.fromJson(Map<String, dynamic> json) => _$PlantEntityFromJson(json);
+}
+
+// Helper converters
+double? _toDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString());
+}
+
+int? _toInt(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString());
 }
