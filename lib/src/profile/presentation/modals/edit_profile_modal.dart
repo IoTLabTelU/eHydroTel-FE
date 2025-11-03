@@ -1,4 +1,6 @@
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/edit_profile_content_widget.dart';
 
@@ -52,11 +54,24 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
     ref.listen(userControllerProvider, (_, next) {
       next.whenOrNull(
         error: (error, stackTrace) {
-          Toast().showErrorToast(context: context, title: local.error, description: error.toString());
+          final errorMessage = (error as Exception).toString().replaceAll('Exception: ', '');
+          context.pop();
+          Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
         },
         data: (message) {
-          Toast().showSuccessToast(context: context, title: local.success, description: local.profileUpdatedSuccessfully);
-          context.pop();
+          if (context.mounted) {
+            ref.invalidate(authControllerProvider);
+            ref.read(authControllerProvider.notifier).checkSession();
+            Toast().showSuccessToast(
+              context: context,
+              title: local.success,
+              description: local.profileUpdatedSuccessfully,
+              animationType: AnimationType.fromBottom,
+              position: Position.bottom,
+            );
+            context.pop();
+            context.pop();
+          }
         },
         loading: () {
           FancyLoadingDialog(title: local.updatingProfile);
@@ -88,22 +103,24 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () async {
-                await showAdaptiveDialog(
-                  context: context,
-                  builder: (_) {
-                    return alertDialog(
-                      context: context,
-                      title: local.discardYourChanges,
-                      content: local.anyUnsavedChangesWillBeLost,
-                      confirmText: local.discardChanges,
-                      onConfirm: () async {
-                        context.pop();
-                      },
-                    );
-                  },
-                );
-              },
+              onPressed: isEdited
+                  ? () async {
+                      await showAdaptiveDialog(
+                        context: context,
+                        builder: (_) {
+                          return alertDialog(
+                            context: context,
+                            title: local.discardYourChanges,
+                            content: local.anyUnsavedChangesWillBeLost,
+                            confirmText: local.discardChanges,
+                            onConfirm: () async {
+                              context.pop();
+                            },
+                          );
+                        },
+                      );
+                    }
+                  : context.pop,
             ),
           ),
           title: Text(

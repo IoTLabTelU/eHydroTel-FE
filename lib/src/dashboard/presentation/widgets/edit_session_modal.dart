@@ -121,22 +121,24 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () async {
-                await showAdaptiveDialog(
-                  context: context,
-                  builder: (_) {
-                    return alertDialog(
-                      context: context,
-                      title: local.discardYourChanges,
-                      content: local.anyUnsavedChangesWillBeLost,
-                      confirmText: local.discardChanges,
-                      onConfirm: () {
-                        context.pop();
-                      },
-                    );
-                  },
-                );
-              },
+              onPressed: isEdited
+                  ? () async {
+                      await showAdaptiveDialog(
+                        context: context,
+                        builder: (_) {
+                          return alertDialog(
+                            context: context,
+                            title: local.discardYourChanges,
+                            content: local.anyUnsavedChangesWillBeLost,
+                            confirmText: local.discardChanges,
+                            onConfirm: () {
+                              context.pop();
+                            },
+                          );
+                        },
+                      );
+                    }
+                  : context.pop,
             ),
           ),
           title: Text(
@@ -496,9 +498,26 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                           flex: 1,
                           child: secondaryButton(
                             context: context,
-                            onPressed: () {
-                              context.pop();
-                            },
+                            onPressed: isEdited
+                                ? () async {
+                                    await showAdaptiveDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return alertDialog(
+                                          context: context,
+                                          title: local.discardYourChanges,
+                                          content: local.anyUnsavedChangesWillBeLost,
+                                          confirmText: local.discardChanges,
+                                          onConfirm: () {
+                                            context.pop();
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                : () {
+                                    context.pop();
+                                  },
                             text: local.cancel,
                             color: ColorValues.neutral200,
                           ),

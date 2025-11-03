@@ -29,19 +29,21 @@ class _SessionModalState extends ConsumerState<SessionModal> {
   AsyncValue<List<PlantEntity>> get plantTypes => ref.watch(plantControllerProvider);
   AsyncValue<List<DeviceEntity>> get devices => ref.watch(devicesControllerProvider);
 
+  bool isEntriesValid() {
+    return _nameController.text.isNotEmpty &&
+        devicesController.selectedItems.isNotEmpty &&
+        plantsController.selectedItems.isNotEmpty;
+  }
+
+  bool isFilled() {
+    return _nameController.text.isNotEmpty ||
+        devicesController.selectedItems.isNotEmpty ||
+        plantsController.selectedItems.isNotEmpty;
+  }
+
   void _saveDevice() {
-    if (_nameController.text.isEmpty) {
-      Toast().showErrorToast(context: context, title: 'Error', description: 'Please enter session name');
-      return;
-    }
-
-    if (devicesController.selectedItems.isEmpty) {
-      Toast().showErrorToast(context: context, title: 'Error', description: 'Please select a device');
-      return;
-    }
-
-    if (plantsController.selectedItems.isEmpty) {
-      Toast().showErrorToast(context: context, title: 'Error', description: 'Please select a plant type');
+    if (!isEntriesValid()) {
+      Toast().showErrorToast(context: context, title: 'Error', description: 'Please fill all fields');
       return;
     }
 
@@ -136,22 +138,24 @@ class _SessionModalState extends ConsumerState<SessionModal> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () async {
-                await showAdaptiveDialog(
-                  context: context,
-                  builder: (_) {
-                    return alertDialog(
-                      context: context,
-                      title: local.discardYourEntries,
-                      content: local.anyUnsavedEntriesWillBeLost,
-                      confirmText: local.discardEntries,
-                      onConfirm: () {
-                        context.pop();
-                      },
-                    );
-                  },
-                );
-              },
+              onPressed: isFilled()
+                  ? () async {
+                      await showAdaptiveDialog(
+                        context: context,
+                        builder: (_) {
+                          return alertDialog(
+                            context: context,
+                            title: local.discardYourEntries,
+                            content: local.anyUnsavedEntriesWillBeLost,
+                            confirmText: local.discardEntries,
+                            onConfirm: () {
+                              context.pop();
+                            },
+                          );
+                        },
+                      );
+                    }
+                  : context.pop,
             ),
           ),
           title: Text(
@@ -594,8 +598,21 @@ class _SessionModalState extends ConsumerState<SessionModal> {
                                   flex: 1,
                                   child: cancelButton(
                                     context: context,
-                                    onPressed: () {
-                                      context.pop();
+                                    onPressed: () async {
+                                      await showAdaptiveDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return alertDialog(
+                                            context: context,
+                                            title: local.discardYourEntries,
+                                            content: local.anyUnsavedEntriesWillBeLost,
+                                            confirmText: local.discardEntries,
+                                            onConfirm: () {
+                                              context.pop();
+                                            },
+                                          );
+                                        },
+                                      );
                                     },
                                     textColor: ColorValues.green900,
                                   ),

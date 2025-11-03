@@ -12,9 +12,11 @@ class Toast {
     required String title,
     String description = '',
     Duration duration = const Duration(seconds: 5),
+    AnimationType animationType = AnimationType.fromTop,
+    Position position = Position.bottom,
   }) {
     CherryToast.success(
-      animationType: AnimationType.fromTop,
+      animationType: animationType,
       title: Text(title, style: dmSansNormalText(color: ColorValues.blackColor)),
       description: Text(
         description,
@@ -26,6 +28,7 @@ class Toast {
       width: widthQuery(context) * 0.8,
       borderRadius: 40,
       displayCloseButton: false,
+      toastPosition: position,
     ).show(context);
   }
 

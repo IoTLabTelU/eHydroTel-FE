@@ -20,6 +20,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
@@ -49,8 +50,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     void register() {
-      if (nameController.text.isEmpty || emailController.text.isEmpty || passwordController.text.isEmpty) {
-        Toast().showErrorToast(context: context, title: local.fillAllFields);
+      if (!formKey.currentState!.validate()) {
         return;
       }
       ref
@@ -95,6 +95,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               emailController: emailController,
               passwordController: passwordController,
               register: register,
+              formKey: formKey,
             ),
           ),
         ],

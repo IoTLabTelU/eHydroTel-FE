@@ -20,11 +20,30 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
   final TextEditingController _deviceNameController = TextEditingController();
   final TextEditingController _deviceDescriptionController = TextEditingController();
   late TextEditingController _serialNumberController;
+  bool isAdded = false;
 
   @override
   void initState() {
     super.initState();
     _serialNumberController = TextEditingController(text: widget.serialNumber);
+    _deviceNameController.addListener(onTextChanged);
+    _serialNumberController.addListener(onTextChanged);
+  }
+
+  void onTextChanged() {
+    if (!isAdded && (_deviceNameController.text.isNotEmpty && _serialNumberController.text.isNotEmpty)) {
+      setState(() {
+        isAdded = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _deviceNameController.dispose();
+    _deviceDescriptionController.dispose();
+    _serialNumberController.dispose();
+    super.dispose();
   }
 
   @override
@@ -118,7 +137,22 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                         flex: 2,
                         child: cancelButton(
                           context: context,
-                          onPressed: () => context.pop(),
+                          onPressed: () async {
+                            await showAdaptiveDialog(
+                              context: context,
+                              builder: (_) {
+                                return alertDialog(
+                                  context: context,
+                                  title: local.discardYourEntries,
+                                  content: local.anyUnsavedEntriesWillBeLost,
+                                  confirmText: local.discardEntries,
+                                  onConfirm: () {
+                                    context.pop();
+                                  },
+                                );
+                              },
+                            );
+                          },
                           textColor: ColorValues.green900,
                         ),
                       ),
@@ -127,7 +161,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                         flex: 5,
                         child: primaryButton(
                           text: local.next,
-                          onPressed: _formKey.currentState?.validate() == true
+                          onPressed: isAdded
                               ? () {
                                   context.push(
                                     '/create/preparing',

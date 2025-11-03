@@ -38,9 +38,6 @@ class DevicesController extends _$DevicesController {
           .registerDevice(name: name, description: description, serialNumber: serialNumber);
       return state.value ?? [];
     });
-
-    // Refresh the devices list after successful registration
-    await fetchDevices();
   }
 
   Future<DeviceEntity?> getDeviceDetails(String deviceId) async {
@@ -58,8 +55,5 @@ class DevicesController extends _$DevicesController {
       await ref.read(devicesRepositoryProvider).updateDevice(deviceId: deviceId, name: name, description: description);
       return state.value ?? [];
     });
-
-    // Refresh the devices list after successful update
-    await fetchDevices();
   }
 }

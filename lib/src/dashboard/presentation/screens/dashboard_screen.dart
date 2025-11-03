@@ -46,90 +46,96 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Skeletonizer(
       enabled: cropCycleState.isLoading || userProvider.isLoading,
-      child: CustomScrollView(
-        shrinkWrap: true,
-        slivers: [
-          SliverSafeArea(
-            bottom: false,
-            sliver: SliverToBoxAdapter(
-              child: userProvider.when(
-                data: (user) => ScreenHeader(
-                  username: user!.name.split(' ')[0],
-                  plantAsset: IconAssets.plant,
-                  line1: local.letsgrow,
-                  line2: local.amazing,
+      child: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          ref.invalidate(cropCycleNotifierProvider);
+          await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+        },
+        child: CustomScrollView(
+          shrinkWrap: true,
+          slivers: [
+            SliverSafeArea(
+              bottom: false,
+              sliver: SliverToBoxAdapter(
+                child: userProvider.when(
+                  data: (user) => ScreenHeader(
+                    username: user!.name.split(' ')[0],
+                    plantAsset: IconAssets.plant,
+                    line1: local.letsgrow,
+                    line2: local.amazing,
+                  ),
+                  loading: () => const SizedBox.shrink(),
+                  error: (err, _) => Center(child: Text('${local.error} $err')),
                 ),
-                loading: () => const SizedBox.shrink(),
-                error: (err, _) => Center(child: Text('${local.error} $err')),
               ),
             ),
-          ),
-          SliverAppBar(
-            pinned: true,
-            floating: false,
-            automaticallyImplyLeading: false,
-            backgroundColor: ColorValues.whiteColor,
-            forceMaterialTransparency: true,
-            toolbarHeight: 42.h,
-            collapsedHeight: 42.h,
-            title: Skeleton.shade(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: searchButton(
-                      onPressed: () => context.push('/dashboard/${SearchCropCycleScreen.path}'),
-                      context: context,
-                      text: '${local.searchSessionOrPlants}...',
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  const Flexible(child: FilterButtonWithOverlay()),
-                  const SizedBox(width: 2),
-                  Flexible(
-                    child: SizedBox(
-                      width: 40.w,
-                      height: 40.h,
-                      child: addButton(
+            SliverAppBar(
+              pinned: true,
+              floating: false,
+              automaticallyImplyLeading: false,
+              backgroundColor: ColorValues.whiteColor,
+              forceMaterialTransparency: true,
+              toolbarHeight: 42.h,
+              collapsedHeight: 42.h,
+              title: Skeleton.shade(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: searchButton(
+                        onPressed: () => context.push('/dashboard/${SearchCropCycleScreen.path}'),
                         context: context,
-                        onPressed: () {
-                          showModalBottomSheet(
-                            useRootNavigator: true,
-                            isScrollControlled: true,
-                            useSafeArea: true,
-                            context: context,
-                            builder: (context) => SessionModal(
-                              onSessionAdded: (sessionData) {
-                                ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
-                              },
-                            ),
-                          );
-                        },
+                        text: '${local.searchSessionOrPlants}...',
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.w),
-              child: Skeleton.leaf(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 20),
-                    _buildCropCycleContent(cropCycleState),
-                    SizedBox(height: heightQuery(context) * 0.15),
+                    const SizedBox(width: 2),
+                    const Flexible(child: FilterButtonWithOverlay()),
+                    const SizedBox(width: 2),
+                    Flexible(
+                      child: SizedBox(
+                        width: 40.w,
+                        height: 40.h,
+                        child: addButton(
+                          context: context,
+                          onPressed: () {
+                            showModalBottomSheet(
+                              useRootNavigator: true,
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              context: context,
+                              builder: (context) => SessionModal(
+                                onSessionAdded: (sessionData) {
+                                  ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18.w),
+                child: Skeleton.leaf(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 20),
+                      _buildCropCycleContent(cropCycleState),
+                      SizedBox(height: heightQuery(context) * 0.15),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

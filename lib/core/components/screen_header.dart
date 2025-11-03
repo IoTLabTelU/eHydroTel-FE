@@ -29,6 +29,7 @@ class ScreenHeader extends StatelessWidget {
             '${local.welcome} $username,',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
+          SizedBox(height: 8.h),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

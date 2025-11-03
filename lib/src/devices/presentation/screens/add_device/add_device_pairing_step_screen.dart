@@ -39,16 +39,21 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     ref.listen<AsyncValue>(devicesControllerProvider, (previous, next) {
-      next.when(
+      next.whenOrNull(
         data: (data) {
-          Toast().showSuccessToast(context: context, title: local.success, description: local.deviceAddedSuccessfully);
-          context.pop();
-          context.pop();
+          if (context.mounted && data != null) {
+            context.pop();
+            context.pop();
+            context.pop();
+            Toast().showSuccessToast(context: context, title: local.success, description: local.deviceAddedSuccessfully);
+          }
+          ref.read(devicesControllerProvider.notifier).fetchDevices();
         },
         error: (err, _) {
+          final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
           if (context.mounted) {
             context.pop();
-            Toast().showErrorToast(context: context, title: local.error, description: err.toString());
+            Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
           }
         },
         loading: () {
@@ -62,11 +67,6 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
     });
 
     void registerDevice() {
-      if (widget.deviceName.isEmpty || widget.serialNumber.isEmpty) {
-        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
-        return;
-      }
-
       ref
           .read(devicesControllerProvider.notifier)
           .registerDevice(name: widget.deviceName, description: widget.deviceDescription, serialNumber: widget.serialNumber);
@@ -119,6 +119,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                 child: GestureDetector(
                   onTap: () {
                     pageController.jumpToPage(2);
+                    buttonPageController.jumpToPage(2);
                   },
                   child: Text(
                     local.skip,
@@ -144,13 +145,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                     height: heightQuery(context) * 0.3,
                     child: PageView(
                       controller: pageController,
-                      onPageChanged: (index) {
-                        buttonPageController.animateToPage(
-                          index,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         PairingStepContentWidget(
                           title: local.turnOnYourIoTDevice,
@@ -213,6 +208,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                     height: heightQuery(context) * 0.1,
                     child: PageView(
                       controller: buttonPageController,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         Row(
                           children: [
@@ -245,6 +241,10 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                 context: context,
                                 onPressed: () {
                                   pageController.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                  buttonPageController.previousPage(
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
@@ -283,6 +283,10 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                 context: context,
                                 onPressed: () {
                                   pageController.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                  buttonPageController.previousPage(
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );

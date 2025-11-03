@@ -121,9 +121,24 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
             margin: EdgeInsets.only(left: 16.w),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-              onPressed: () {
-                context.pop();
-              },
+              onPressed: isEdited
+                  ? () async {
+                      await showAdaptiveDialog(
+                        context: context,
+                        builder: (_) {
+                          return alertDialog(
+                            context: context,
+                            title: local.discardYourChanges,
+                            content: local.anyUnsavedChangesWillBeLost,
+                            confirmText: local.discardChanges,
+                            onConfirm: () {
+                              context.pop();
+                            },
+                          );
+                        },
+                      );
+                    }
+                  : context.pop,
             ),
           ),
           title: Text(
@@ -211,7 +226,28 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: cancelButton(context: context, onPressed: () => context.pop(), textColor: ColorValues.green900),
+                    child: cancelButton(
+                      context: context,
+                      onPressed: isEdited
+                          ? () async {
+                              await showAdaptiveDialog(
+                                context: context,
+                                builder: (_) {
+                                  return alertDialog(
+                                    context: context,
+                                    title: local.discardYourChanges,
+                                    content: local.anyUnsavedChangesWillBeLost,
+                                    confirmText: local.discardChanges,
+                                    onConfirm: () {
+                                      context.pop();
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          : context.pop,
+                      textColor: ColorValues.green900,
+                    ),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(

@@ -14,6 +14,7 @@ Future<void> main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await dotenv.load(fileName: '.env');
   runApp(const ProviderScope(child: App()));
 }
