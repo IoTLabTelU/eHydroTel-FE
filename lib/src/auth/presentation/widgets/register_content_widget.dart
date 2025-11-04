@@ -84,6 +84,9 @@ class RegisterContentWidget extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
+                    if (value.length < 6) {
+                      return 'Must be at least 6 characters long';
+                    }
                     return null;
                   },
                 ),

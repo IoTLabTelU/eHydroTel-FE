@@ -13,7 +13,7 @@ class Toast {
     String description = '',
     Duration duration = const Duration(seconds: 5),
     AnimationType animationType = AnimationType.fromTop,
-    Position position = Position.bottom,
+    Position position = Position.top,
   }) {
     CherryToast.success(
       animationType: animationType,

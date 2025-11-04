@@ -55,7 +55,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     line2: local.connected,
                   ),
                   loading: () => const SizedBox.shrink(),
-                  error: (err, _) => Center(child: Text('${local.error} $err')),
+                  error: (err, _) => Center(child: Text('${local.error}: $err')),
                 ),
               ),
             ),

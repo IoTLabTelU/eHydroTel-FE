@@ -118,7 +118,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                 padding: EdgeInsets.only(right: 16.w),
                 child: GestureDetector(
                   onTap: () {
-                    pageController.jumpToPage(2);
+                    pageController.animateToPage(2, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                     buttonPageController.jumpToPage(2);
                   },
                   child: Text(
@@ -220,10 +220,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
-                                  buttonPageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  buttonPageController.jumpToPage(1);
                                 },
                                 context: context,
                                 color: ColorValues.green500,
@@ -244,10 +241,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
-                                  buttonPageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  buttonPageController.jumpToPage(0);
                                 },
                                 color: ColorValues.neutral200,
                               ),
@@ -262,10 +256,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
-                                  buttonPageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  buttonPageController.jumpToPage(2);
                                 },
                                 context: context,
                                 color: ColorValues.green500,
@@ -286,10 +277,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
-                                  buttonPageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  buttonPageController.jumpToPage(1);
                                 },
                                 color: ColorValues.neutral200,
                               ),

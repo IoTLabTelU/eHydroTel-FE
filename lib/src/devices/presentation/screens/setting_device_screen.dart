@@ -45,10 +45,13 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   }
 
   void onTextChanged() {
-    if (!isEdited) {
+    if (_deviceNameController.text != widget.deviceName || _deviceDescriptionController.text != widget.deviceDescription) {
       setState(() {
-        isEdited =
-            _deviceNameController.text != widget.deviceName || _deviceDescriptionController.text != widget.deviceDescription;
+        isEdited = true;
+      });
+    } else {
+      setState(() {
+        isEdited = false;
       });
     }
   }
