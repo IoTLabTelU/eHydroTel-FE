@@ -83,16 +83,7 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
                       progressDay: DateTime.now().difference(e.startedAt).inDays,
                       totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
                       onHistoryPressed: () {
-                        context.push(
-                          '/devices/${e.device.serialNumber}/history',
-                          extra: {
-                            'deviceName': e.device.name,
-                            'phMin': e.phMin,
-                            'ppmMin': e.ppmMin,
-                            'phMax': e.phMax,
-                            'ppmMax': e.ppmMax,
-                          },
-                        );
+                        context.push('/sensor-history', extra: {'cropCycleId': e.id});
                       },
                       harvestedAt: e.expectedEnd ?? DateTime.now(),
                     );

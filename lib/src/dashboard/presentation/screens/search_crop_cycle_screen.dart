@@ -198,16 +198,7 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
               progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
               totalDay: cropCycle.expectedEnd != null ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays : 30,
               onHistoryPressed: () {
-                context.push(
-                  '/devices/${cropCycle.device.serialNumber}/history',
-                  extra: {
-                    'deviceName': cropCycle.device.name,
-                    'phMin': cropCycle.phMin,
-                    'ppmMin': cropCycle.ppmMin,
-                    'phMax': cropCycle.phMax,
-                    'ppmMax': cropCycle.ppmMax,
-                  },
-                );
+                context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
               },
               onHarvestPressed: () {
                 showAdaptiveDialog(

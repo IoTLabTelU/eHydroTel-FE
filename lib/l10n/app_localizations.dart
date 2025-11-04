@@ -1087,6 +1087,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logging you out...'**
   String get loggingYouOut;
+
+  /// No description provided for @sensorHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor History'**
+  String get sensorHistory;
 }
 
 class _AppLocalizationsDelegate

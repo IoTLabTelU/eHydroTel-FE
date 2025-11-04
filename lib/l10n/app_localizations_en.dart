@@ -525,4 +525,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loggingYouOut => 'Logging you out...';
+
+  @override
+  String get sensorHistory => 'Sensor History';
 }

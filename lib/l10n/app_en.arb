@@ -164,5 +164,6 @@
   "updatingProfile": "Updating profile...",
   "deviceUpdatedSuccessfully": "Device updated successfully.",
   "updatingDevice": "Updating device...",
-  "loggingYouOut": "Logging you out..."
+  "loggingYouOut": "Logging you out...",
+  "sensorHistory": "Sensor History"
 }

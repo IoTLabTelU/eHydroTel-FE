@@ -65,7 +65,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     line2: local.amazing,
                   ),
                   loading: () => const SizedBox.shrink(),
-                  error: (err, _) => Center(child: Text('${local.error} $err')),
+                  error: (err, _) => Center(child: Text('${local.error}: $err')),
                 ),
               ),
             ),
@@ -217,16 +217,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays
                       : 30,
                   onHistoryPressed: () {
-                    context.push(
-                      '/devices/${cropCycle.device.serialNumber}/history',
-                      extra: {
-                        'deviceName': cropCycle.device.name,
-                        'phMin': cropCycle.phMin,
-                        'ppmMin': cropCycle.ppmMin,
-                        'phMax': cropCycle.phMax,
-                        'ppmMax': cropCycle.ppmMax,
-                      },
-                    );
+                    context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
                   },
                   onHarvestPressed: () {
                     showAdaptiveDialog(

@@ -1,197 +1,210 @@
-import 'dart:io';
-import 'dart:math';
-
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/pkg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/devices/application/controllers/history_controller.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../../pkg.dart';
+import '../../../domain/entities/history_entity.dart';
+import '../../widgets/history_record_list.dart';
+import '../../widgets/sensor_chart_widget.dart';
 
-// ----------------- Models -----------------
-class SensorPoint {
-  final DateTime date;
-  final double ph;
-  final int ppm;
+enum ChartType { ph, ppm }
 
-  SensorPoint({required this.date, required this.ph, required this.ppm});
-}
+class SensorHistoryScreen extends ConsumerStatefulWidget {
+  const SensorHistoryScreen({super.key, required this.cropCycleId});
 
-// ----------------- History Page -----------------
-class SensorHistoryScreen extends StatefulWidget {
-  const SensorHistoryScreen({
-    super.key,
-    required this.deviceId,
-    required this.deviceName,
-    required this.ppmMin,
-    required this.ppmMax,
-    required this.phMin,
-    required this.phMax,
-  });
+  final String cropCycleId;
 
-  static const String path = 'history';
-  final String deviceId;
-  final String deviceName;
-  final int ppmMin;
-  final int ppmMax;
-  final double phMin;
-  final double phMax;
+  static const String path = 'sensor-history';
 
   @override
-  _SensorHistoryScreenState createState() => _SensorHistoryScreenState();
+  ConsumerState<SensorHistoryScreen> createState() => _SensorHistoryScreenState();
 }
 
-class _SensorHistoryScreenState extends State<SensorHistoryScreen> {
-  DateTimeRange? selectedRange;
-  PageController _pageController = PageController();
+class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
-  List<Map<String, dynamic>> sensorDataPH = [];
-  List<Map<String, dynamic>> sensorDataPPM = [];
+  DateTimeRange? _selectedRange;
 
   @override
-  void initState() {
-    super.initState();
-    // Dummy data generator (replace with actual sensor API data)
-    generateSampleData();
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
-  void generateSampleData() {
-    final now = DateTime.now();
-    sensorDataPH = List.generate(12, (index) {
-      final time = now.subtract(Duration(hours: 12 - index));
-      return {'time': time, 'value': 5.5 + index * 0.05};
-    });
-
-    sensorDataPPM = List.generate(12, (index) {
-      final time = now.subtract(Duration(hours: 12 - index));
-      return {'time': time, 'value': 800 + index * 20};
-    });
-  }
-
-  Future<void> pickDateRange() async {
-    final DateTimeRange? result = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2024, 1, 1),
-      lastDate: DateTime.now(),
-      initialDateRange: selectedRange,
-    );
-    if (result != null) {
-      setState(() => selectedRange = result);
-      // TODO: Filter data according to selected range
-    }
-  }
+  String _chartTitle(ChartType t) => t == ChartType.ph ? 'PH (Avg / Min / Max)' : 'PPM (Avg / Min / Max)';
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+    final historyAsync = ref.watch(historyControllerProvider(widget.cropCycleId));
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History Sensor Data', style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [IconButton(onPressed: pickDateRange, icon: const Icon(Icons.date_range_rounded))],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      _pageController.animateToPage(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
-                  child: const Text('pH History'),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () =>
-                      _pageController.animateToPage(1, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
-                  child: const Text('PPM History'),
-                ),
-              ],
-            ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Container(
+          decoration: BoxDecoration(
+            color: ColorValues.whiteColor,
+            shape: BoxShape.circle,
+            border: Border.all(color: ColorValues.neutral200),
           ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              children: [_buildChart(sensorDataPH, 'pH', 3.2, 6.0), _buildChart(sensorDataPPM, 'PPM', 700, 1200)],
-            ),
+          margin: EdgeInsets.only(left: 16.w),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
+            onPressed: context.pop,
           ),
-        ],
+        ),
+        title: Text(
+          local.sensorHistory,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
-    );
-  }
+      body: Skeletonizer(
+        enabled: historyAsync.isLoading || historyAsync.isRefreshing,
+        child: historyAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, st) => Center(child: Text('Error: $e')),
+          data: (raw) {
+            if (raw.history == null) {
+              return const Center(child: Text('No sensor history data available'));
+            }
 
-  Widget _buildChart(List<Map<String, dynamic>> data, String label, double min, double max) {
-    if (data.isEmpty) {
-      return const Center(child: Text('No data available'));
-    }
+            final history = [...raw.history as List<HistoryEntity>]..sort((a, b) => a.time.compareTo(b.time));
 
-    final isHourlyData = _checkIfHourlyData(data);
+            if (history.isEmpty) {
+              return const Center(child: Text('Sensor history is empty'));
+            }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Sensor $label', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              Expanded(
-                child: LineChart(
-                  LineChartData(
-                    gridData: FlGridData(show: true, drawVerticalLine: true),
-                    titlesData: FlTitlesData(
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          interval: 2,
-                          getTitlesWidget: (value, meta) {
-                            final index = value.toInt();
-                            if (index < 0 || index >= data.length) return const SizedBox();
-                            final time = data[index]['time'] as DateTime;
-                            final format = isHourlyData ? DateFormat.Hm() : DateFormat.MMMd();
-                            return Text(format.format(time), style: const TextStyle(fontSize: 10));
-                          },
+            final start = raw.dateRange['start'];
+            final end = raw.dateRange['end'];
+            final dateRangeStr = (start != null && end != null)
+                ? '${DateFormat('dd MMM yyyy').format(start)} → ${DateFormat('dd MMM yyyy').format(end)}'
+                : '-';
+
+            Future<void> pickDateRange() async {
+              final picked = await showDateRangePicker(
+                context: context,
+                initialDateRange:
+                    _selectedRange ??
+                    DateTimeRange(start: DateTime.now().subtract(const Duration(days: 7)), end: DateTime.now()),
+                firstDate: DateTime(2023, 1, 1),
+                lastDate: DateTime.now(),
+                helpText: 'Select date range',
+              );
+
+              if (picked != null && mounted) {
+                setState(() => _selectedRange = picked);
+
+                // Trigger fetch with new range
+                await ref
+                    .read(historyControllerProvider(widget.cropCycleId).notifier)
+                    .fetchHistory(cropCycleId: widget.cropCycleId, start: picked.start, end: picked.end);
+              }
+            }
+
+            return CustomScrollView(
+              slivers: [
+                // ==== Header Info Section ====
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Device Timezone: ${raw.timezone}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
                         ),
-                      ),
-                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Date Range: $dateRangeStr',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // === Date Range Picker Button ===
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.date_range_rounded, size: 18),
+                            label: const Text('Select Date Range'),
+                            onPressed: pickDateRange,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        Row(
+                          children: [
+                            Text(
+                              _chartTitle(_currentPage == 0 ? ChartType.ph : ChartType.ppm),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+                            Text(
+                              'Latest: ${DateFormat('yyyy-MM-dd HH:mm').format(history.last.time)}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    borderData: FlBorderData(show: true, border: Border.all(color: Colors.grey.shade400)),
-                    minX: 0,
-                    maxX: (data.length - 1).toDouble(),
-                    minY: min,
-                    maxY: max,
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: data
-                            .asMap()
-                            .entries
-                            .map((e) => FlSpot(e.key.toDouble(), (e.value['value'] as double).toDouble()))
-                            .toList(),
-                        isCurved: true,
-                        color: label == 'pH' ? Colors.green : Colors.blue,
-                        barWidth: 3,
-                        dotData: FlDotData(show: true),
-                      ),
-                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
+
+                // ==== Chart Swipe Section ====
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 300,
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (idx) => setState(() => _currentPage = idx),
+                      children: [
+                        SensorChart(chartType: ChartType.ph, history: history),
+                        SensorChart(chartType: ChartType.ppm, history: history),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Dots Indicator
+                const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(2, (i) {
+                      final active = i == _currentPage;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        width: active ? 18 : 10,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: active ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+                // ==== Records List ====
+                SliverFillRemaining(
+                  child: Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: HistoryRecordList(history: history),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
-  }
-
-  bool _checkIfHourlyData(List<Map<String, dynamic>> data) {
-    if (data.length < 2) return false;
-    final diff = data[1]['time'].difference(data[0]['time']).inHours;
-    return diff <= 3; // if data interval less than or equal to 3 hours, show time instead of date
   }
 }

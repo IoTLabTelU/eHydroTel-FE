@@ -338,6 +338,26 @@ final router = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/${SensorHistoryScreen.path}',
+      name: SensorHistoryScreen.path,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: SensorHistoryScreen(cropCycleId: extra['cropCycleId'] as String),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        );
+      },
+    ),
     StatefulShellRoute.indexedStack(
       pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
         key: state.pageKey,
@@ -432,28 +452,6 @@ final router = GoRouter(
                             deviceId: extra['deviceId'] as String,
                             deviceName: extra['deviceName'] as String,
                             serialNumber: serialNumber,
-                          ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
-                        );
-                      },
-                    ),
-                    GoRoute(
-                      path: '/${SensorHistoryScreen.path}',
-                      name: SensorHistoryScreen.path,
-                      pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
-                        final extra = state.extra as Map<String, dynamic>;
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: SensorHistoryScreen(
-                            deviceId: serialNumber,
-                            deviceName: extra['deviceName'] as String,
-                            ppmMin: extra['ppmMin'] as int,
-                            ppmMax: extra['ppmMax'] as int,
-                            phMin: extra['phMin'] as double,
-                            phMax: extra['phMax'] as double,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return FadeTransition(opacity: animation, child: child);

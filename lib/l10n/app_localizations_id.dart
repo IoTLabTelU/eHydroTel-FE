@@ -529,4 +529,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get loggingYouOut => 'Mengeluarkan Anda...';
+
+  @override
+  String get sensorHistory => 'Riwayat Sensor';
 }

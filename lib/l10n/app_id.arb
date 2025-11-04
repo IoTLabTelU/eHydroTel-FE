@@ -161,5 +161,6 @@
     "updatingProfile": "Memperbarui profil...",
     "deviceUpdatedSuccessfully": "Perangkat berhasil diperbarui.",
     "updatingDevice": "Memperbarui perangkat...",
-    "loggingYouOut": "Mengeluarkan Anda..."
+    "loggingYouOut": "Mengeluarkan Anda...",
+    "sensorHistory": "Riwayat Sensor"
 }
