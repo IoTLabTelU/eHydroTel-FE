@@ -11,16 +11,26 @@ class CropCycleController extends _$CropCycleController {
   FutureOr<void> build() async {}
 
   Future<void> addCropCycleSession(SessionData sessionData) async {
+    if (!ref.mounted) return;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
+
+    final result = await AsyncValue.guard(() async {
       await ref.read(cropCycleRepositoryProvider).addCropCycle(sessionData);
     });
+
+    if (!ref.mounted) return;
+    state = result;
   }
 
-  Future<void> updateCropCycleSession(String id, EditSessionData sessionData) async {
+  Future<void> updateCropCycleSession(
+    String id,
+    EditSessionData sessionData,
+  ) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ref.read(cropCycleRepositoryProvider).updateCropCycle(id, sessionData);
+      await ref
+          .read(cropCycleRepositoryProvider)
+          .updateCropCycle(id, sessionData);
     });
   }
 
@@ -32,9 +42,14 @@ class CropCycleController extends _$CropCycleController {
   }
 
   Future<void> endCropCycleSession(String id) async {
+    if (!ref.mounted) return;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
+
+    final result = await AsyncValue.guard(() async {
       await ref.read(cropCycleRepositoryProvider).endCropCycle(id);
     });
+
+    if (!ref.mounted) return;
+    state = result;
   }
 }

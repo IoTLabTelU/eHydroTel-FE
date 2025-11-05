@@ -57,8 +57,9 @@ dependencies:
   google_nav_bar: ^5.0.7
   skeletonizer: ^2.1.0+1
   smooth_page_indicator: ^1.2.1
-  fl_chart: ^1.1.1
+  fl_chart: 1.1.0
   web_socket_channel: ^3.0.3
+  image_picker: ^1.2.0
 
 dev_dependencies:
   flutter_test:
