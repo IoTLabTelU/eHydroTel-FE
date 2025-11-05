@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/history_crop_cycle_card.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/crop_cycle_providers.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 
 import '../../../../core/components/animated_refresh_button_widget.dart';
 import '../../../../pkg.dart';
@@ -17,6 +18,7 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     final cropCycleHistory = ref.watch(cropCycleNotifierProvider);
+    final filterHistory = ref.watch(filterHistoryCropCycleProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -69,25 +71,33 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
                     ),
                   ]
                 : cropCycleHistory.cropCycleResponse != null && cropCycleHistory.cropCycleResponse!.data.isNotEmpty
-                ? cropCycleHistory.cropCycleResponse!.data.map((e) {
-                    return HistoryCropCycleCard(
-                      cropCycleName: e.name,
-                      cropCycleType: e.plant.name,
-                      plantedAt: e.startedAt,
-                      phValue: 4.5.toString(),
-                      ppmValue: 900.toString(),
-                      phRangeValue: '${e.phMin}-${e.phMax}',
-                      ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
-                      deviceStatus: e.device.status,
-                      deviceName: e.device.name,
-                      progressDay: DateTime.now().difference(e.startedAt).inDays,
-                      totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
-                      onHistoryPressed: () {
-                        context.push('/sensor-history', extra: {'cropCycleId': e.id});
-                      },
-                      harvestedAt: e.expectedEnd ?? DateTime.now(),
-                    );
-                  }).toList()
+                ? cropCycleHistory.cropCycleResponse!.data
+                      .where((e) {
+                        if (filterHistory != null) {
+                          return e.status == getPlantStatusText(filterHistory);
+                        }
+                        return true;
+                      })
+                      .map((e) {
+                        return HistoryCropCycleCard(
+                          cropCycleName: e.name,
+                          cropCycleType: e.plant.name,
+                          plantedAt: e.startedAt,
+                          phValue: 4.5.toString(),
+                          ppmValue: 900.toString(),
+                          phRangeValue: '${e.phMin}-${e.phMax}',
+                          ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
+                          deviceStatus: e.device.status,
+                          deviceName: e.device.name,
+                          progressDay: DateTime.now().difference(e.startedAt).inDays,
+                          totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
+                          onHistoryPressed: () {
+                            context.push('/sensor-history', extra: {'cropCycleId': e.id});
+                          },
+                          harvestedAt: e.expectedEnd ?? DateTime.now(),
+                        );
+                      })
+                      .toList()
                 : [
                     const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
                     Text(

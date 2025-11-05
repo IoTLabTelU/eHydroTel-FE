@@ -30,7 +30,7 @@ class EndpointStrings {
   static final cropcycleByUser = '$cropcycle/user';
   static final cropcycleByDevice = '$cropcycle/device';
   static final sensors = '$baseUrl/sensors';
-  static final historySensor = '$sensors/history';
+  static final historySensor = '$sensors/summaries';
   static final sendEmail = '$resetPassword/request';
   static final verifyOtp = '$resetPassword/verify';
 }

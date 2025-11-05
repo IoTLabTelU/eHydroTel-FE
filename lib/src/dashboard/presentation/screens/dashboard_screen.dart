@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/crop_cycle_card.dart';
-import 'package:hydro_iot/core/components/filter_button_overlay.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
@@ -28,7 +27,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  DeviceStatus? get filterDevices => ref.watch(filterDevicesProvider);
+  PlantStatus? get filterPlants => ref.watch(filterCropCycleProvider);
 
   @override
   void initState() {
@@ -65,8 +64,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     line2: local.amazing,
                   ),
                   loading: () => const SizedBox.shrink(),
-                  error: (err, _) =>
-                      Center(child: Text('${local.error}: $err')),
+                  error: (err, _) => Center(child: Text('${local.error}: $err')),
                 ),
               ),
             ),
@@ -86,15 +84,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     Expanded(
                       flex: 5,
                       child: searchButton(
-                        onPressed: () => context.push(
-                          '/dashboard/${SearchCropCycleScreen.path}',
-                        ),
+                        onPressed: () => context.push('/dashboard/${SearchCropCycleScreen.path}'),
                         context: context,
                         text: '${local.searchSessionOrPlants}...',
                       ),
                     ),
-                    const SizedBox(width: 2),
-                    const Flexible(child: FilterButtonWithOverlay()),
                     const SizedBox(width: 2),
                     Flexible(
                       child: SizedBox(
@@ -110,9 +104,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               context: context,
                               builder: (context) => SessionModal(
                                 onSessionAdded: (sessionData) {
-                                  ref
-                                      .read(cropCycleNotifierProvider.notifier)
-                                      .fetchCropCycles();
+                                  ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
                                 },
                               ),
                             );
@@ -155,17 +147,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       final errorMessage = state.error.toString().replaceAll('Exception: ', '');
       return Column(
         children: [
-          const Icon(
-            Icons.error_outline_outlined,
-            color: ColorValues.danger600,
-            size: 50,
-          ),
+          const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
           Text(
             local.error,
-            style: jetBrainsMonoHeadText(
-              color: ColorValues.danger600,
-              size: 20,
-            ),
+            style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
             textAlign: TextAlign.center,
           ),
           Text(
@@ -177,9 +162,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(height: 10),
           AnimatedRefreshButton(
             onRefresh: () async {
-              await ref
-                  .read(cropCycleNotifierProvider.notifier)
-                  .fetchCropCycles();
+              await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
             },
             loading: false,
           ),
@@ -187,13 +170,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    if (state.cropCycleResponse != null &&
-        state.cropCycleResponse!.data.isNotEmpty) {
+    if (state.cropCycleResponse != null && state.cropCycleResponse!.data.isNotEmpty) {
       return Column(
         children: state.cropCycleResponse!.data
             .where((e) {
-              if (filterDevices != null)
-                return e.device.status == getDeviceStatusText(filterDevices!);
+              if (filterPlants != null) {
+                return e.status == getPlantStatusText(filterPlants!);
+              }
               return true;
             })
             .map((cropCycle) {
@@ -213,14 +196,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         plant: cropCycle.plant.name,
                         sessionName: cropCycle.name,
                         phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
-                        ppmRange: RangeValues(
-                          cropCycle.ppmMin.toDouble(),
-                          cropCycle.ppmMax.toDouble(),
-                        ),
+                        ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
                         onSessionEdited: (sessionData) {
-                          ref
-                              .read(cropCycleNotifierProvider.notifier)
-                              .fetchCropCycles();
+                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
                         },
                       ),
                     );
@@ -230,24 +208,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   plantedAt: cropCycle.startedAt,
                   phValue: 4.5.toString(),
                   ppmValue: 900.toString(),
-                  phRangeValue:
-                      '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
-                  ppmRangeValue:
-                      '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
+                  phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
+                  ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
                   deviceStatus: cropCycle.device.status,
-                  progressDay: DateTime.now()
-                      .difference(cropCycle.startedAt)
-                      .inDays,
+                  progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
                   totalDay: cropCycle.expectedEnd != null
-                      ? cropCycle.expectedEnd!
-                            .difference(cropCycle.startedAt)
-                            .inDays
+                      ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays
                       : 30,
                   onHistoryPressed: () {
-                    context.push(
-                      '/sensor-history',
-                      extra: {'cropCycleId': cropCycle.id},
-                    );
+                    context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
                   },
                   onHarvestPressed: () {
                     showAdaptiveDialog(
@@ -256,13 +225,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       builder: (context) {
                         return alertDialog(
                           context: context,
-                          title: 'Harvest',
-                          content:
-                              'Are you sure you want to harvest this crops?',
+                          title: local.harvest,
+                          content: local.confirmHarvest,
                           onConfirm: () {
-                            ref
-                                .read(cropCycleControllerProvider.notifier)
-                                .endCropCycleSession(cropCycle.id);
+                            ref.read(cropCycleControllerProvider.notifier).endCropCycleSession(cropCycle.id);
                           },
                         );
                       },
@@ -283,17 +249,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.warning_amber,
-              color: ColorValues.warning600,
-              size: 50,
-            ),
+            const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
             Text(
               local.warning,
-              style: jetBrainsMonoHeadText(
-                color: ColorValues.warning600,
-                size: 20,
-              ),
+              style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
               textAlign: TextAlign.center,
             ),
             Text(

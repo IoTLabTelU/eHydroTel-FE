@@ -40,10 +40,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             builder: (context) => FancyLoadingDialog(title: local.signingYouIn),
           );
         },
-        data: (response) {
+        data: (response) async {
           if (response.tokens != null && context.mounted) {
-            context.pop();
-            context.pushReplacement('/dashboard');
+            final role = await Storage().readRole();
+            if (role == 'ADMIN' && context.mounted) {
+              context.pop();
+              Toast().showErrorToast(context: context, title: local.error, description: local.accountNotSupported);
+              return;
+            }
+            if (context.mounted) {
+              context.pop();
+              context.pushReplacement('/dashboard');
+            }
           }
         },
       );

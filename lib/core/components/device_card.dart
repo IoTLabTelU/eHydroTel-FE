@@ -61,7 +61,7 @@ class DeviceCard extends StatelessWidget {
                 Expanded(
                   child: InfoCard(info: ssid, withBlinkingDot: false, iconPath: IconAssets.wifi, title: 'SSID'),
                 ),
-                SizedBox(width: 5.w),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: InfoCard(info: status, withBlinkingDot: true, iconPath: IconAssets.device, title: local.device),
                 ),

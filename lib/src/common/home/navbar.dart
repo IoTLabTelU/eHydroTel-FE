@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:hydro_iot/src/common/home/widgets/nav_button_widget.dart';
-import 'package:hydro_iot/utils/utils.dart';
+
+import '../../../pkg.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key, required this.navigationShell});
@@ -29,6 +29,7 @@ class _NavbarState extends State<Navbar> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        backgroundColor: ColorValues.neutral50,
         body: Stack(
           children: [
             Positioned.fill(child: widget.navigationShell),

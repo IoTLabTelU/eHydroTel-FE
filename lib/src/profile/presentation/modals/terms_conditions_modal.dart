@@ -23,7 +23,7 @@ class TermsConditionsModal extends StatelessWidget {
           ),
         ),
         title: Text(
-          local.editProfile,
+          local.termsOfService,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

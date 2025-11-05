@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../../../pkg.dart';
 
 class PrivacyPolicyModal extends StatelessWidget {
@@ -25,11 +23,12 @@ class PrivacyPolicyModal extends StatelessWidget {
           ),
         ),
         title: Text(
-          local.editProfile,
+          local.privacyPolicy,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
+      body: Center(child: Text('Privacy Policy Content Here')),
     );
   }
 }

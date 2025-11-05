@@ -11,3 +11,17 @@ class FilterDevices extends Notifier<DeviceStatus?> {
 }
 
 final filterDevicesProvider = NotifierProvider<FilterDevices, DeviceStatus?>(FilterDevices.new);
+
+class FilterCropCycle extends Notifier<PlantStatus?> {
+  @override
+  PlantStatus? build() => PlantStatus.ongoing;
+}
+
+final filterCropCycleProvider = NotifierProvider<FilterCropCycle, PlantStatus?>(FilterCropCycle.new);
+
+class FilterHistoryCropCycle extends Notifier<PlantStatus?> {
+  @override
+  PlantStatus? build() => PlantStatus.finished;
+}
+
+final filterHistoryCropCycleProvider = NotifierProvider<FilterHistoryCropCycle, PlantStatus?>(FilterHistoryCropCycle.new);

@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
+import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import '../../../../pkg.dart';
 import '../../application/providers/crop_cycle_providers.dart';
@@ -18,6 +19,7 @@ class SearchCropCycleScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
+  PlantStatus? get filterPlants => ref.watch(filterCropCycleProvider);
   final TextEditingController searchController = TextEditingController();
   Timer? _debounceTimer;
 
@@ -51,7 +53,6 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     final searchState = ref.watch(searchCropCycleNotifierProvider);
-
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: heightQuery(context) * 0.1,
@@ -181,44 +182,54 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
       }
 
       return Column(
-        children: cropCycles.map((cropCycle) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: CropCycleCard(
-              deviceName: cropCycle.device.name,
-              onEditPressed: () {},
-              cropCycleName: cropCycle.name,
-              cropCycleType: cropCycle.plant.name,
-              plantedAt: cropCycle.startedAt,
-              phValue: 4.5.toString(),
-              ppmValue: 900.toString(),
-              phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
-              ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
-              deviceStatus: cropCycle.status,
-              progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
-              totalDay: cropCycle.expectedEnd != null ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays : 30,
-              onHistoryPressed: () {
-                context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
-              },
-              onHarvestPressed: () {
-                showAdaptiveDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (context) {
-                    return alertDialog(
+        children: cropCycles
+            .where((e) {
+              if (filterPlants != null) {
+                return e.status == getPlantStatusText(filterPlants!);
+              }
+              return true;
+            })
+            .map((cropCycle) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: CropCycleCard(
+                  deviceName: cropCycle.device.name,
+                  onEditPressed: () {},
+                  cropCycleName: cropCycle.name,
+                  cropCycleType: cropCycle.plant.name,
+                  plantedAt: cropCycle.startedAt,
+                  phValue: 4.5.toString(),
+                  ppmValue: 900.toString(),
+                  phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
+                  ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
+                  deviceStatus: cropCycle.status,
+                  progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
+                  totalDay: cropCycle.expectedEnd != null
+                      ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays
+                      : 30,
+                  onHistoryPressed: () {
+                    context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
+                  },
+                  onHarvestPressed: () {
+                    showAdaptiveDialog(
+                      barrierDismissible: true,
                       context: context,
-                      title: local.harvest,
-                      content: local.confirmHarvest,
-                      onConfirm: () {
-                        Navigator.of(context).pop();
+                      builder: (context) {
+                        return alertDialog(
+                          context: context,
+                          title: local.harvest,
+                          content: local.confirmHarvest,
+                          onConfirm: () {
+                            Navigator.of(context).pop();
+                          },
+                        );
                       },
                     );
                   },
-                );
-              },
-            ),
-          );
-        }).toList(),
+                ),
+              );
+            })
+            .toList(),
       );
     }
 

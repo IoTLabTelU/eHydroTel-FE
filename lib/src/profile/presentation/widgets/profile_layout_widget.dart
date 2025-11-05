@@ -129,7 +129,7 @@ class ProfileLayoutWidget extends StatelessWidget {
             Flexible(
               child: Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(color: ColorValues.whiteColor),
+                decoration: const BoxDecoration(color: ColorValues.neutral50),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(

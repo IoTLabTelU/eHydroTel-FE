@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/auth_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/change_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
@@ -502,7 +501,6 @@ final router = GoRouter(
   debugLogDiagnostics: true,
   errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
   redirect: (context, state) async {
-    final local = AppLocalizations.of(context)!;
     final isLoggedIn = await Storage().readIsLoggedIn;
     final role = await Storage().readRole();
     debugPrint('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
@@ -520,17 +518,16 @@ final router = GoRouter(
     if (isLoggedIn == null) {
       return '/${LandingScreen.path}';
     }
+    if (role == 'ADMIN' && isLoggedIn) {
+      await Storage().clearSession();
+      return '/${AuthScreen.path}';
+    }
     if (!isLoggedIn && !publicPaths.contains(state.matchedLocation)) {
+      await Storage().clearSession();
       return '/${AuthScreen.path}';
     }
     if (isLoggedIn && publicPaths.contains(state.matchedLocation)) {
       return '/${DashboardScreen.path}';
-    }
-    if (role != 'CUSTOMER' && isLoggedIn) {
-      if (context.mounted) {
-        Toast().showErrorToast(context: context, title: local.error, description: local.accountNotSupported);
-      }
-      return '/${AuthScreen.path}';
     }
     return null;
   },
