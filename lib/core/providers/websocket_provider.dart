@@ -32,7 +32,7 @@ class SensorWebsocket {
   }
 
   Future<WebSocketChannel> connect() async {
-    final uri = Uri.parse('${url!.replaceFirst('http', 'ws')}/ws/sensors/');
+    final uri = Uri.parse(url!.replaceFirst('https', 'ws'));
     Map<String, dynamic> headers = {};
     headers['Authorization'] = 'Bearer ${await Storage().readAccessToken}';
     final channel = IOWebSocketChannel.connect(uri, headers: headers);

@@ -29,7 +29,8 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
   void _subscribe() {
     if (isDisposed) return;
     if (isSubscribed || channel == null) return;
-    final message = jsonEncode({'action': 'subscribe', 'topic': 'sensor_updates'});
+    //TODO: Replace with actual device serial number
+    final message = 'device:serialNumber:sensor';
     isSubscribed = true;
     channel!.sink.add(message);
   }
