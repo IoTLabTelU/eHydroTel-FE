@@ -33,7 +33,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
     });
   }
 
@@ -48,7 +48,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       child: RefreshIndicator.adaptive(
         onRefresh: () async {
           ref.invalidate(cropCycleNotifierProvider);
-          await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+          await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
         },
         child: CustomScrollView(
           shrinkWrap: true,
@@ -104,7 +104,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               context: context,
                               builder: (context) => SessionModal(
                                 onSessionAdded: (sessionData) {
-                                  ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                                  ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
                                 },
                               ),
                             );
@@ -162,7 +162,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(height: 10),
           AnimatedRefreshButton(
             onRefresh: () async {
-              await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+              await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
             },
             loading: false,
           ),
@@ -198,16 +198,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
                         ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
                         onSessionEdited: (sessionData) {
-                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
                         },
                       ),
                     );
                   },
+                  deviceSerialNumber: cropCycle.device.serialNumber,
                   cropCycleName: cropCycle.name,
                   cropCycleType: cropCycle.plant.name,
                   plantedAt: cropCycle.startedAt,
-                  phValue: 4.5.toString(),
-                  ppmValue: 900.toString(),
+                  phValue: 14.toStringAsFixed(2),
+                  ppmValue: 1000.toStringAsFixed(0),
                   phRangeValue: '${cropCycle.phMin.toStringAsFixed(1)}-${cropCycle.phMax.toStringAsFixed(1)}',
                   ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
                   deviceStatus: cropCycle.device.status,

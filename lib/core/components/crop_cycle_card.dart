@@ -1,13 +1,21 @@
+import 'dart:developer';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/blinking_dot.dart';
+import 'package:hydro_iot/core/components/rolling_text.dart';
+import 'package:hydro_iot/src/websocket/application/controller/sensor_websocket_controller.dart';
+import 'package:hydro_iot/src/websocket/domain/entities/sensor_socket_entity.dart';
 import 'package:hydro_iot/utils/border_progress_paint.dart';
 import 'package:intl/intl.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../../../../pkg.dart';
 
-class CropCycleCard extends StatelessWidget {
-  const CropCycleCard({
+// ignore: must_be_immutable
+class CropCycleCard extends ConsumerWidget {
+  CropCycleCard({
     super.key,
+    required this.deviceSerialNumber,
     required this.onEditPressed,
     required this.cropCycleName,
     required this.cropCycleType,
@@ -37,11 +45,15 @@ class CropCycleCard extends StatelessWidget {
   final String deviceName;
   final int progressDay;
   final int totalDay;
+  final String deviceSerialNumber;
+
+  bool isViewDayProgress = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final local = AppLocalizations.of(context)!;
     final String plantedAtFormatted = DateFormat.yMMMd().format(plantedAt);
+    AsyncValue<SensorSocketEntity> websocket = ref.watch(sensorWebsocketControllerProvider(deviceSerialNumber)).sensorData;
 
     return Container(
       decoration: BoxDecoration(
@@ -82,7 +94,6 @@ class CropCycleCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,9 +104,69 @@ class CropCycleCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SensorCard(sensorType: 'pH', icon: IconAssets.ph, value: phValue, rangeValue: phRangeValue),
+                      websocket.when(
+                        data: (data) {
+                          log('Received pH data: $data');
+                          return SensorCard(
+                            sensorType: 'pH',
+                            icon: IconAssets.ph,
+                            value: data.ph.toStringAsFixed(2),
+                            rangeValue: phRangeValue,
+                            decimalCount: 2,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          log('Error fetching pH value: $error');
+                          return SensorCard(
+                            sensorType: 'pH',
+                            icon: IconAssets.ph,
+                            value: 'Error',
+                            rangeValue: phRangeValue,
+                            decimalCount: 2,
+                          );
+                        },
+                        loading: () {
+                          return SensorCard(
+                            sensorType: 'pH',
+                            icon: IconAssets.ph,
+                            value: 'Loading...',
+                            rangeValue: phRangeValue,
+                            decimalCount: 2,
+                          );
+                        },
+                      ),
                       const SizedBox(height: 6),
-                      SensorCard(sensorType: 'PPM', icon: IconAssets.ppm, value: ppmValue, rangeValue: ppmRangeValue),
+                      websocket.when(
+                        data: (data) {
+                          log('Received PPM data: $data');
+                          return SensorCard(
+                            sensorType: 'PPM',
+                            icon: IconAssets.ppm,
+                            value: data.ppm.toStringAsFixed(0),
+                            rangeValue: ppmRangeValue,
+                            decimalCount: 0,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          log('Error fetching PPM value: $error');
+                          return SensorCard(
+                            sensorType: 'PPM',
+                            icon: IconAssets.ppm,
+                            value: 'Error',
+                            rangeValue: ppmRangeValue,
+                            decimalCount: 0,
+                          );
+                        },
+                        loading: () {
+                          return SensorCard(
+                            sensorType: 'PPM',
+                            icon: IconAssets.ppm,
+                            value: 'Loading...',
+                            rangeValue: ppmRangeValue,
+                            decimalCount: 0,
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -106,9 +177,54 @@ class CropCycleCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
-                      const SizedBox(height: 16),
-                      DeviceStatusCard(status: deviceStatus, deviceName: deviceName),
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            child: isViewDayProgress
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isViewDayProgress = !isViewDayProgress;
+                                      });
+                                    },
+                                    child: DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isViewDayProgress = !isViewDayProgress;
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(flex: 3, child: PlantDayCounter(progressDay: progressDay.toString())),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          flex: 5,
+                                          child: websocket.when(
+                                            data: (data) {
+                                              return WaterTemp(temp: data.temperature.toStringAsFixed(0));
+                                            },
+                                            error: (error, stacktrace) {
+                                              return const WaterTemp(temp: 'Error');
+                                            },
+                                            loading: () {
+                                              return const WaterTemp(temp: '...');
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      DeviceStatusCard(status: deviceStatus, deviceName: deviceName, isViewDayProgress: isViewDayProgress),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -139,11 +255,19 @@ class CropCycleCard extends StatelessWidget {
 }
 
 class SensorCard extends StatelessWidget {
-  const SensorCard({super.key, required this.sensorType, required this.icon, required this.value, required this.rangeValue});
+  const SensorCard({
+    super.key,
+    required this.sensorType,
+    required this.icon,
+    required this.value,
+    required this.rangeValue,
+    required this.decimalCount,
+  });
   final String sensorType;
   final String icon;
   final String value;
   final String rangeValue;
+  final int decimalCount;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +310,12 @@ class SensorCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+            RollingNumberText(
+              value: double.tryParse(value) ?? 0.0,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+              duration: const Duration(milliseconds: 1000),
+              decimalCount: decimalCount,
+            ),
             const SizedBox(height: 4),
             Text(
               'Ideal: $rangeValue',
@@ -200,24 +329,73 @@ class SensorCard extends StatelessWidget {
 }
 
 class PlantDayCounter extends StatelessWidget {
-  const PlantDayCounter({super.key, required this.progressDay, required this.totalDay});
+  const PlantDayCounter({super.key, required this.progressDay});
 
   final String progressDay;
-  final String totalDay;
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 12.w),
-      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(21)),
-
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Day $progressDay', style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(width: 6),
-          Text('of $totalDay', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.neutral500)),
+          Text(
+            local.day,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              progressDay,
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WaterTemp extends StatelessWidget {
+  const WaterTemp({super.key, required this.temp});
+
+  final String temp;
+
+  @override
+  Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            local.waterTemp,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              '$temp°C',
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
+            ),
+          ),
         ],
       ),
     );
@@ -225,9 +403,10 @@ class PlantDayCounter extends StatelessWidget {
 }
 
 class DeviceStatusCard extends StatelessWidget {
-  const DeviceStatusCard({super.key, required this.status, required this.deviceName});
+  const DeviceStatusCard({super.key, required this.status, required this.deviceName, required this.isViewDayProgress});
   final String status;
   final String deviceName;
+  final bool isViewDayProgress;
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +479,7 @@ class DeviceStatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: heightQuery(context) * 0.06),
+            SizedBox(height: isViewDayProgress ? heightQuery(context) * 0.06 : heightQuery(context) * 0.04),
             Text(deviceName, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           ],
         ),
@@ -360,6 +539,7 @@ class _DayProgressBorderState extends State<DayProgressBorder> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return AnimatedBuilder(
       animation: _controller,
       builder: (_, __) {
@@ -377,12 +557,12 @@ class _DayProgressBorderState extends State<DayProgressBorder> with SingleTicker
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Day ${widget.currentDay}',
+                  '${local.day} ${widget.currentDay}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'of ${widget.totalDays}',
+                  '${local.oof} ${widget.totalDays}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.neutral500),
                 ),
               ],

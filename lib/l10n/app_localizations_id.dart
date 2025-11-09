@@ -532,4 +532,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get sensorHistory => 'Riwayat Sensor';
+
+  @override
+  String get waterTemp => 'Suhu Air';
 }

@@ -165,5 +165,6 @@
   "deviceUpdatedSuccessfully": "Device updated successfully.",
   "updatingDevice": "Updating device...",
   "loggingYouOut": "Logging you out...",
-  "sensorHistory": "Sensor History"
+  "sensorHistory": "Sensor History",
+  "waterTemp": "Water Temp"
 }

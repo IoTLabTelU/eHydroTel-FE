@@ -58,8 +58,9 @@ dependencies:
   skeletonizer: ^2.1.0+1
   smooth_page_indicator: ^1.2.1
   fl_chart: 1.1.0
-  web_socket_channel: ^3.0.3
   image_picker: ^1.2.0
+  socket_io_client: ^3.1.2
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:

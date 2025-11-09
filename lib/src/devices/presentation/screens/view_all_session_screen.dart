@@ -100,6 +100,7 @@ class _ViewAllPlantSessionScreenState extends ConsumerState<ViewAllPlantSessionS
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: CropCycleCard(
+              deviceSerialNumber: cropCycle.device.serialNumber,
               deviceName: cropCycle.device.name,
               onEditPressed: () {
                 showModalBottomSheet(
@@ -115,7 +116,7 @@ class _ViewAllPlantSessionScreenState extends ConsumerState<ViewAllPlantSessionS
                     phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
                     ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
                     onSessionEdited: (sessionData) {
-                      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                      ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
                     },
                   ),
                 );

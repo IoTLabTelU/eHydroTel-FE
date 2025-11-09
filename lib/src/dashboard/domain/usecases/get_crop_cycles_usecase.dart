@@ -6,7 +6,7 @@ class GetCropCyclesUsecase {
 
   GetCropCyclesUsecase(this.repository);
 
-  Future<CropCycleResponse> call() async {
-    return await repository.getCropCyclesForDashboard();
+  Future<CropCycleResponse> call(String status, bool active) async {
+    return await repository.getCropCyclesForDashboard(status, active);
   }
 }

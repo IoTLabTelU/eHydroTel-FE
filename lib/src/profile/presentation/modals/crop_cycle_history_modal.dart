@@ -15,9 +15,17 @@ class CropCycleHistoryModal extends ConsumerStatefulWidget {
 
 class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(historyCropCycleNotifierProvider.notifier).fetchCropCycles('finished', false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-    final cropCycleHistory = ref.watch(cropCycleNotifierProvider);
+    final cropCycleHistory = ref.watch(historyCropCycleNotifierProvider);
     final filterHistory = ref.watch(filterHistoryCropCycleProvider);
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +73,7 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
                     const SizedBox(height: 10),
                     AnimatedRefreshButton(
                       onRefresh: () async {
-                        await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles();
+                        await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('finished', false);
                       },
                       loading: false,
                     ),
@@ -79,22 +87,25 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
                         return true;
                       })
                       .map((e) {
-                        return HistoryCropCycleCard(
-                          cropCycleName: e.name,
-                          cropCycleType: e.plant.name,
-                          plantedAt: e.startedAt,
-                          phValue: 4.5.toString(),
-                          ppmValue: 900.toString(),
-                          phRangeValue: '${e.phMin}-${e.phMax}',
-                          ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
-                          deviceStatus: e.device.status,
-                          deviceName: e.device.name,
-                          progressDay: DateTime.now().difference(e.startedAt).inDays,
-                          totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
-                          onHistoryPressed: () {
-                            context.push('/sensor-history', extra: {'cropCycleId': e.id});
-                          },
-                          harvestedAt: e.expectedEnd ?? DateTime.now(),
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 8.h),
+                          child: HistoryCropCycleCard(
+                            cropCycleName: e.name,
+                            cropCycleType: e.plant.name,
+                            plantedAt: e.startedAt,
+                            phValue: '-',
+                            ppmValue: '-',
+                            phRangeValue: '${e.phMin}-${e.phMax}',
+                            ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
+                            deviceStatus: e.device.status,
+                            deviceName: e.device.name,
+                            progressDay: DateTime.now().difference(e.startedAt).inDays,
+                            totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
+                            onHistoryPressed: () {
+                              context.push('/sensor-history', extra: {'cropCycleId': e.id});
+                            },
+                            harvestedAt: e.expectedEnd ?? DateTime.now(),
+                          ),
                         );
                       })
                       .toList()

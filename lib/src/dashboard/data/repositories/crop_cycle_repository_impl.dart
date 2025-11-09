@@ -11,8 +11,8 @@ class CropCycleRepositoryImpl implements CropCycleRepository {
   CropCycleRepositoryImpl(this.apiService);
 
   @override
-  Future<CropCycleResponse> getCropCyclesForDashboard() async {
-    final response = await apiService.getCropCyclesForDashboard();
+  Future<CropCycleResponse> getCropCyclesForDashboard(String status, bool active) async {
+    final response = await apiService.getCropCyclesForDashboard(status, active);
     return response.data!;
   }
 

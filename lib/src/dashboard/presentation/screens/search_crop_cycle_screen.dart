@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
+import 'package:hydro_iot/src/dashboard/presentation/widgets/edit_session_modal.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import '../../../../pkg.dart';
 import '../../application/providers/crop_cycle_providers.dart';
@@ -193,8 +194,27 @@ class _SearchCropCycleScreenState extends ConsumerState<SearchCropCycleScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: CropCycleCard(
+                  deviceSerialNumber: cropCycle.device.serialNumber,
                   deviceName: cropCycle.device.name,
-                  onEditPressed: () {},
+                  onEditPressed: () {
+                    showModalBottomSheet(
+                      useRootNavigator: true,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      context: context,
+                      builder: (context) => EditSessionModal(
+                        cropCycleId: cropCycle.id,
+                        device: cropCycle.device.name,
+                        plant: cropCycle.plant.name,
+                        sessionName: cropCycle.name,
+                        phRange: RangeValues(cropCycle.phMin, cropCycle.phMax),
+                        ppmRange: RangeValues(cropCycle.ppmMin.toDouble(), cropCycle.ppmMax.toDouble()),
+                        onSessionEdited: (sessionData) {
+                          ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('ongoing', true);
+                        },
+                      ),
+                    );
+                  },
                   cropCycleName: cropCycle.name,
                   cropCycleType: cropCycle.plant.name,
                   plantedAt: cropCycle.startedAt,

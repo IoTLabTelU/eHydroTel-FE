@@ -7,9 +7,44 @@ part 'sensor_websocket_controller.g.dart';
 @riverpod
 class SensorWebsocketController extends _$SensorWebsocketController {
   @override
-  SensorWebsocketState build() {
-    final data = ref.watch(sensorWebsocketRepositoryProvider);
-    final websocket = ref.watch(sensorWebsocketRepositoryImplProvider);
-    return SensorWebsocketState(isConnected: websocket.isSubscribed, sensorData: data);
+  SensorWebsocketState build(String serialNumber) {
+    return initAndListen(serialNumber);
+  }
+
+  SensorWebsocketState initAndListen(String serialNumber) {
+    final repo = ref.read(sensorWebsocketRepositoryImplProvider);
+    repo.init(serialNumber);
+
+    ref.listen(sensorWebsocketRepositoryImplProvider, (prev, next) {
+      if (prev != next) {
+        next.init(serialNumber);
+      }
+    });
+
+    // gunakan .listen agar setiap ada data baru, state berubah
+    final sub = repo.sensorDataStream.listen(
+      (entity) {
+        state = SensorWebsocketState(isConnected: repo.isListening, sensorData: AsyncData(entity));
+      },
+      onError: (e, st) {
+        state = SensorWebsocketState(isConnected: false, sensorData: AsyncError(e, st));
+      },
+    );
+
+    ref.onDispose(() {
+      sub.cancel();
+      repo.dispose();
+    });
+
+    // Initial state
+    return SensorWebsocketState(isConnected: repo.isListening, sensorData: const AsyncLoading());
+  }
+
+  void reconnect(String serialNumber) {
+    ref.read(sensorWebsocketRepositoryImplProvider).reconnect(serialNumber);
+  }
+
+  void disconnect() {
+    ref.read(sensorWebsocketRepositoryImplProvider).dispose();
   }
 }

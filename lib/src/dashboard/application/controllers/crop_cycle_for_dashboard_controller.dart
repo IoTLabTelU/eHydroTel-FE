@@ -6,6 +6,9 @@ part 'crop_cycle_for_dashboard_controller.g.dart';
 
 @riverpod
 class CropCycleForDashboardController extends _$CropCycleForDashboardController {
+  String status = 'ongoing';
+  bool active = true;
+
   @override
   FutureOr<List<CropCycle>> build() async {
     return fetchCropCycles();
@@ -14,7 +17,7 @@ class CropCycleForDashboardController extends _$CropCycleForDashboardController 
   Future<List<CropCycle>> fetchCropCycles() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final cropCycleResponse = await ref.read(cropCycleRepositoryProvider).getCropCyclesForDashboard();
+      final cropCycleResponse = await ref.read(cropCycleRepositoryProvider).getCropCyclesForDashboard(status, active);
       return cropCycleResponse.data;
     });
     return state.value ?? [];

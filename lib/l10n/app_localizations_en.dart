@@ -528,4 +528,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sensorHistory => 'Sensor History';
+
+  @override
+  String get waterTemp => 'Water Temp';
 }

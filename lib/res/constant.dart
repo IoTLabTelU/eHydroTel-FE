@@ -35,7 +35,7 @@ class EndpointStrings {
   static final verifyOtp = '$resetPassword/verify';
 }
 
-enum DeviceStatus { active, idle, error }
+enum DeviceStatus { active, idle, offline }
 
 String getDeviceStatusText(DeviceStatus status) {
   switch (status) {
@@ -43,8 +43,8 @@ String getDeviceStatusText(DeviceStatus status) {
       return 'ACTIVE';
     case DeviceStatus.idle:
       return 'IDLE';
-    case DeviceStatus.error:
-      return 'ERROR';
+    case DeviceStatus.offline:
+      return 'OFFLINE';
   }
 }
 

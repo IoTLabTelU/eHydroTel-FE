@@ -28,12 +28,13 @@ class CropCycleApiService {
   //   }
   // }
 
-  Future<Responses<CropCycleResponseModel>> getCropCyclesForDashboard() async {
+  Future<Responses<CropCycleResponseModel>> getCropCyclesForDashboard(String status, bool active) async {
     return await apiClient
         .get<CropCycleResponseModel>(
           Params<CropCycleResponseModel>(
             path: EndpointStrings.cropcycleByUser,
             fromJson: (json) => CropCycleResponseModel.fromJson(json),
+            queryParameters: {'status': status, 'active': active.toString()},
           ),
         )
         .then((response) {

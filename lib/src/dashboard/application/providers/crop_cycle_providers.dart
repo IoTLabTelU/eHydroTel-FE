@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hydro_iot/core/providers/provider.dart';
+import 'package:hydro_iot/src/dashboard/application/notifiers/history_crop_cycle_notifier.dart';
 import '../../data/datasources/crop_cycle_api_service.dart';
 import '../../data/repositories/crop_cycle_repository_impl.dart';
 import '../../domain/repositories/crop_cycle_repository.dart';
@@ -44,4 +45,9 @@ final searchCropCyclesUsecaseProvider = Provider<SearchCropCyclesUsecase>((ref) 
 final searchCropCycleNotifierProvider = StateNotifierProvider<SearchCropCycleNotifier, CropCycleState>((ref) {
   final usecase = ref.read(searchCropCyclesUsecaseProvider);
   return SearchCropCycleNotifier(usecase);
+});
+
+final historyCropCycleNotifierProvider = StateNotifierProvider<HistoryCropCycleNotifier, CropCycleState>((ref) {
+  final usecase = ref.read(getCropCyclesUsecaseProvider);
+  return HistoryCropCycleNotifier(usecase);
 });

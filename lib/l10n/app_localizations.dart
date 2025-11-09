@@ -1093,6 +1093,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sensor History'**
   String get sensorHistory;
+
+  /// No description provided for @waterTemp.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Temp'**
+  String get waterTemp;
 }
 
 class _AppLocalizationsDelegate

@@ -23,7 +23,7 @@ class StatusFilterPopup extends StatelessWidget {
               _buildFilterChip(context, 'ALL', null),
               _buildFilterChip(context, getDeviceStatusText(DeviceStatus.active), DeviceStatus.active),
               _buildFilterChip(context, getDeviceStatusText(DeviceStatus.idle), DeviceStatus.idle),
-              _buildFilterChip(context, getDeviceStatusText(DeviceStatus.error), DeviceStatus.error),
+              _buildFilterChip(context, getDeviceStatusText(DeviceStatus.offline), DeviceStatus.offline),
             ],
           ),
         ),
@@ -39,7 +39,7 @@ class StatusFilterPopup extends StatelessWidget {
               ? ColorValues.success700
               : status == DeviceStatus.idle
               ? ColorValues.blueProgress
-              : status == DeviceStatus.error
+              : status == DeviceStatus.offline
               ? ColorValues.danger700
               : ColorValues.blackColor)
         : ColorValues.whiteColor;
@@ -62,7 +62,7 @@ class StatusFilterPopup extends StatelessWidget {
                       ? ColorValues.success200
                       : status == DeviceStatus.idle
                       ? ColorValues.blueProgress.withValues(alpha: 0.2)
-                      : status == DeviceStatus.error
+                      : status == DeviceStatus.offline
                       ? ColorValues.danger700.withValues(alpha: 0.2)
                       : ColorValues.blackColor.withValues(alpha: 0.2),
                 ),

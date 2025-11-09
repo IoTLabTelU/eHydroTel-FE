@@ -5,8 +5,9 @@ import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../../../../pkg.dart';
 
+// ignore: must_be_immutable
 class HistoryCropCycleCard extends StatelessWidget {
-  const HistoryCropCycleCard({
+  HistoryCropCycleCard({
     super.key,
     required this.cropCycleName,
     required this.cropCycleType,
@@ -35,6 +36,8 @@ class HistoryCropCycleCard extends StatelessWidget {
   final String deviceName;
   final int progressDay;
   final int totalDay;
+
+  bool isViewDayProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +107,40 @@ class HistoryCropCycleCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
-                      const SizedBox(height: 16),
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            child: isViewDayProgress
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isViewDayProgress = !isViewDayProgress;
+                                      });
+                                    },
+                                    child: DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isViewDayProgress = !isViewDayProgress;
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(flex: 3, child: PlantDayCounter(progressDay: progressDay.toString())),
+                                        const SizedBox(width: 4),
+                                        const Expanded(flex: 5, child: WaterTemp()),
+                                      ],
+                                    ),
+                                  ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
                       DeviceStatusCard(status: deviceStatus, deviceName: deviceName),
                       const SizedBox(height: 8),
                       Row(
@@ -207,24 +242,71 @@ class SensorCard extends StatelessWidget {
 }
 
 class PlantDayCounter extends StatelessWidget {
-  const PlantDayCounter({super.key, required this.progressDay, required this.totalDay});
+  const PlantDayCounter({super.key, required this.progressDay});
 
   final String progressDay;
-  final String totalDay;
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 12.w),
-      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(21)),
-
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Day $progressDay', style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(width: 6),
-          Text('of $totalDay', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.neutral500)),
+          Text(
+            local.day,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              progressDay,
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WaterTemp extends StatelessWidget {
+  const WaterTemp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            local.waterTemp,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              '-',
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
+            ),
+          ),
         ],
       ),
     );
@@ -307,7 +389,7 @@ class DeviceStatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: heightQuery(context) * 0.06),
+            SizedBox(height: heightQuery(context) * 0.05),
             Text(deviceName, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           ],
         ),
@@ -367,6 +449,7 @@ class _DayProgressBorderState extends State<DayProgressBorder> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return AnimatedBuilder(
       animation: _controller,
       builder: (_, __) {
@@ -384,12 +467,12 @@ class _DayProgressBorderState extends State<DayProgressBorder> with SingleTicker
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Day ${widget.currentDay}',
+                  '${local.day} ${widget.currentDay}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'of ${widget.totalDays}',
+                  '${local.oof} ${widget.totalDays}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.neutral500),
                 ),
               ],

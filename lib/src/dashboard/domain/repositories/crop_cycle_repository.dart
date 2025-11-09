@@ -4,7 +4,7 @@ import 'package:hydro_iot/src/dashboard/data/models/session_data.dart';
 import '../entities/crop_cycle_response.dart';
 
 abstract class CropCycleRepository {
-  Future<CropCycleResponse> getCropCyclesForDashboard();
+  Future<CropCycleResponse> getCropCyclesForDashboard(String status, bool active);
   Future<CropCycleResponse> getCropCyclesForDevices(String deviceId);
   Future<CropCycleResponse> searchCropCycles(String query);
   Future<bool> addCropCycle(SessionData cropCycleData);

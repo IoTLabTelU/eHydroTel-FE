@@ -162,5 +162,6 @@
     "deviceUpdatedSuccessfully": "Perangkat berhasil diperbarui.",
     "updatingDevice": "Memperbarui perangkat...",
     "loggingYouOut": "Mengeluarkan Anda...",
-    "sensorHistory": "Riwayat Sensor"
+    "sensorHistory": "Riwayat Sensor",
+    "waterTemp": "Suhu Air"
 }
