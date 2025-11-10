@@ -33,15 +33,26 @@ class ProfileItemWidget extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(color: iconColor, shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                      color: iconColor,
+                      shape: BoxShape.circle,
+                    ),
                     padding: const EdgeInsets.all(10),
                     child: VectorGraphic(
                       loader: AssetBytesLoader(icon),
-                      colorFilter: const ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(
+                        ColorValues.whiteColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 15),
-                  Text(title, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                   const Spacer(),
                   const SizedBox(
                     width: 10,
@@ -49,7 +60,10 @@ class ProfileItemWidget extends StatelessWidget {
                     child: VectorGraphic(
                       fit: BoxFit.scaleDown,
                       loader: AssetBytesLoader(IconAssets.moreInfo),
-                      colorFilter: ColorFilter.mode(ColorValues.neutral500, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                        ColorValues.neutral500,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),

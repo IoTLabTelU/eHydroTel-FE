@@ -15,5 +15,6 @@ sealed class HistoryModel with _$HistoryModel {
     required List<HistoryEntity>? history,
   }) = _HistoryModel;
 
-  factory HistoryModel.fromJson(Map<String, dynamic> json) => _$HistoryModelFromJson(json);
+  factory HistoryModel.fromJson(Map<String, dynamic> json) =>
+      _$HistoryModelFromJson(json);
 }

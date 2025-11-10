@@ -14,10 +14,12 @@ class NotificationCenterScreen extends ConsumerStatefulWidget {
   static const String path = 'notification';
 
   @override
-  ConsumerState<NotificationCenterScreen> createState() => _NotificationCenterScreenState();
+  ConsumerState<NotificationCenterScreen> createState() =>
+      _NotificationCenterScreenState();
 }
 
-class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScreen> {
+class _NotificationCenterScreenState
+    extends ConsumerState<NotificationCenterScreen> {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
@@ -42,32 +44,34 @@ class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScr
               ),
             ),
           ),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 20.h),
-            sliver: SliverAnimatedList(
-              initialItemCount: notificationSections.length,
-              itemBuilder: (ctx, idx, animation) {
-                final String title = notificationSections[idx];
-                return NotificationSection(
-                  title: title,
-                  notifications: const [
-                    // Placeholder notifications for demonstration
-                    NotificationCardWidget(
-                      title: 'Notification Title 1',
-                      body: 'This is the body of notification 1.',
-                      time: '10:00 AM',
-                    ),
-                    NotificationCardWidget(
-                      title: 'Notification Title 2',
-                      body: 'This is the body of notification 2.',
-                      time: '11:00 AM',
-                    ),
-                  ],
-                );
-              },
-            ),
+          // SliverPadding(
+          //   padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 20.h),
+          //   sliver: SliverAnimatedList(
+          //     initialItemCount: notificationSections.length,
+          //     itemBuilder: (ctx, idx, animation) {
+          //       final String title = notificationSections[idx];
+          //       return NotificationSection(
+          //         title: title,
+          //         notifications: const [
+          //           // Placeholder notifications for demonstration
+          //           NotificationCardWidget(
+          //             title: 'Notification Title 1',
+          //             body: 'This is the body of notification 1.',
+          //             time: '10:00 AM',
+          //           ),
+          //           NotificationCardWidget(
+          //             title: 'Notification Title 2',
+          //             body: 'This is the body of notification 2.',
+          //             time: '11:00 AM',
+          //           ),
+          //         ],
+          //       );
+          //     },
+          //   ),
+          // ),
+          SliverToBoxAdapter(
+            child: SizedBox(height: heightQuery(context) * 0.15),
           ),
-          SliverToBoxAdapter(child: SizedBox(height: heightQuery(context) * 0.15)),
         ],
       ),
     );

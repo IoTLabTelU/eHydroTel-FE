@@ -17,7 +17,8 @@ class SensorHistoryScreen extends ConsumerStatefulWidget {
   static const String path = 'sensor-history';
 
   @override
-  ConsumerState<SensorHistoryScreen> createState() => _SensorHistoryScreenState();
+  ConsumerState<SensorHistoryScreen> createState() =>
+      _SensorHistoryScreenState();
 }
 
 class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
@@ -32,12 +33,15 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
     super.dispose();
   }
 
-  String _chartTitle(ChartType t) => t == ChartType.ph ? 'PH (Avg / Min / Max)' : 'PPM (Avg / Min / Max)';
+  String _chartTitle(ChartType t) =>
+      t == ChartType.ph ? 'PH (Avg / Min / Max)' : 'PPM (Avg / Min / Max)';
 
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-    final historyAsync = ref.watch(historyControllerProvider(widget.cropCycleId));
+    final historyAsync = ref.watch(
+      historyControllerProvider(widget.cropCycleId),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +61,9 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
         ),
         title: Text(
           local.sensorHistory,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -68,10 +74,13 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
           error: (e, st) => Center(child: Text('Error: $e')),
           data: (raw) {
             if (raw.history == null) {
-              return const Center(child: Text('No sensor history data available'));
+              return const Center(
+                child: Text('No sensor history data available'),
+              );
             }
 
-            final history = [...raw.history as List<HistoryEntity>]..sort((a, b) => a.time.compareTo(b.time));
+            final history = [...raw.history as List<HistoryEntity>]
+              ..sort((a, b) => a.time.compareTo(b.time));
 
             if (history.isEmpty) {
               return const Center(child: Text('Sensor history is empty'));
@@ -88,7 +97,10 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                 context: context,
                 initialDateRange:
                     _selectedRange ??
-                    DateTimeRange(start: DateTime.now().subtract(const Duration(days: 7)), end: DateTime.now()),
+                    DateTimeRange(
+                      start: DateTime.now().subtract(const Duration(days: 7)),
+                      end: DateTime.now(),
+                    ),
                 firstDate: DateTime(2023, 1, 1),
                 lastDate: DateTime.now(),
                 helpText: 'Select date range',
@@ -99,8 +111,14 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
 
                 // Trigger fetch with new range
                 await ref
-                    .read(historyControllerProvider(widget.cropCycleId).notifier)
-                    .fetchHistory(cropCycleId: widget.cropCycleId, start: picked.start, end: picked.end);
+                    .read(
+                      historyControllerProvider(widget.cropCycleId).notifier,
+                    )
+                    .fetchHistory(
+                      cropCycleId: widget.cropCycleId,
+                      start: picked.start,
+                      end: picked.end,
+                    );
               }
             }
 
@@ -109,18 +127,23 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                 // ==== Header Info Section ====
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Device Timezone: ${raw.timezone}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey[700]),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Date Range: $dateRangeStr',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey[700]),
                         ),
                         const SizedBox(height: 8),
 
@@ -128,7 +151,10 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: OutlinedButton.icon(
-                            icon: const Icon(Icons.date_range_rounded, size: 18),
+                            icon: const Icon(
+                              Icons.date_range_rounded,
+                              size: 18,
+                            ),
                             label: const Text('Select Date Range'),
                             onPressed: pickDateRange,
                           ),
@@ -138,7 +164,11 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                         Row(
                           children: [
                             Text(
-                              _chartTitle(_currentPage == 0 ? ChartType.ph : ChartType.ppm),
+                              _chartTitle(
+                                _currentPage == 0
+                                    ? ChartType.ph
+                                    : ChartType.ppm,
+                              ),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             const Spacer(),
@@ -159,7 +189,8 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                     height: 300,
                     child: PageView(
                       controller: _pageController,
-                      onPageChanged: (idx) => setState(() => _currentPage = idx),
+                      onPageChanged: (idx) =>
+                          setState(() => _currentPage = idx),
                       children: [
                         SensorChart(chartType: ChartType.ph, history: history),
                         SensorChart(chartType: ChartType.ppm, history: history),
@@ -181,7 +212,9 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                         width: active ? 18 : 10,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: active ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+                          color: active
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.grey.shade400,
                           borderRadius: BorderRadius.circular(8),
                         ),
                       );
