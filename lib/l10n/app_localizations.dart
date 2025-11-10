@@ -1099,6 +1099,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Water Temp'**
   String get waterTemp;
+
+  /// No description provided for @wifiConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi Configuration'**
+  String get wifiConfiguration;
 }
 
 class _AppLocalizationsDelegate

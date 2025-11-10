@@ -68,8 +68,19 @@ class DeviceRepositoryImpl implements DeviceRepository {
   }
 
   @override
-  Future<Responses<bool>> updateDevice({required String deviceId, required String name, required String description}) async {
-    final request = {'name': name, 'description': description};
+  Future<Responses<bool>> updateDevice({
+    required String deviceId,
+    required String name,
+    required String description,
+    String? ssid,
+    String? wifiPassword,
+  }) async {
+    final request = {
+      'name': name,
+      'description': description,
+      if (ssid != null) 'ssid': ssid,
+      if (wifiPassword != null) 'password': wifiPassword,
+    };
     return api
         .patch<bool>(
           Params<bool>(

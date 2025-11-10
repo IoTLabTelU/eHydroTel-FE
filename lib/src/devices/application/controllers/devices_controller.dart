@@ -49,10 +49,18 @@ class DevicesController extends _$DevicesController {
     return null;
   }
 
-  Future<void> updateDevice({required String deviceId, required String name, required String description}) async {
+  Future<void> updateDevice({
+    required String deviceId,
+    required String name,
+    required String description,
+    String? ssid,
+    String? wifiPassword,
+  }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ref.read(devicesRepositoryProvider).updateDevice(deviceId: deviceId, name: name, description: description);
+      await ref
+          .read(devicesRepositoryProvider)
+          .updateDevice(deviceId: deviceId, name: name, description: description, ssid: ssid, wifiPassword: wifiPassword);
       return state.value ?? [];
     });
   }

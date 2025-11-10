@@ -157,6 +157,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                             'serialNumber': e.serialNumber,
                                             'addedAt': DateFormat('dd MMM yyyy').format(e.createdAt),
                                             'updatedAt': DateFormat('dd MMM yyyy').format(e.updatedAt),
+                                            'ssid': e.ssid ?? '',
                                           },
                                         );
                                       },

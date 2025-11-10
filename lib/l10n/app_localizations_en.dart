@@ -531,4 +531,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waterTemp => 'Water Temp';
+
+  @override
+  String get wifiConfiguration => 'Wi-Fi Configuration';
 }

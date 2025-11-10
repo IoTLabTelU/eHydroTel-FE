@@ -13,6 +13,7 @@ class SettingDeviceScreen extends ConsumerStatefulWidget {
     required this.deviceDescription,
     required this.addedAt,
     required this.updatedAt,
+    required this.ssid,
   });
 
   final String deviceName;
@@ -20,6 +21,7 @@ class SettingDeviceScreen extends ConsumerStatefulWidget {
   final String deviceDescription;
   final String addedAt;
   final String updatedAt;
+  final String ssid;
 
   static const String path = 'settings';
 
@@ -31,6 +33,8 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   late TextEditingController _deviceNameController;
   late TextEditingController _deviceIdController;
   late TextEditingController _deviceDescriptionController;
+  late TextEditingController _wifiSsidController;
+  late TextEditingController _wifiPasswordController;
   final _formKey = GlobalKey<FormState>();
   bool isEdited = false;
 
@@ -40,12 +44,19 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
     _deviceNameController = TextEditingController(text: widget.deviceName);
     _deviceIdController = TextEditingController(text: widget.deviceId);
     _deviceDescriptionController = TextEditingController(text: widget.deviceDescription);
+    _wifiSsidController = TextEditingController(text: widget.ssid);
+    _wifiPasswordController = TextEditingController();
     _deviceNameController.addListener(onTextChanged);
     _deviceDescriptionController.addListener(onTextChanged);
+    _wifiSsidController.addListener(onTextChanged);
+    _wifiPasswordController.addListener(onTextChanged);
   }
 
   void onTextChanged() {
-    if (_deviceNameController.text != widget.deviceName || _deviceDescriptionController.text != widget.deviceDescription) {
+    if (_deviceNameController.text != widget.deviceName ||
+        _deviceDescriptionController.text != widget.deviceDescription ||
+        _wifiSsidController.text != widget.ssid ||
+        _wifiPasswordController.text.isNotEmpty) {
       setState(() {
         isEdited = true;
       });
@@ -62,8 +73,12 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
     _deviceIdController.dispose();
     _deviceDescriptionController.dispose();
     _formKey.currentState?.dispose();
+    _wifiSsidController.dispose();
+    _wifiPasswordController.dispose();
     _deviceNameController.removeListener(onTextChanged);
     _deviceDescriptionController.removeListener(onTextChanged);
+    _wifiSsidController.removeListener(onTextChanged);
+    _wifiPasswordController.removeListener(onTextChanged);
     super.dispose();
   }
 
@@ -105,6 +120,10 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
             deviceId: widget.deviceId,
             name: _deviceNameController.text,
             description: _deviceDescriptionController.text,
+            ssid: _wifiSsidController.text.isNotEmpty && _wifiSsidController.text != widget.ssid
+                ? _wifiSsidController.text
+                : null,
+            wifiPassword: _wifiPasswordController.text.isNotEmpty ? _wifiPasswordController.text : null,
           );
     }
 
@@ -188,42 +207,71 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
               ),
               const SizedBox(height: 20),
               CardLikeContainerWidget(
+                child: Column(
+                  children: [
+                    TextFormFieldComponent(
+                      controller: _deviceIdController,
+                      label: 'Serial Number',
+                      hintText: 'Serial number',
+                      obscureText: false,
+                      readOnly: true,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormFieldComponent(
+                      controller: _deviceNameController,
+                      label: 'Device Name',
+                      hintText: 'Name your device',
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter device name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormFieldComponent(
+                      controller: _deviceDescriptionController,
+                      label: 'Device Description',
+                      hintText: 'Description (optional)',
+                      obscureText: false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.only(left: 12.w),
+                child: Text(
+                  local.wifiConfiguration,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+                ),
+              ),
+              const SizedBox(height: 8),
+              CardLikeContainerWidget(
                 child: Form(
                   key: _formKey,
                   child: Column(
                     children: [
                       TextFormFieldComponent(
-                        controller: _deviceIdController,
-                        label: 'Serial Number',
-                        hintText: 'Serial number',
+                        controller: _wifiSsidController,
+                        label: 'New SSID (optional)',
+                        hintText: 'New SSID (optional)',
                         obscureText: false,
-                        readOnly: true,
                       ),
                       const SizedBox(height: 16),
                       TextFormFieldComponent(
-                        controller: _deviceNameController,
-                        label: 'Device Name',
-                        hintText: 'Name your device',
-                        obscureText: false,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter device name';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormFieldComponent(
-                        controller: _deviceDescriptionController,
-                        label: 'Device Description',
-                        hintText: 'Description (optional)',
-                        obscureText: false,
+                        controller: _wifiPasswordController,
+                        label: 'New Password (optional)',
+                        hintText: 'New Password (optional)',
+                        obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 24.h),
               // Save Button
               Row(
                 children: [

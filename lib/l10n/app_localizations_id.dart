@@ -535,4 +535,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get waterTemp => 'Suhu Air';
+
+  @override
+  String get wifiConfiguration => 'Konfigurasi Wi-Fi';
 }

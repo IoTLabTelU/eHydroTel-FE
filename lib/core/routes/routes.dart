@@ -264,6 +264,7 @@ final router = GoRouter(
             deviceDescription: extra['deviceDescription'] as String,
             addedAt: extra['addedAt'] as String,
             updatedAt: extra['updatedAt'] as String,
+            ssid: extra['ssid'] as String,
           ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(0.0, 1.0);

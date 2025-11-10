@@ -166,5 +166,6 @@
   "updatingDevice": "Updating device...",
   "loggingYouOut": "Logging you out...",
   "sensorHistory": "Sensor History",
-  "waterTemp": "Water Temp"
+  "waterTemp": "Water Temp",
+  "wifiConfiguration": "Wi-Fi Configuration"
 }

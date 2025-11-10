@@ -163,5 +163,6 @@
     "updatingDevice": "Memperbarui perangkat...",
     "loggingYouOut": "Mengeluarkan Anda...",
     "sensorHistory": "Riwayat Sensor",
-    "waterTemp": "Suhu Air"
+    "waterTemp": "Suhu Air",
+    "wifiConfiguration": "Konfigurasi Wi-Fi"
 }
