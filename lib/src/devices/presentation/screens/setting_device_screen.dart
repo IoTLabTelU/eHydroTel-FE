@@ -14,6 +14,7 @@ class SettingDeviceScreen extends ConsumerStatefulWidget {
     required this.addedAt,
     required this.updatedAt,
     required this.ssid,
+    required this.serialNumber,
   });
 
   final String deviceName;
@@ -22,6 +23,7 @@ class SettingDeviceScreen extends ConsumerStatefulWidget {
   final String addedAt;
   final String updatedAt;
   final String ssid;
+  final String serialNumber;
 
   static const String path = 'settings';
 
@@ -31,7 +33,7 @@ class SettingDeviceScreen extends ConsumerStatefulWidget {
 
 class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   late TextEditingController _deviceNameController;
-  late TextEditingController _deviceIdController;
+  late TextEditingController _serialNumberController;
   late TextEditingController _deviceDescriptionController;
   late TextEditingController _wifiSsidController;
   late TextEditingController _wifiPasswordController;
@@ -42,7 +44,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   void initState() {
     super.initState();
     _deviceNameController = TextEditingController(text: widget.deviceName);
-    _deviceIdController = TextEditingController(text: widget.deviceId);
+    _serialNumberController = TextEditingController(text: widget.serialNumber);
     _deviceDescriptionController = TextEditingController(text: widget.deviceDescription);
     _wifiSsidController = TextEditingController(text: widget.ssid);
     _wifiPasswordController = TextEditingController();
@@ -70,7 +72,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   @override
   void dispose() {
     _deviceNameController.dispose();
-    _deviceIdController.dispose();
+    _serialNumberController.dispose();
     _deviceDescriptionController.dispose();
     _formKey.currentState?.dispose();
     _wifiSsidController.dispose();
@@ -99,6 +101,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
             Toast().showSuccessToast(context: context, title: local.success, description: local.deviceUpdatedSuccessfully);
             context.pop();
             context.pop();
+            ref.read(devicesControllerProvider.notifier).fetchDevices();
           }
         },
         loading: () {
@@ -210,7 +213,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                 child: Column(
                   children: [
                     TextFormFieldComponent(
-                      controller: _deviceIdController,
+                      controller: _serialNumberController,
                       label: 'Serial Number',
                       hintText: 'Serial number',
                       obscureText: false,

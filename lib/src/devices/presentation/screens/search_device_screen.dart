@@ -211,6 +211,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
                     'serialNumber': device.serialNumber,
                     'addedAt': device.createdAt,
                     'updatedAt': device.updatedAt,
+                    'deviceId': device.id,
                     'ssid': device.ssid ?? '',
                   },
                 ),
