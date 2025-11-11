@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class FileDownloader {
   static Future<void> downloadAndOpenFile({
@@ -11,40 +9,49 @@ class FileDownloader {
     Map<String, dynamic>? queryParameters,
     ListFormat? listFormat,
   }) async {
-    final dio = Dio();
+    try {
+      final dio = Dio();
 
-    // 1️⃣ Minta izin storage
-    // if (Platform.isAndroid) {
-    //   final status = await Permission.storage.request();
-    //   if (!status.isGranted) {
-    //     throw Exception('Storage permission denied');
-    //   }
-    // }
+      if (!filename.contains('.')) {
+        filename = '$filename.xlsx';
+      }
 
-    // 2️⃣ Tentukan folder penyimpanan
-    final dir = await getApplicationDocumentsDirectory();
-    final filePath = '${dir.path}/$filename';
+      final dir = Directory('/storage/emulated/0/Download');
 
-    // 3️⃣ Download file
-    final response = await dio.get<List<int>>(
-      url,
-      // filePath,
-      options: Options(
-        responseType: ResponseType.bytes,
-        headers: headers,
-        contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        listFormat: listFormat,
-      ),
-      queryParameters: queryParameters,
-      onReceiveProgress: (count, total) {
-        if (total > 0) {
-          print('Downloading: ${(count / total * 100).toStringAsFixed(0)}%');
-        }
-      },
-    );
-    final file = File(filePath);
-    final raf = file.openSync(mode: FileMode.write);
-    raf.writeFromSync(response.data!);
-    await raf.close();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final nameWithoutExt = filename.split('.').first;
+      final extension = filename.split('.').last;
+      final uniqueFilename = '${nameWithoutExt}_$timestamp.$extension';
+
+      final filePath = '${dir.path}/$uniqueFilename';
+
+      print('Downloading to: $filePath');
+
+      await dio.download(
+        url,
+        filePath,
+        options: Options(headers: headers, responseType: ResponseType.bytes),
+        queryParameters: queryParameters,
+        onReceiveProgress: (count, total) {
+          if (total > 0) {
+            print('Downloading: ${(count / total * 100).toStringAsFixed(0)}%');
+          }
+        },
+      );
+
+      if (Platform.isAndroid) {
+        final process = await Process.run('am', [
+          'broadcast',
+          '-a',
+          'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
+          '-d',
+          'file://$filePath',
+        ]);
+        print('Media scan result: ${process.exitCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      rethrow;
+    }
   }
 }
