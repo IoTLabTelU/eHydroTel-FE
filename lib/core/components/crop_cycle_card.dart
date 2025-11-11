@@ -231,11 +231,11 @@ class CropCycleCard extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            flex: 4,
-                            child: historyButton(context: context, onPressed: onHistoryPressed),
-                          ),
-                          const Spacer(),
+                          // Expanded(
+                          //   flex: 4,
+                          //   child: historyButton(context: context, onPressed: onHistoryPressed),
+                          // ),
+                          // const Spacer(),
                           Expanded(
                             flex: 10,
                             child: harvestButton(context: context, onPressed: onHarvestPressed),

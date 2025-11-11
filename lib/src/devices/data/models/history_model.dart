@@ -12,9 +12,8 @@ sealed class HistoryModel with _$HistoryModel {
     required String cropCycleId,
     required String timezone,
     required Map<String, DateTime> dateRange,
-    required List<HistoryEntity>? history,
+    List<HistoryEntity>? history,
   }) = _HistoryModel;
 
-  factory HistoryModel.fromJson(Map<String, dynamic> json) =>
-      _$HistoryModelFromJson(json);
+  factory HistoryModel.fromJson(Map<String, dynamic> json) => _$HistoryModelFromJson(json);
 }

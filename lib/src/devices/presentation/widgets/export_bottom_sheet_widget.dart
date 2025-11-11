@@ -30,7 +30,7 @@ class ExportBottomSheet extends StatelessWidget {
           const Text('Export Data', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           const Text(
-            'Choose format and we\'ll generate a file for your selected date range.',
+            'Choose format and we\'ll generate an export file for this crop cycle.',
             style: TextStyle(color: ColorValues.neutral600),
           ),
           const SizedBox(height: 16),

@@ -20,10 +20,8 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
   bool isListening = false;
   int _retryCount = 0;
   Timer? _reconnectTimer;
-  StreamController<SensorSocketEntity> sensorDataController =
-      StreamController<SensorSocketEntity>.broadcast();
-  Stream<SensorSocketEntity> get sensorDataStream =>
-      sensorDataController.stream;
+  StreamController<SensorSocketEntity> sensorDataController = StreamController<SensorSocketEntity>.broadcast();
+  Stream<SensorSocketEntity> get sensorDataStream => sensorDataController.stream;
 
   @override
   void init(String serialNumber) async {
@@ -55,18 +53,13 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
       } catch (e) {
         throw Exception('Failed to refresh token: $e');
       } finally {
-        Future.delayed(
-          const Duration(seconds: 3),
-          () => reconnect(serialNumber),
-        );
+        Future.delayed(const Duration(seconds: 3), () => reconnect(serialNumber));
       }
     });
     channel?.on(event, (data) {
       log('Received sensor data: $data');
       isListening = true;
-      sensorDataController.add(
-        SensorSocketEntity.fromJson(data as Map<String, dynamic>),
-      );
+      sensorDataController.add(SensorSocketEntity.fromJson(data as Map<String, dynamic>));
     });
     channel?.onConnectError((err) {
       log('Connect error: $err');
@@ -110,10 +103,7 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
         init(serialNumber);
       } catch (e) {
         log('Reconnect failed: $e');
-        Future.delayed(
-          const Duration(seconds: 3),
-          () => reconnect(serialNumber),
-        );
+        Future.delayed(const Duration(seconds: 3), () => reconnect(serialNumber));
       }
       _retryCount++;
     });

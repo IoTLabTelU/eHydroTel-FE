@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:hydro_iot/core/api/api.dart';
 import 'package:hydro_iot/res/constant.dart';
 import 'package:hydro_iot/src/devices/data/models/history_model.dart';
 import 'package:hydro_iot/src/devices/domain/repositories/history_repository.dart';
+import 'package:intl/intl.dart';
 
 class HistoryRepositoryImpl implements HistoryRepository {
   final ApiClient apiClient;
@@ -12,11 +15,14 @@ class HistoryRepositoryImpl implements HistoryRepository {
         .get(
           Params<HistoryModel>(
             path: EndpointStrings.historySensor,
-            fromJson: (json) => HistoryModel.fromJson(json['data']),
+            fromJson: (json) {
+              log(json.toString());
+              return HistoryModel.fromJson(json['data']);
+            },
             queryParameters: {
               'cropCycleId': cropCycleId,
-              if (start != null) 'start': start.toIso8601String(),
-              if (end != null) 'end': end.toIso8601String(),
+              if (start != null) 'start': DateFormat('yyyy-MM-dd').format(start),
+              if (end != null) 'end': DateFormat('yyyy-MM-dd').format(end),
             },
           ),
         )
