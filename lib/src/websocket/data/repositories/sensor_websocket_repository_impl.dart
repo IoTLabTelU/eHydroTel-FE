@@ -25,6 +25,7 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
 
   @override
   void init(String serialNumber) async {
+    if (isListening && channel != null) return;
     channel = await _websocket.connect();
     _listen(serialNumber);
   }
@@ -32,6 +33,7 @@ class SensorWebsocketRepositoryImpl implements SensorWebsocketRepository {
   void _listen(String serialNumber) {
     if (isDisposed || channel == null) return;
     String event = 'device:$serialNumber:sensor';
+    channel?.off(event);
     channel?.onConnect((_) {
       isConnected = true;
       _retryCount = 0;

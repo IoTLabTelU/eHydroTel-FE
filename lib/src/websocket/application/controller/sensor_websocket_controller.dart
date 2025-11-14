@@ -12,17 +12,10 @@ class SensorWebsocketController extends _$SensorWebsocketController {
   }
 
   SensorWebsocketState initAndListen(String serialNumber) {
-    final repo = ref.read(sensorWebsocketRepositoryImplProvider);
-    repo.init(serialNumber);
+    final repo = ref.watch(sensorWebsocketRepositoryImplProvider(serialNumber));
+    final stream = repo.sensorDataStream;
 
-    ref.listen(sensorWebsocketRepositoryImplProvider, (prev, next) {
-      if (prev != next) {
-        next.init(serialNumber);
-      }
-    });
-
-    // gunakan .listen agar setiap ada data baru, state berubah
-    final sub = repo.sensorDataStream.listen(
+    final sub = stream.listen(
       (entity) {
         state = SensorWebsocketState(isConnected: repo.isListening, sensorData: AsyncData(entity));
       },
@@ -36,15 +29,14 @@ class SensorWebsocketController extends _$SensorWebsocketController {
       repo.dispose();
     });
 
-    // Initial state
     return SensorWebsocketState(isConnected: repo.isListening, sensorData: const AsyncLoading());
   }
 
   void reconnect(String serialNumber) {
-    ref.read(sensorWebsocketRepositoryImplProvider).reconnect(serialNumber);
+    ref.read(sensorWebsocketRepositoryImplProvider(serialNumber)).reconnect(serialNumber);
   }
 
-  void disconnect() {
-    ref.read(sensorWebsocketRepositoryImplProvider).dispose();
+  void disconnect(String serialNumber) {
+    ref.read(sensorWebsocketRepositoryImplProvider(serialNumber)).dispose();
   }
 }
