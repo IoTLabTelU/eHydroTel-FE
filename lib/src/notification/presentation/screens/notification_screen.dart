@@ -97,10 +97,31 @@ class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScr
       if (filtered.isNotEmpty) {
         // Build cards
         final items = filtered.map((n) {
+          if (title == AppLocalizations.of(context)!.older) {
+            return NotificationCardWidget(
+              title: n.title,
+              body: n.body,
+              time: DateFormat(
+                'dd MMMM yyyy',
+                '${ref.watch(localeProvider).languageCode}_${ref.watch(localeProvider).countryCode}',
+              ).format(n.createdAt.toLocal()),
+              onDelete: () => onDelete(n),
+            );
+          } else if (title != AppLocalizations.of(context)!.today) {
+            return NotificationCardWidget(
+              title: n.title,
+              body: n.body,
+              time: DateFormat(
+                'dd MMM',
+                '${ref.watch(localeProvider).languageCode}_${ref.watch(localeProvider).countryCode}',
+              ).format(n.createdAt.toLocal()),
+              onDelete: () => onDelete(n),
+            );
+          }
           return NotificationCardWidget(
             title: n.title,
             body: n.body,
-            time: DateFormat.jm().format(n.createdAt),
+            time: DateFormat.jm().format(n.createdAt.toLocal()),
             onDelete: () => onDelete(n),
           );
         }).toList();
