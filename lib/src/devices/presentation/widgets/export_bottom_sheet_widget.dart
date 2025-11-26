@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/disclaimer_widget.dart';
+
+import '../../../../pkg.dart';
 
 class ExportBottomSheet extends StatelessWidget {
   final VoidCallback onExportCsv;
@@ -9,6 +9,7 @@ class ExportBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -27,12 +28,9 @@ class ExportBottomSheet extends StatelessWidget {
               decoration: BoxDecoration(color: ColorValues.neutral300, borderRadius: BorderRadius.circular(4)),
             ),
           ),
-          const Text('Export Data', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(local.exportData, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
-          const Text(
-            'Choose format and we\'ll generate an export file for this crop cycle.',
-            style: TextStyle(color: ColorValues.neutral600),
-          ),
+          Text(local.chooseFormatAndGenerateExportFile, style: const TextStyle(color: ColorValues.neutral600)),
           const SizedBox(height: 16),
           Row(
             children: [

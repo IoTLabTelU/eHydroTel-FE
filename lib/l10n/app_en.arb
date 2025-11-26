@@ -173,5 +173,14 @@
   "yesterday": "Yesterday",
   "thisWeek": "This Week",
   "lastMonth": "Last Month",
-  "older": "Older"
+  "older": "Older",
+  "disclaimerText": "Tip: Filter dates on the History page to specify the data period to be exported.\n\nThe file will be downloaded to the Downloads folder on your device.",
+  "fileIsBeingDownloaded": "File is being downloaded",
+  "noSensorDataFound": "No sensor data found for this range.",
+  "sensorData": "Sensor Data",
+  "deviceTimezone": "Device Timezone",
+  "dateRange": "Date Range",
+  "selectDateRange": "Select date range",
+  "swipeForMoreCharts": "Tip: Swipe for more charts",
+  "chooseFormatAndGenerateExportFile": "Choose format and we'll generate an export file for this crop cycle."
 }

@@ -53,9 +53,7 @@ class CropCycleCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final local = AppLocalizations.of(context)!;
     final String plantedAtFormatted = DateFormat.yMMMd().format(plantedAt);
-    AsyncValue<SensorSocketEntity> websocket = ref
-        .watch(sensorWebsocketControllerProvider(deviceSerialNumber))
-        .sensorData;
+    AsyncValue<SensorSocketEntity> websocket = ref.watch(sensorWebsocketControllerProvider(deviceSerialNumber)).sensorData;
 
     return Container(
       decoration: BoxDecoration(
@@ -74,9 +72,7 @@ class CropCycleCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     cropCycleName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -90,22 +86,11 @@ class CropCycleCard extends ConsumerWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Text(
-                  cropCycleType,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                const SizedBox(
-                  width: 15,
-                  height: 3,
-                  child: VectorGraphic(
-                    loader: AssetBytesLoader(IconAssets.dot),
-                  ),
-                ),
+                Text(cropCycleType, style: Theme.of(context).textTheme.labelSmall),
+                const SizedBox(width: 15, height: 3, child: VectorGraphic(loader: AssetBytesLoader(IconAssets.dot))),
                 Text(
                   '${local.plantedAt} $plantedAtFormatted',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: ColorValues.neutral500,
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
                 ),
               ],
             ),
@@ -205,10 +190,7 @@ class CropCycleCard extends ConsumerWidget {
                                         isViewDayProgress = !isViewDayProgress;
                                       });
                                     },
-                                    child: DayProgressBorder(
-                                      currentDay: progressDay,
-                                      totalDays: totalDay,
-                                    ),
+                                    child: DayProgressBorder(currentDay: progressDay, totalDays: totalDay),
                                   )
                                 : GestureDetector(
                                     onTap: () {
@@ -217,34 +199,21 @@ class CropCycleCard extends ConsumerWidget {
                                       });
                                     },
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: PlantDayCounter(
-                                            progressDay: progressDay.toString(),
-                                          ),
-                                        ),
+                                        Expanded(flex: 3, child: PlantDayCounter(progressDay: progressDay.toString())),
                                         const SizedBox(width: 4),
                                         Expanded(
                                           flex: 5,
                                           child: websocket.when(
                                             data: (data) {
-                                              return WaterTemp(
-                                                temp: data.temperature
-                                                    .toStringAsFixed(0),
-                                              );
+                                              return WaterTemp(temp: data.temperature.toStringAsFixed(0));
                                             },
                                             error: (error, stacktrace) {
-                                              return const WaterTemp(
-                                                temp: 'Error',
-                                              );
+                                              return const WaterTemp(temp: 'Error');
                                             },
                                             loading: () {
-                                              return const WaterTemp(
-                                                temp: '...',
-                                              );
+                                              return const WaterTemp(temp: '0');
                                             },
                                           ),
                                         ),
@@ -255,11 +224,7 @@ class CropCycleCard extends ConsumerWidget {
                         },
                       ),
                       const SizedBox(height: 8),
-                      DeviceStatusCard(
-                        status: deviceStatus,
-                        deviceName: deviceName,
-                        isViewDayProgress: isViewDayProgress,
-                      ),
+                      DeviceStatusCard(status: deviceStatus, deviceName: deviceName, isViewDayProgress: isViewDayProgress),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -268,18 +233,12 @@ class CropCycleCard extends ConsumerWidget {
                         children: [
                           Expanded(
                             flex: 4,
-                            child: historyButton(
-                              context: context,
-                              onPressed: onHistoryPressed,
-                            ),
+                            child: historyButton(context: context, onPressed: onHistoryPressed),
                           ),
                           const Spacer(),
                           Expanded(
                             flex: 10,
-                            child: harvestButton(
-                              context: context,
-                              onPressed: onHarvestPressed,
-                            ),
+                            child: harvestButton(context: context, onPressed: onHarvestPressed),
                           ),
                         ],
                       ),
@@ -329,9 +288,7 @@ class SensorCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     sensorType,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -346,11 +303,7 @@ class SensorCard extends StatelessWidget {
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: VectorGraphic(
-                        loader: AssetBytesLoader(icon),
-                        width: 16,
-                        height: 16,
-                      ),
+                      child: VectorGraphic(loader: AssetBytesLoader(icon), width: 16, height: 16),
                     ),
                   ),
                 ),
@@ -359,18 +312,14 @@ class SensorCard extends StatelessWidget {
             const SizedBox(height: 6),
             RollingNumberText(
               value: double.tryParse(value) ?? 0.0,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
               duration: const Duration(milliseconds: 1000),
               decimalCount: decimalCount,
             ),
             const SizedBox(height: 4),
             Text(
               'Ideal: $rangeValue',
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
             ),
           ],
         ),
@@ -389,30 +338,25 @@ class PlantDayCounter extends StatelessWidget {
     final local = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-      decoration: BoxDecoration(
-        color: ColorValues.neutral100,
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             local.day,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: ColorValues.green900,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
           ),
           const SizedBox(height: 6),
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
               progressDay,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ColorValues.green900,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
             ),
           ),
         ],
@@ -431,30 +375,25 @@ class WaterTemp extends StatelessWidget {
     final local = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-      decoration: BoxDecoration(
-        color: ColorValues.neutral100,
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(15)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             local.waterTemp,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: ColorValues.green900,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: ColorValues.green900),
           ),
           const SizedBox(height: 6),
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
               '$temp°C',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ColorValues.green900,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: ColorValues.green900),
             ),
           ),
         ],
@@ -464,12 +403,7 @@ class WaterTemp extends StatelessWidget {
 }
 
 class DeviceStatusCard extends StatelessWidget {
-  const DeviceStatusCard({
-    super.key,
-    required this.status,
-    required this.deviceName,
-    required this.isViewDayProgress,
-  });
+  const DeviceStatusCard({super.key, required this.status, required this.deviceName, required this.isViewDayProgress});
   final String status;
   final String deviceName;
   final bool isViewDayProgress;
@@ -496,16 +430,13 @@ class DeviceStatusCard extends StatelessWidget {
                     children: [
                       Text(
                         local.device,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         status,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color:
-                              status == getDeviceStatusText(DeviceStatus.active)
+                          color: status == getDeviceStatusText(DeviceStatus.active)
                               ? ColorValues.success700
                               : status == getDeviceStatusText(DeviceStatus.idle)
                               ? ColorValues.blueProgress
@@ -528,22 +459,15 @@ class DeviceStatusCard extends StatelessWidget {
                   child: Center(
                     child: Stack(
                       children: [
-                        const VectorGraphic(
-                          loader: AssetBytesLoader(IconAssets.device),
-                          width: 16,
-                          height: 16,
-                        ),
+                        const VectorGraphic(loader: AssetBytesLoader(IconAssets.device), width: 16, height: 16),
                         Positioned(
                           top: 0,
                           right: 0,
                           child: BlinkingDot(
                             size: 5,
-                            color:
-                                status ==
-                                    getDeviceStatusText(DeviceStatus.active)
+                            color: status == getDeviceStatusText(DeviceStatus.active)
                                 ? ColorValues.success700
-                                : status ==
-                                      getDeviceStatusText(DeviceStatus.idle)
+                                : status == getDeviceStatusText(DeviceStatus.idle)
                                 ? ColorValues.blueProgress
                                 : ColorValues.danger700,
                             duration: const Duration(milliseconds: 800),
@@ -555,17 +479,8 @@ class DeviceStatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: isViewDayProgress
-                  ? heightQuery(context) * 0.06
-                  : heightQuery(context) * 0.04,
-            ),
-            Text(
-              deviceName,
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-            ),
+            SizedBox(height: isViewDayProgress ? heightQuery(context) * 0.06 : heightQuery(context) * 0.04),
+            Text(deviceName, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           ],
         ),
       ),
@@ -577,18 +492,13 @@ class DayProgressBorder extends StatefulWidget {
   final int currentDay;
   final int totalDays;
 
-  const DayProgressBorder({
-    super.key,
-    required this.currentDay,
-    required this.totalDays,
-  });
+  const DayProgressBorder({super.key, required this.currentDay, required this.totalDays});
 
   @override
   State<DayProgressBorder> createState() => _DayProgressBorderState();
 }
 
-class _DayProgressBorderState extends State<DayProgressBorder>
-    with SingleTickerProviderStateMixin {
+class _DayProgressBorderState extends State<DayProgressBorder> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _progressAnimation;
   late Animation<double> _waveAnimation;
@@ -637,32 +547,23 @@ class _DayProgressBorderState extends State<DayProgressBorder>
           painter: FluidProgressPainter(
             progress: _progressAnimation.value,
             waveOffset: _waveAnimation.value,
-            isFinished:
-                _progressAnimation.value >=
-                widget.currentDay / widget.totalDays,
+            isFinished: _progressAnimation.value >= widget.currentDay / widget.totalDays,
           ),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
-            decoration: BoxDecoration(
-              color: ColorValues.neutral100,
-              borderRadius: BorderRadius.circular(21),
-            ),
+            decoration: BoxDecoration(color: ColorValues.neutral100, borderRadius: BorderRadius.circular(21)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   '${local.day} ${widget.currentDay}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   '${local.oof} ${widget.totalDays}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: ColorValues.neutral500,
-                  ),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.neutral500),
                 ),
               ],
             ),

@@ -1,20 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:hydro_iot/res/res.dart';
+import 'package:hydro_iot/pkg.dart';
 
 class Disclaimer extends StatelessWidget {
   const Disclaimer({super.key});
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final local = AppLocalizations.of(context)!;
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.info_outline, size: 18, color: ColorValues.neutral500),
-        SizedBox(width: 8),
+        const Icon(Icons.info_outline, size: 18, color: ColorValues.neutral500),
+        const SizedBox(width: 8),
         Expanded(
-          child: Text(
-            'Tip: Filter tanggal di halaman History untuk menentukan periode data yang akan diexport.',
-            style: TextStyle(color: ColorValues.neutral600),
-          ),
+          child: Text(local.disclaimerText, style: const TextStyle(color: ColorValues.neutral600)),
         ),
       ],
     );

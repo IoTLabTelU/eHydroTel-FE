@@ -1141,6 +1141,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Older'**
   String get older;
+
+  /// No description provided for @disclaimerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: Filter dates on the History page to specify the data period to be exported.\n\nThe file will be downloaded to the Downloads folder on your device.'**
+  String get disclaimerText;
+
+  /// No description provided for @fileIsBeingDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'File is being downloaded'**
+  String get fileIsBeingDownloaded;
+
+  /// No description provided for @noSensorDataFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No sensor data found for this range.'**
+  String get noSensorDataFound;
+
+  /// No description provided for @sensorData.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor Data'**
+  String get sensorData;
+
+  /// No description provided for @deviceTimezone.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Timezone'**
+  String get deviceTimezone;
+
+  /// No description provided for @dateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get dateRange;
+
+  /// No description provided for @selectDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date range'**
+  String get selectDateRange;
+
+  /// No description provided for @swipeForMoreCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: Swipe for more charts'**
+  String get swipeForMoreCharts;
+
+  /// No description provided for @chooseFormatAndGenerateExportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose format and we\'ll generate an export file for this crop cycle.'**
+  String get chooseFormatAndGenerateExportFile;
 }
 
 class _AppLocalizationsDelegate

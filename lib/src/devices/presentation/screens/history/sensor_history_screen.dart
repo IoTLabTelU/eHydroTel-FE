@@ -1,5 +1,9 @@
-import 'package:dio/dio.dart';
+import 'dart:developer';
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/devices/application/controllers/history_controller.dart';
 import 'package:hydro_iot/src/devices/data/models/history_model.dart';
@@ -8,9 +12,14 @@ import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../../pkg.dart';
 import '../../../domain/entities/history_entity.dart';
-import '../../../../../utils/file_downloader.dart';
 
 enum ChartType { ph, ppm }
+
+@pragma('vm:entry-point')
+void downloadCallback(String id, int status, int progress) {
+  final SendPort? send = IsolateNameServer.lookupPortByName('downloader_send_port');
+  send?.send([id, status, progress]);
+}
 
 class SensorHistoryScreen extends ConsumerStatefulWidget {
   const SensorHistoryScreen({super.key, required this.cropCycleId});
@@ -25,48 +34,87 @@ class SensorHistoryScreen extends ConsumerStatefulWidget {
 
 class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   DateTimeRange? _selectedRange;
+  final ReceivePort _port = ReceivePort();
+  DownloadTaskStatus? _downloadStatus;
+  int _downloadProgress = 0;
+  String? _downloadTaskId;
+
+  @override
+  void initState() {
+    super.initState();
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      log('Download progress: $data');
+      _downloadTaskId = data[0];
+      _downloadStatus = DownloadTaskStatus.fromInt(data[1]);
+      _downloadProgress = data[2];
+      setState(() {});
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
 
   @override
   void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
 
-  void onExportCsv() async {
+  void onExportCsv(BuildContext context) async {
+    final local = AppLocalizations.of(context)!;
     final cropCycleId = widget.cropCycleId;
-    final url = '${EndpointStrings.cropcycle}/$cropCycleId/export';
+    String url = '${EndpointStrings.cropcycle}/$cropCycleId/export?format=csv';
+    if (_selectedRange != null) {
+      final start = DateFormat('yyyy-MM-dd').format(_selectedRange?.start ?? DateTime.now());
+      final end = DateFormat('yyyy-MM-dd').format(_selectedRange?.end ?? DateTime.now());
+
+      url += '&start=$start&end=$end';
+    }
     try {
       final access = await Storage().readAccessToken;
-      await FileDownloader.downloadAndOpenFile(
-        url: url,
-        filename: 'CropCycleHistory_${widget.cropCycleId}',
-        headers: {'Authorization': 'Bearer $access'},
-        queryParameters: {'format': 'csv'},
-        listFormat: ListFormat.csv,
-      );
       if (context.mounted) {
-        Toast().showSuccessToast(context: context, title: 'Success', description: 'File Downloaded Successfully');
+        Toast().showSuccessToast(context: context, title: local.success, description: local.fileIsBeingDownloaded);
       }
+      await FileDownloader.download(
+        url: url,
+        filename: 'CropCycleHistory_${widget.cropCycleId}.csv',
+        headers: {'Authorization': 'Bearer $access'},
+      ).then((_) {
+        log('Download completed');
+        setState(() {});
+        FlutterDownloader.open(taskId: _downloadTaskId!);
+      });
     } catch (e) {
-      Toast().showErrorToast(context: context, title: 'Error', description: e.toString());
+      if (context.mounted) Toast().showErrorToast(context: context, title: local.error, description: e.toString());
     }
   }
 
-  void onExportXlsx() async {
+  void onExportXlsx(BuildContext context) async {
+    final local = AppLocalizations.of(context)!;
     final cropCycleId = widget.cropCycleId;
-    final url = '${EndpointStrings.cropcycle}/$cropCycleId/export';
+    String url = '${EndpointStrings.cropcycle}/$cropCycleId/export?format=xlsx';
+    if (_selectedRange != null) {
+      final start = DateFormat('yyyy-MM-dd').format(_selectedRange?.start ?? DateTime.now());
+      final end = DateFormat('yyyy-MM-dd').format(_selectedRange?.end ?? DateTime.now());
+
+      url += '&start=$start&end=$end';
+    }
     try {
       final access = await Storage().readAccessToken;
-      await FileDownloader.downloadAndOpenFile(
-        url: url,
-        filename: 'CropCycleHistory_${widget.cropCycleId}',
-        headers: {'Authorization': 'Bearer $access'},
-        queryParameters: {'format': 'xlsx'},
-      );
       if (context.mounted) {
-        Toast().showSuccessToast(context: context, title: 'Success', description: 'File Downloaded Successfully');
+        Toast().showSuccessToast(context: context, title: local.success, description: local.fileIsBeingDownloaded);
       }
+      await FileDownloader.download(
+        url: url,
+        filename: 'CropCycleHistory_${widget.cropCycleId}.xlsx',
+        headers: {'Authorization': 'Bearer $access'},
+      ).then((_) {
+        log('Download completed');
+        setState(() {});
+        FlutterDownloader.open(taskId: _downloadTaskId!);
+      });
     } catch (e) {
-      Toast().showErrorToast(context: context, title: 'Error', description: e.toString());
+      if (context.mounted) Toast().showErrorToast(context: context, title: local.error, description: e.toString());
     }
   }
 
@@ -103,7 +151,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
               showModalBottomSheet(
                 context: context,
                 builder: (ctx) {
-                  return ExportBottomSheet(onExportCsv: onExportCsv, onExportXlsx: onExportXlsx);
+                  return ExportBottomSheet(onExportCsv: () => onExportCsv(ctx), onExportXlsx: () => onExportXlsx(ctx));
                 },
               );
             },
@@ -118,7 +166,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
           error: (e, st) => Center(child: Text('Error: $e')),
           data: (raw) {
             if (raw.history == null) {
-              return const Center(child: Text('No sensor history data available'));
+              return Center(child: Text(local.noSensorDataFound, style: Theme.of(context).textTheme.bodyMedium));
             }
 
             final start = raw.dateRange['start'];
@@ -135,7 +183,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                     DateTimeRange(start: DateTime.now().subtract(const Duration(days: 7)), end: DateTime.now()),
                 firstDate: DateTime(2023, 1, 1),
                 lastDate: DateTime.now(),
-                helpText: 'Select date range',
+                helpText: local.selectDateRange,
               );
 
               if (picked != null && mounted) {
@@ -155,26 +203,32 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Device Timezone: ${raw.timezone}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                          '${local.deviceTimezone}: ${raw.timezone}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Date Range: $dateRangeStr',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                          '${local.dateRange}: $dateRangeStr',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
                         ),
                         const SizedBox(height: 8),
 
                         // === Date Range Picker Button ===
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: Alignment.center,
                           child: OutlinedButton.icon(
                             icon: const Icon(Icons.date_range_rounded, size: 18),
-                            label: const Text('Select Date Range'),
+                            label: Text(local.selectDateRange, style: Theme.of(context).textTheme.bodySmall),
                             onPressed: pickDateRange,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: ColorValues.green700,
+                              side: const BorderSide(color: ColorValues.green200),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              backgroundColor: ColorValues.green50,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -192,10 +246,11 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   }
 
   Widget _buildContent(BuildContext context, HistoryModel history) {
+    final local = AppLocalizations.of(context)!;
     final entries = history.history ?? [];
 
     if (entries.isEmpty) {
-      return const Center(child: Text('No sensor data found for this range.', style: TextStyle(fontSize: 16)));
+      return Center(child: Text(local.noSensorDataFound, style: Theme.of(context).textTheme.bodyMedium));
     }
 
     return RefreshIndicator(
@@ -204,89 +259,205 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
             .read(historyControllerProvider(widget.cropCycleId).notifier)
             .fetchHistory(cropCycleId: widget.cropCycleId, start: _selectedRange?.start, end: _selectedRange?.end);
       },
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(12),
-        children: [_buildChart(entries), const SizedBox(height: 16), ...entries.map(_buildHistoryCard)],
-      ),
-    );
-  }
-
-  Widget _buildChart(List<HistoryEntity> entries) {
-    final dateFormat = DateFormat('MM/dd');
-
-    final phSpots = entries.map((e) => FlSpot(entries.indexOf(e).toDouble(), e.phAvg)).toList();
-
-    final ppmSpots = entries.map((e) => FlSpot(entries.indexOf(e).toDouble(), e.ppmAvg)).toList();
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.08), blurRadius: 8, offset: const Offset(0, 4))],
-      ),
-      child: AspectRatio(
-        aspectRatio: 1.6,
-        child: LineChart(
-          LineChartData(
-            minY: 0,
-            gridData: const FlGridData(show: true),
-            borderData: FlBorderData(show: true),
-            titlesData: FlTitlesData(
-              leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (value, meta) {
-                    final index = value.toInt();
-                    if (index < 0 || index >= entries.length) return const SizedBox();
-                    return Text(dateFormat.format(entries[index].date), style: const TextStyle(fontSize: 10));
-                  },
-                ),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(12),
+          children: [
+            Text(
+              local.swipeForMoreCharts,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: heightQuery(context) * 0.4,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: PageView(children: [_buildChart(entries, ChartType.ph), _buildChart(entries, ChartType.ppm)]),
               ),
             ),
-            lineBarsData: [
-              LineChartBarData(
-                spots: phSpots,
-                isCurved: true,
-                color: Colors.blueAccent,
-                barWidth: 3,
-                dotData: const FlDotData(show: false),
-              ),
-              LineChartBarData(
-                spots: ppmSpots,
-                isCurved: true,
-                color: Colors.green,
-                barWidth: 3,
-                dotData: const FlDotData(show: false),
-              ),
-            ],
-            lineTouchData: LineTouchData(
-              touchTooltipData: LineTouchTooltipData(
-                getTooltipItems: (touchedSpots) {
-                  return touchedSpots.map((barSpot) {
-                    final entity = entries[barSpot.spotIndex];
-                    final label = barSpot.bar.color == Colors.blueAccent ? 'pH Avg' : 'PPM Avg';
-                    return LineTooltipItem(
-                      '${dateFormat.format(entity.date)}\n$label: ${barSpot.y.toStringAsFixed(2)}',
-                      const TextStyle(color: Colors.white),
-                    );
-                  }).toList();
-                },
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
+              child: Text(
+                local.sensorData,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-          ),
+            ...entries.map(_buildHistoryCard),
+            SizedBox(height: heightQuery(context) * 0.3),
+          ],
         ),
       ),
     );
   }
 
+  Widget _buildChart(List<HistoryEntity> entries, ChartType chartType) {
+    if (entries.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final dateFormat = DateFormat('dd/MM');
+    // pilih data sesuai chart type
+    final values = entries.map((e) => chartType == ChartType.ph ? e.phAvg : e.ppmAvg).toList();
+
+    // buat spots berdasarkan index (0..n-1)
+    final spots = List<FlSpot>.generate(values.length, (i) => FlSpot(i.toDouble(), values[i]));
+
+    // X range
+    final minX = 0.0;
+    final maxX = (entries.length - 1).toDouble();
+
+    // Y range dari data + padding kecil
+    double minY = values.reduce((a, b) => a < b ? a : b);
+    double maxY = values.reduce((a, b) => a > b ? a : b);
+
+    // jika semua nilainya sama, beri range minimal agar terlihat
+    if ((maxY - minY).abs() < 0.0001) {
+      minY = minY - 1;
+      maxY = maxY + 1;
+    } else {
+      final padding = (maxY - minY) * 0.12;
+      minY = minY - padding;
+      maxY = maxY + padding;
+    }
+
+    // interval untuk grid/left titles
+    final yInterval = (maxY - minY) / 4;
+
+    // kecilkan legend text size
+    final legendTextStyle = Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // small legend
+        Row(
+          children: [
+            Container(width: 10, height: 4, color: chartType == ChartType.ph ? Colors.blueAccent : Colors.green),
+            const SizedBox(width: 8),
+            Text(chartType == ChartType.ph ? 'pH Avg' : 'PPM Avg', style: legendTextStyle),
+            const SizedBox(width: 12),
+            // optional show min/max as secondary small text
+            Text(
+              'min ${values.reduce((a, b) => a < b ? a : b).toStringAsFixed(2)}',
+              style: legendTextStyle.copyWith(color: Colors.grey[600]),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'max ${values.reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}',
+              style: legendTextStyle.copyWith(color: Colors.grey[600]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        // chart container
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: ColorValues.whiteColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: ColorValues.neutral200),
+          ),
+          child: AspectRatio(
+            aspectRatio: 1.2,
+            child: LineChart(
+              LineChartData(
+                minX: minX,
+                maxX: maxX,
+                minY: minY,
+                maxY: maxY,
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  horizontalInterval: yInterval,
+                  getDrawingHorizontalLine: (value) =>
+                      FlLine(strokeWidth: 0.5, dashArray: [4, 4], color: Colors.grey.shade300),
+                  getDrawingVerticalLine: (value) => FlLine(strokeWidth: 0.5, color: Colors.grey.shade200),
+                ),
+                borderData: FlBorderData(show: true, border: Border.all(color: Colors.grey.shade300)),
+                titlesData: FlTitlesData(
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: yInterval,
+                      reservedSize: 40,
+                      getTitlesWidget: (val, meta) {
+                        return Text(val.toStringAsFixed(2), style: const TextStyle(fontSize: 11));
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 1,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        final idx = value.round().clamp(0, entries.length - 1);
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(dateFormat.format(entries[idx].date), style: const TextStyle(fontSize: 10)),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                lineTouchData: LineTouchData(
+                  handleBuiltInTouches: true,
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipItems: (spots) {
+                      return spots.map((s) {
+                        final idx = s.spotIndex.clamp(0, entries.length - 1);
+                        final e = entries[idx];
+                        final label = chartType == ChartType.ph ? 'pH Avg' : 'PPM Avg';
+                        return LineTooltipItem(
+                          '${DateFormat('yyyy-MM-dd').format(e.date)}\n$label: ${s.y.toStringAsFixed(2)}',
+                          const TextStyle(color: Colors.white, fontSize: 12),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    preventCurveOverShooting: true, // penting supaya kurva gak keluar frame
+                    color: chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600,
+                    barWidth: 3,
+                    dotData: const FlDotData(show: true),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: (chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600).withAlpha(30),
+                    ),
+                  ),
+                ],
+                clipData: const FlClipData.all(), // pastikan clipping diaktifkan (mencegah render keluar)
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildHistoryCard(HistoryEntity e) {
-    final df = DateFormat('EEEE, dd MMM yyyy');
+    final df = DateFormat(
+      'EEEE, dd MMM yyyy',
+      '${ref.watch(localeProvider).languageCode}_${ref.watch(localeProvider).countryCode ?? ''}',
+    );
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: ColorValues.whiteColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: ColorValues.neutral200),
+      ),
       margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -312,7 +483,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   Widget _infoItem(String label, double value) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+      Text(label, style: Theme.of(context).textTheme.bodySmall),
       Text(value.toStringAsFixed(2), style: const TextStyle(fontWeight: FontWeight.w600)),
     ],
   );

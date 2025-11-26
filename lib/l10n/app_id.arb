@@ -170,5 +170,14 @@
     "yesterday": "Kemarin",
     "thisWeek": "Minggu Ini",
     "lastMonth": "Bulan Lalu",
-    "older": "Lebih Lama"
+    "older": "Lebih Lama",
+    "disclaimerText": "Tip: Filter tanggal di halaman Riwayat untuk menentukan periode data yang akan diekspor.\n\nFile akan diunduh ke folder Unduhan di perangkat Anda.",
+    "fileIsBeingDownloaded": "File sedang diunduh",
+    "noSensorDataFound": "Tidak ada data sensor ditemukan untuk rentang ini.",
+    "sensorData": "Data Sensor",
+    "deviceTimezone": "Zona Waktu Perangkat",
+    "dateRange": "Rentang Tanggal",
+    "selectDateRange": "Pilih rentang tanggal",
+    "swipeForMoreCharts": "Tip: Geser untuk melihat lebih banyak grafik",
+    "chooseFormatAndGenerateExportFile": "Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini."
 }

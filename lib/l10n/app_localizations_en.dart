@@ -552,4 +552,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get older => 'Older';
+
+  @override
+  String get disclaimerText =>
+      'Tip: Filter dates on the History page to specify the data period to be exported.\n\nThe file will be downloaded to the Downloads folder on your device.';
+
+  @override
+  String get fileIsBeingDownloaded => 'File is being downloaded';
+
+  @override
+  String get noSensorDataFound => 'No sensor data found for this range.';
+
+  @override
+  String get sensorData => 'Sensor Data';
+
+  @override
+  String get deviceTimezone => 'Device Timezone';
+
+  @override
+  String get dateRange => 'Date Range';
+
+  @override
+  String get selectDateRange => 'Select date range';
+
+  @override
+  String get swipeForMoreCharts => 'Tip: Swipe for more charts';
+
+  @override
+  String get chooseFormatAndGenerateExportFile =>
+      'Choose format and we\'ll generate an export file for this crop cycle.';
 }

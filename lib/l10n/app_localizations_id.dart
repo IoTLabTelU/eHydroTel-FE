@@ -556,4 +556,35 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get older => 'Lebih Lama';
+
+  @override
+  String get disclaimerText =>
+      'Tip: Filter tanggal di halaman Riwayat untuk menentukan periode data yang akan diekspor.\n\nFile akan diunduh ke folder Unduhan di perangkat Anda.';
+
+  @override
+  String get fileIsBeingDownloaded => 'File sedang diunduh';
+
+  @override
+  String get noSensorDataFound =>
+      'Tidak ada data sensor ditemukan untuk rentang ini.';
+
+  @override
+  String get sensorData => 'Data Sensor';
+
+  @override
+  String get deviceTimezone => 'Zona Waktu Perangkat';
+
+  @override
+  String get dateRange => 'Rentang Tanggal';
+
+  @override
+  String get selectDateRange => 'Pilih rentang tanggal';
+
+  @override
+  String get swipeForMoreCharts =>
+      'Tip: Geser untuk melihat lebih banyak grafik';
+
+  @override
+  String get chooseFormatAndGenerateExportFile =>
+      'Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini.';
 }
