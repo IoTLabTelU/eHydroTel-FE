@@ -13,7 +13,7 @@ class StatusFilterPopup extends StatelessWidget {
       child: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          width: widthQuery(context) * 0.6,
+          width: widthQuery(context) * 0.65,
           decoration: BoxDecoration(color: ColorValues.neutral400, borderRadius: BorderRadius.circular(30)),
           child: Wrap(
             spacing: 10,

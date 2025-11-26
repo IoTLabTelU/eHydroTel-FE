@@ -35,8 +35,8 @@ class SensorHistoryScreen extends ConsumerStatefulWidget {
 class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   DateTimeRange? _selectedRange;
   final ReceivePort _port = ReceivePort();
-  DownloadTaskStatus? _downloadStatus;
-  int _downloadProgress = 0;
+  // DownloadTaskStatus? _downloadStatus;
+  // int _downloadProgress = 0;
   String? _downloadTaskId;
 
   @override
@@ -46,8 +46,8 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
     _port.listen((dynamic data) {
       log('Download progress: $data');
       _downloadTaskId = data[0];
-      _downloadStatus = DownloadTaskStatus.fromInt(data[1]);
-      _downloadProgress = data[2];
+      // _downloadStatus = DownloadTaskStatus.fromInt(data[1]);
+      // _downloadProgress = data[2];
       setState(() {});
     });
 

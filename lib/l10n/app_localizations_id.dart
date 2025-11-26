@@ -543,19 +543,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get noNotifications => 'Tidak ada notifikasi untuk bagian ini.';
 
   @override
-  String get today => 'Hari Ini';
+  String get today => 'Hari ini';
 
   @override
   String get yesterday => 'Kemarin';
 
   @override
-  String get thisWeek => 'Minggu Ini';
+  String get thisWeek => 'Minggu ini';
 
   @override
-  String get lastMonth => 'Bulan Lalu';
+  String get lastMonth => 'Bulan lalu';
 
   @override
-  String get older => 'Lebih Lama';
+  String get older => 'Lebih lama';
 
   @override
   String get disclaimerText =>

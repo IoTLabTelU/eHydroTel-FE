@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/crop_cycle_history_modal.dart';
-import 'package:hydro_iot/src/profile/presentation/modals/privacy_policy_modal.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/switch_language_modal.dart';
-import 'package:hydro_iot/src/profile/presentation/modals/terms_conditions_modal.dart';
+// import 'package:hydro_iot/src/profile/presentation/modals/privacy_policy_modal.dart';
+// import 'package:hydro_iot/src/profile/presentation/modals/terms_conditions_modal.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_list.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_item_widget.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/profile_layout_widget.dart';
@@ -21,7 +21,7 @@ class ProfileScreen extends ConsumerWidget {
     final userData = ref.watch(authControllerProvider);
 
     List<Widget> pages = [const CropCycleHistoryModal(), const SizedBox(), const SwitchLanguageModal()];
-    List<Widget> legalPages = [const PrivacyPolicyModal(), const TermsConditionsModal()];
+    // List<Widget> legalPages = [const PrivacyPolicyModal(), const TermsConditionsModal()];
 
     ref.listen(authControllerProvider, (previous, next) {
       next.whenOrNull(
@@ -145,7 +145,13 @@ class ProfileScreen extends ConsumerWidget {
                               title: item['title'] ?? '',
                               icon: item['icon'] ?? '',
                               iconColor: item['iconColor'] ?? ColorValues.neutral200,
-                              onTap: () {},
+                              onTap: () {
+                                Toast().showWarningToast(
+                                  context: context,
+                                  title: 'Sorry!',
+                                  description: 'This page is coming soon!',
+                                );
+                              },
                               // showModalBottomSheet(
                               //   useRootNavigator: true,
                               //   isScrollControlled: true,

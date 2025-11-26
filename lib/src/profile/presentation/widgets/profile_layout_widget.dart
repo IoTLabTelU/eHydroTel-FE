@@ -9,14 +9,7 @@ class ProfileLayoutWidget extends StatelessWidget {
   final String? userName;
   final String? userEmail;
   final String? imgUrl;
-  const ProfileLayoutWidget({
-    super.key,
-    this.child,
-    this.namePage,
-    this.userName,
-    this.userEmail,
-    this.imgUrl,
-  });
+  const ProfileLayoutWidget({super.key, this.child, this.namePage, this.userName, this.userEmail, this.imgUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +21,7 @@ class ProfileLayoutWidget extends StatelessWidget {
           width: widthQuery(context),
           height: heightQuery(context) / stackingHeight,
           decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(ImageAssets.accountBackground),
-              fit: BoxFit.cover,
-            ),
+            image: DecorationImage(image: AssetImage(ImageAssets.accountBackground), fit: BoxFit.cover),
           ),
         ),
         Column(
@@ -46,60 +36,40 @@ class ProfileLayoutWidget extends StatelessWidget {
                     children: [
                       Text(
                         namePage ?? 'Account',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: ColorValues.blackColor,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 10.h),
                       Container(
                         alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 8.h,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 5.h,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(59),
-                          color: Colors.transparent,
-                        ),
+                        margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(59), color: Colors.transparent),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(59),
                           child: Material(
                             color: ColorValues.whiteColor,
                             child: InkWell(
-                              // onTap: () {
-                              //   showModalBottomSheet(
-                              //     useRootNavigator: true,
-                              //     isScrollControlled: true,
-                              //     context: context,
-                              //     useSafeArea: true,
-                              //     builder: (context) => EditProfileModal(
-                              //       imgUrl: imgUrl,
-                              //       name: userName ?? '',
-                              //       email: userEmail ?? '',
-                              //     ),
-                              //   );
-                              // },
+                              onTap: () {
+                                showModalBottomSheet(
+                                  useRootNavigator: true,
+                                  isScrollControlled: true,
+                                  context: context,
+                                  useSafeArea: true,
+                                  builder: (context) =>
+                                      EditProfileModal(imgUrl: imgUrl, name: userName ?? '', email: userEmail ?? ''),
+                                );
+                              },
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w,
-                                  vertical: 5.h,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
                                       width: 60,
                                       height: 60,
-                                      decoration: const BoxDecoration(
-                                        color: ColorValues.green50,
-                                        shape: BoxShape.circle,
-                                      ),
+                                      decoration: const BoxDecoration(color: ColorValues.green50, shape: BoxShape.circle),
                                       padding: const EdgeInsets.all(10),
                                       child: imgUrl != null
                                           ? ClipOval(
@@ -110,36 +80,25 @@ class ProfileLayoutWidget extends StatelessWidget {
                                                 cacheHeight: 60,
                                               ),
                                             )
-                                          : const VectorGraphic(
-                                              loader: AssetBytesLoader(
-                                                IconAssets.grassAvatar,
-                                              ),
-                                            ),
+                                          : const VectorGraphic(loader: AssetBytesLoader(IconAssets.grassAvatar)),
                                     ),
                                     const SizedBox(width: 15),
                                     Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           userName ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
                                           userEmail ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: ColorValues.neutral500,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            color: ColorValues.neutral500,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
@@ -150,13 +109,8 @@ class ProfileLayoutWidget extends StatelessWidget {
                                       height: 20,
                                       child: VectorGraphic(
                                         fit: BoxFit.scaleDown,
-                                        loader: AssetBytesLoader(
-                                          IconAssets.moreInfo,
-                                        ),
-                                        colorFilter: ColorFilter.mode(
-                                          ColorValues.neutral500,
-                                          BlendMode.srcIn,
-                                        ),
+                                        loader: AssetBytesLoader(IconAssets.moreInfo),
+                                        colorFilter: ColorFilter.mode(ColorValues.neutral500, BlendMode.srcIn),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -177,10 +131,7 @@ class ProfileLayoutWidget extends StatelessWidget {
                 width: double.infinity,
                 decoration: const BoxDecoration(color: ColorValues.neutral50),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     children: [
                       Expanded(

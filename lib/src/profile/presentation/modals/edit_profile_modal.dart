@@ -3,17 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/edit_profile_content_widget.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 
 import '../../../../pkg.dart';
 
 class EditProfileModal extends ConsumerStatefulWidget {
-  const EditProfileModal({
-    super.key,
-    this.imgUrl,
-    required this.name,
-    required this.email,
-  });
+  const EditProfileModal({super.key, this.imgUrl, required this.name, required this.email});
 
   final String? imgUrl;
   final String name;
@@ -40,20 +35,19 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
   void onTextChanged() {
     if (!isEdited) {
       setState(() {
-        isEdited =
-            nameController.text != widget.name ||
-            emailController.text != widget.email;
+        isEdited = nameController.text != widget.name || emailController.text != widget.email;
       });
     }
   }
 
   Future<void> _changePicture() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    Toast().showWarningToast(context: context, title: 'Sorry!', description: 'Change picture feature is coming soon!');
+    // final ImagePicker picker = ImagePicker();
+    // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-    if (image != null) {
-      setState(() {});
-    }
+    // if (image != null) {
+    //   setState(() {});
+    // }
   }
 
   @override
@@ -71,16 +65,9 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
     ref.listen(userControllerProvider, (_, next) {
       next.whenOrNull(
         error: (error, stackTrace) {
-          final errorMessage = (error as Exception).toString().replaceAll(
-            'Exception: ',
-            '',
-          );
+          final errorMessage = (error as Exception).toString().replaceAll('Exception: ', '');
           context.pop();
-          Toast().showErrorToast(
-            context: context,
-            title: local.error,
-            description: errorMessage,
-          );
+          Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
         },
         data: (message) {
           if (context.mounted) {
@@ -104,16 +91,10 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
     });
     void saveProfile() {
       if (!formKey.currentState!.validate()) {
-        Toast().showErrorToast(
-          context: context,
-          title: local.error,
-          description: local.fillAllFields,
-        );
+        Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
         return;
       }
-      ref
-          .read(userControllerProvider.notifier)
-          .updateProfile(name: nameController.text.trim());
+      ref.read(userControllerProvider.notifier).updateProfile(name: nameController.text.trim());
     }
 
     return GestureDetector(
@@ -155,9 +136,7 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
           ),
           title: Text(
             local.editProfile,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
