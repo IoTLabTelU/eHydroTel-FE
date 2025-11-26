@@ -1105,6 +1105,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wi-Fi Configuration'**
   String get wifiConfiguration;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications available for this section.'**
+  String get noNotifications;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get thisWeek;
+
+  /// No description provided for @lastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Month'**
+  String get lastMonth;
+
+  /// No description provided for @older.
+  ///
+  /// In en, this message translates to:
+  /// **'Older'**
+  String get older;
 }
 
 class _AppLocalizationsDelegate

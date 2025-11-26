@@ -167,5 +167,11 @@
   "loggingYouOut": "Logging you out...",
   "sensorHistory": "Sensor History",
   "waterTemp": "Water Temp",
-  "wifiConfiguration": "Wi-Fi Configuration"
+  "wifiConfiguration": "Wi-Fi Configuration",
+  "noNotifications": "No notifications available for this section.",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "thisWeek": "This Week",
+  "lastMonth": "Last Month",
+  "older": "Older"
 }

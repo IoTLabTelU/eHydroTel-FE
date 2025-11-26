@@ -63,7 +63,7 @@ class AuthController extends _$AuthController {
       state = const AsyncValue.data(null);
 
       // Gunakan navigatorKey global agar bisa navigasi tanpa context
-      NavigationService.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil('/${AuthScreen.path}', (route) => false);
+      NavigationService.rootNavigatorKey.currentContext?.pushReplacement('/${AuthScreen.path}');
     } catch (e, st) {
       debugPrint('Error in forceLogout: $e');
       state = AsyncValue.error(e, st);

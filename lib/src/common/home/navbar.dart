@@ -1,23 +1,37 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/common/home/widgets/nav_button_widget.dart';
+import 'package:hydro_iot/src/notification/application/controllers/notification_controller.dart';
 
 import '../../../pkg.dart';
 
-class Navbar extends StatefulWidget {
+class Navbar extends ConsumerStatefulWidget {
   const Navbar({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  State<Navbar> createState() => _NavbarState();
+  ConsumerState<Navbar> createState() => _NavbarState();
 }
 
-class _NavbarState extends State<Navbar> {
+class _NavbarState extends ConsumerState<Navbar> {
   late int currentIndex;
 
   @override
   void initState() {
     super.initState();
     currentIndex = widget.navigationShell.currentIndex;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initFCMAndRegister();
+    });
+  }
+
+  Future<void> _initFCMAndRegister() async {
+    final fcm = FcmHelper();
+    await fcm.initializeFCM();
+    final token = await fcm.waitForToken();
+    if (token != null) {
+      await ref.read(notificationControllerProvider.notifier).registerFcmToken(token);
+    }
   }
 
   @override

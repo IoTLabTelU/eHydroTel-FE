@@ -9,6 +9,12 @@ Characteristics:
 
 ## IMPORTANT CMD
 
+-> PERLU 
+```bash 
+google-services.json
+``` 
+DARI FIREBASEE. JADI, LOGIN KE FIREBASE IOT DULU ATAU MINTA YAA!
+
 -> Inisialisasi awal custom_lint dan riverpod_lint (cukup sekali) :
 
 - dart run custom_lint

@@ -534,4 +534,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wifiConfiguration => 'Wi-Fi Configuration';
+
+  @override
+  String get noNotifications => 'No notifications available for this section.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get thisWeek => 'This Week';
+
+  @override
+  String get lastMonth => 'Last Month';
+
+  @override
+  String get older => 'Older';
 }

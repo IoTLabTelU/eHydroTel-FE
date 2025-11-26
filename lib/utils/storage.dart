@@ -10,6 +10,7 @@ class Storage {
   static const _kIsLoggedIn = 'IS_LOGGED_IN';
   static const _kRole = 'ROLE';
   static const _kLocale = 'LOCALE';
+  static const _kFcmToken = 'FCM_TOKEN';
 
   Future<void> writeTokens({
     required String accessToken,
@@ -72,5 +73,13 @@ class Storage {
 
   Future<String?> readLocale() async {
     return await _storage.read(key: _kLocale);
+  }
+
+  Future<void> writeFcmToken(String value) async {
+    await _storage.write(key: _kFcmToken, value: value);
+  }
+
+  Future<String?> readFcmToken() async {
+    return await _storage.read(key: _kFcmToken);
   }
 }

@@ -538,4 +538,22 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get wifiConfiguration => 'Konfigurasi Wi-Fi';
+
+  @override
+  String get noNotifications => 'Tidak ada notifikasi untuk bagian ini.';
+
+  @override
+  String get today => 'Hari Ini';
+
+  @override
+  String get yesterday => 'Kemarin';
+
+  @override
+  String get thisWeek => 'Minggu Ini';
+
+  @override
+  String get lastMonth => 'Bulan Lalu';
+
+  @override
+  String get older => 'Lebih Lama';
 }

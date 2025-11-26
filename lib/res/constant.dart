@@ -33,6 +33,9 @@ class EndpointStrings {
   static final historySensor = '$sensors/summaries';
   static final sendEmail = '$resetPassword/request';
   static final verifyOtp = '$resetPassword/verify';
+  static final notif = '$baseUrl/notif';
+  static final registerFcmToken = '$notif/register-token';
+  static final notifHistory = '$notif/history';
 }
 
 enum DeviceStatus { active, idle, offline }
