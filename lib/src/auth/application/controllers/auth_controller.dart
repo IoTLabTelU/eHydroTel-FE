@@ -28,11 +28,11 @@ class AuthController extends _$AuthController {
           state = AsyncValue.data(user.data);
           return user.data!;
         } else {
-          await _handleSessionExpired();
+          await forceLogout(reason: 'Failed to fetch user profile');
           throw Exception('Session expired, please login again');
         }
       } else {
-        await _handleSessionExpired();
+        await forceLogout(reason: 'No active session');
         throw Exception('No active session, please login');
       }
     } catch (e, st) {
@@ -59,6 +59,8 @@ class AuthController extends _$AuthController {
 
       await ref.read(authRepositoryProvider).signOut();
 
+      await Storage().clearSession();
+
       // Pastikan semua state user direset
       state = const AsyncValue.data(null);
 
@@ -70,9 +72,4 @@ class AuthController extends _$AuthController {
     }
   }
 
-  /// 🔒 Internal helper ketika session expired
-  Future<void> _handleSessionExpired() async {
-    await ref.read(authRepositoryProvider).signOut();
-    state = const AsyncValue.data(null);
-  }
 }
