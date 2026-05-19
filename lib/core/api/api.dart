@@ -36,24 +36,14 @@ class ApiClient {
   final Dio _dio = Dio();
   final Storage _storage = Storage();
   final Dio _refreshDio = Dio();
+  final Ref _ref;
 
-  ApiClient() {
+  ApiClient(this._ref) {
     _dio.interceptors.add(
-      DioInterceptor(
-        _dio,
-        _storage,
-        (refreshToken) async {
-          final r = await _refreshDio.post(
-            '${BaseConfigs.baseUrl}/auth/refresh-token',
-            data: {'refresh_token': refreshToken},
-          );
-          return r.data['data'] ?? r.data;
-        },
-        () {
-          final container = ProviderContainer();
-          container.read(authControllerProvider.notifier).forceLogout(reason: 'Token expired');
-        },
-      ),
+      DioInterceptor(_dio, _storage, (refreshToken) async {
+        final r = await _refreshDio.post('${BaseConfigs.baseUrl}/auth/refresh-token', data: {'refresh_token': refreshToken});
+        return r.data['data'] ?? r.data;
+      }, (reason) => _ref.read(authControllerProvider.notifier).forceLogout(reason: reason)),
     );
   }
 
@@ -186,5 +176,3 @@ class ApiClient {
     }
   }
 }
-
-final ApiClient apiClient = ApiClient();

@@ -1,5 +1,5 @@
 import 'package:hydro_iot/core/components/screen_header.dart';
-import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/notification/application/controllers/notification_controller.dart';
 import 'package:hydro_iot/src/notification/application/controllers/notification_history_controller.dart';
 import 'package:hydro_iot/src/notification/domain/entities/notification_history_entity.dart';
@@ -25,7 +25,7 @@ class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScr
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-    final userProvider = ref.watch(authControllerProvider);
+    final userProvider = ref.watch(userControllerProvider);
     final notificationsAsync = ref.watch(notificationHistoryControllerProvider);
 
     return Skeletonizer(
@@ -60,12 +60,11 @@ class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScr
               error: (err, _) => SliverToBoxAdapter(
                 child: Padding(padding: const EdgeInsets.all(16.0), child: Text('${local.error}: $err')),
               ),
-              data: (notifications) =>
-                  _buildFilteredSections(context, notifications, local, (NotificationHistoryEntity n) async {
-                    await ref.read(notificationControllerProvider.notifier).softDeleteNotification(n.id);
-                    ref.invalidate(notificationHistoryControllerProvider);
-                    ref.read(notificationHistoryControllerProvider.notifier).fetchNotifications();
-                  }),
+              data: (notifications) => _buildFilteredSections(context, notifications, local, (NotificationHistoryEntity n) async {
+                await ref.read(notificationControllerProvider.notifier).softDeleteNotification(n.id);
+                ref.invalidate(notificationHistoryControllerProvider);
+                ref.read(notificationHistoryControllerProvider.notifier).fetchNotifications();
+              }),
             ),
 
             SliverToBoxAdapter(child: SizedBox(height: heightQuery(context) * 0.15)),
@@ -78,12 +77,7 @@ class _NotificationCenterScreenState extends ConsumerState<NotificationCenterScr
   // ----------------------------------------------------------
   // ONLY SHOW SECTIONS THAT HAVE NOTIFICATIONS
   // ----------------------------------------------------------
-  Widget _buildFilteredSections(
-    BuildContext context,
-    List<NotificationHistoryEntity> notifications,
-    AppLocalizations local,
-    Function onDelete,
-  ) {
+  Widget _buildFilteredSections(BuildContext context, List<NotificationHistoryEntity> notifications, AppLocalizations local, Function onDelete) {
     final List<Widget> sectionWidgets = [];
 
     for (var section in notificationSections(context)) {

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import 'package:hydro_iot/src/devices/application/controllers/devices_controller.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/search_device_screen.dart';
@@ -34,7 +34,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     final devices = ref.watch(devicesControllerProvider);
-    final userProvider = ref.watch(authControllerProvider);
+    final userProvider = ref.watch(userControllerProvider);
     return Skeletonizer(
       enabled: devices.isLoading,
       child: RefreshIndicator.adaptive(

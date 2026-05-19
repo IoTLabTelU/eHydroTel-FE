@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/auth_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/change_password_screen.dart';
 import 'package:hydro_iot/src/auth/presentation/screens/forgot_password_screen.dart';
@@ -28,91 +30,46 @@ import 'package:hydro_iot/src/profile/presentation/screens/change_password_verif
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
-final router = GoRouter(
-  navigatorKey: NavigationService.rootNavigatorKey,
-  initialLocation: '/${LandingScreen.path}',
-  routes: [
-    GoRoute(
-      path: '/${LandingScreen.path}',
-      name: LandingScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const LandingScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    ),
-    GoRoute(
-      path: '/${AuthScreen.path}',
-      name: AuthScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const AuthScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    ),
-    GoRoute(
-      path: '/${LoginScreen.path}',
-      name: LoginScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const LoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
+class GoRouterRefreshNotifier extends ChangeNotifier {
+  GoRouterRefreshNotifier(Ref ref) {
+    // Ikut mendengarkan status dari AuthController
+    ref.listen(authControllerProvider, (_, __) => notifyListeners());
+  }
+}
 
-          final tween = Tween(begin: begin, end: end);
-          final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-        },
-      ),
-    ),
-    GoRoute(
-      path: '/${RegisterScreen.path}',
-      name: RegisterScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const RegisterScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-
-          final tween = Tween(begin: begin, end: end);
-          final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-        },
-      ),
-    ),
-    GoRoute(
-      path: '/${ForgotPasswordScreen.path}',
-      name: ForgotPasswordScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const ForgotPasswordScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-
-          final tween = Tween(begin: begin, end: end);
-          final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-        },
-      ),
-    ),
-    GoRoute(
-      path: '/${OtpPasswordScreen.path}',
-      name: OtpPasswordScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return CustomTransitionPage(
+final routerProvider = Provider<GoRouter>((ref) {
+  return GoRouter(
+    navigatorKey: NavigationService.rootNavigatorKey,
+    initialLocation: '/${LandingScreen.path}',
+    routes: [
+      GoRoute(
+        path: '/${LandingScreen.path}',
+        name: LandingScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: OtpPasswordScreen(email: extra?['email'] as String),
+          child: const LandingScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/${AuthScreen.path}',
+        name: AuthScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const AuthScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/${LoginScreen.path}',
+        name: LoginScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const LoginScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -122,17 +79,14 @@ final router = GoRouter(
             final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
             return SlideTransition(position: tween.animate(curvedAnimation), child: child);
           },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${ChangePasswordScreen.path}',
-      name: ChangePasswordScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return CustomTransitionPage(
+        ),
+      ),
+      GoRoute(
+        path: '/${RegisterScreen.path}',
+        name: RegisterScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: ChangePasswordScreen(email: extra?['email'] as String, resetToken: extra?['resetToken'] as String),
+          child: const RegisterScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -142,398 +96,456 @@ final router = GoRouter(
             final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
             return SlideTransition(position: tween.animate(curvedAnimation), child: child);
           },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${AddDeviceScreen.path}',
-      name: AddDeviceScreen.path,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const AddDeviceScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
+        ),
+      ),
+      GoRoute(
+        path: '/${ForgotPasswordScreen.path}',
+        name: ForgotPasswordScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ForgotPasswordScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
 
-          final tween = Tween(begin: begin, end: end);
-          final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/${OtpPasswordScreen.path}',
+        name: OtpPasswordScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: OtpPasswordScreen(email: extra?['email'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
         },
       ),
-      routes: [
-        GoRoute(
-          path: '/${SerialNumberScannerScreen.path}',
-          name: SerialNumberScannerScreen.path,
-          pageBuilder: (context, state) {
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: const SerialNumberScannerScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeInOut;
+      GoRoute(
+        path: '/${ChangePasswordScreen.path}',
+        name: ChangePasswordScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangePasswordScreen(email: extra?['email'] as String, resetToken: extra?['resetToken'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
 
-                final tween = Tween(begin: begin, end: end);
-                final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/${AddDeviceFormScreen.path}',
-          name: AddDeviceFormScreen.path,
-          pageBuilder: (context, state) {
-            final extra = state.extra as Map<String, dynamic>?;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: AddDeviceFormScreen(serialNumber: extra?['serialNumber'] as String? ?? ''),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeInOut;
-
-                final tween = Tween(begin: begin, end: end);
-                final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/${AddDevicePreparingScreen.path}',
-          name: AddDevicePreparingScreen.path,
-          pageBuilder: (context, state) {
-            final extra = state.extra as Map<String, dynamic>?;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: AddDevicePreparingScreen(
-                serialNumber: extra?['serialNumber'] as String? ?? '',
-                deviceName: extra?['deviceName'] as String? ?? '',
-                deviceDescription: extra?['deviceDescription'] as String? ?? '',
-              ),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeInOut;
-
-                final tween = Tween(begin: begin, end: end);
-                final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/${AddDevicePairingStepScreen.path}',
-          name: AddDevicePairingStepScreen.path,
-          pageBuilder: (context, state) {
-            final extra = state.extra as Map<String, dynamic>?;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: AddDevicePairingStepScreen(
-                serialNumber: extra?['serialNumber'] as String? ?? '',
-                deviceName: extra?['deviceName'] as String? ?? '',
-                deviceDescription: extra?['deviceDescription'] as String? ?? '',
-              ),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeInOut;
-
-                final tween = Tween(begin: begin, end: end);
-                final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              },
-            );
-          },
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/${SettingDeviceScreen.path}',
-      name: SettingDeviceScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return CustomTransitionPage(
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/${AddDeviceScreen.path}',
+        name: AddDeviceScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: SettingDeviceScreen(
-            deviceId: extra['deviceId'] as String,
-            deviceName: extra['deviceName'] as String,
-            deviceDescription: extra['deviceDescription'] as String,
-            addedAt: extra['addedAt'] as String,
-            updatedAt: extra['updatedAt'] as String,
-            ssid: extra['ssid'] as String,
-            serialNumber: extra['serialNumber'] as String,
+          child: const AddDeviceScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        ),
+        routes: [
+          GoRoute(
+            path: '/${SerialNumberScannerScreen.path}',
+            name: SerialNumberScannerScreen.path,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: const SerialNumberScannerScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
+
+                  final tween = Tween(begin: begin, end: end);
+                  final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                  return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+                },
+              );
+            },
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+          GoRoute(
+            path: '/${AddDeviceFormScreen.path}',
+            name: AddDeviceFormScreen.path,
+            pageBuilder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: AddDeviceFormScreen(serialNumber: extra?['serialNumber'] as String? ?? ''),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${ChangePasswordRequestScreen.path}',
-      name: ChangePasswordRequestScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangePasswordRequestScreen(email: extra?['email'] as String),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+                  final tween = Tween(begin: begin, end: end);
+                  final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                  return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+                },
+              );
+            },
+          ),
+          GoRoute(
+            path: '/${AddDevicePreparingScreen.path}',
+            name: AddDevicePreparingScreen.path,
+            pageBuilder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: AddDevicePreparingScreen(
+                  serialNumber: extra?['serialNumber'] as String? ?? '',
+                  deviceName: extra?['deviceName'] as String? ?? '',
+                  deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${ChangePasswordVerifyOtpScreen.path}',
-      name: ChangePasswordVerifyOtpScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangePasswordVerifyOtpScreen(email: extra?['email'] as String),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+                  final tween = Tween(begin: begin, end: end);
+                  final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                  return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+                },
+              );
+            },
+          ),
+          GoRoute(
+            path: '/${AddDevicePairingStepScreen.path}',
+            name: AddDevicePairingStepScreen.path,
+            pageBuilder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: AddDevicePairingStepScreen(
+                  serialNumber: extra?['serialNumber'] as String? ?? '',
+                  deviceName: extra?['deviceName'] as String? ?? '',
+                  deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${AuthedChangePasswordScreen.path}',
-      name: AuthedChangePasswordScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: AuthedChangePasswordScreen(email: extra['email'] as String, resetToken: extra['resetToken'] as String),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+                  final tween = Tween(begin: begin, end: end);
+                  final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                  return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+                },
+              );
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/${SettingDeviceScreen.path}',
+        name: SettingDeviceScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: SettingDeviceScreen(
+              deviceId: extra['deviceId'] as String,
+              deviceName: extra['deviceName'] as String,
+              deviceDescription: extra['deviceDescription'] as String,
+              addedAt: extra['addedAt'] as String,
+              updatedAt: extra['updatedAt'] as String,
+              ssid: extra['ssid'] as String,
+              serialNumber: extra['serialNumber'] as String,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/${SensorHistoryScreen.path}',
-      name: SensorHistoryScreen.path,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: SensorHistoryScreen(cropCycleId: extra['cropCycleId'] as String),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
-
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        );
-      },
-    ),
-    StatefulShellRoute.indexedStack(
-      pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
-        key: state.pageKey,
-        child: Navbar(navigationShell: navigationShell),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
         },
       ),
-      branches: [
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/${DashboardScreen.path}',
-              name: DashboardScreen.path,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const DashboardScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-              ),
-              routes: [
-                GoRoute(
-                  path: '/${SearchDeviceScreen.path}',
-                  name: SearchDeviceScreen.path,
-                  pageBuilder: (context, state) => CustomTransitionPage(
-                    key: state.pageKey,
-                    child: const SearchDeviceScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                  ),
-                ),
-                GoRoute(
-                  path: '/${SearchCropCycleScreen.path}',
-                  name: SearchCropCycleScreen.path,
-                  pageBuilder: (context, state) => CustomTransitionPage(
-                    key: state.pageKey,
-                    child: const SearchCropCycleScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
+      GoRoute(
+        path: '/${ChangePasswordRequestScreen.path}',
+        name: ChangePasswordRequestScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangePasswordRequestScreen(email: extra?['email'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/${ChangePasswordVerifyOtpScreen.path}',
+        name: ChangePasswordVerifyOtpScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangePasswordVerifyOtpScreen(email: extra?['email'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/${AuthedChangePasswordScreen.path}',
+        name: AuthedChangePasswordScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: AuthedChangePasswordScreen(email: extra['email'] as String, resetToken: extra['resetToken'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/${SensorHistoryScreen.path}',
+        name: SensorHistoryScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: SensorHistoryScreen(cropCycleId: extra['cropCycleId'] as String),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
+      ),
+      StatefulShellRoute.indexedStack(
+        pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
+          key: state.pageKey,
+          child: Navbar(navigationShell: navigationShell),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
         ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/${DevicesScreen.path}',
-              name: DevicesScreen.path,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const DevicesScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-              ),
-              routes: [
-                GoRoute(
-                  path: '/:serialNumber',
-                  name: 'deviceDetail',
-                  pageBuilder: (context, state) {
-                    final serialNumber = state.pathParameters['serialNumber']!;
-                    final extra = state.extra as Map<String, dynamic>;
-                    return CustomTransitionPage(
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/${DashboardScreen.path}',
+                name: DashboardScreen.path,
+                pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const DashboardScreen(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+                routes: [
+                  GoRoute(
+                    path: '/${SearchDeviceScreen.path}',
+                    name: SearchDeviceScreen.path,
+                    pageBuilder: (context, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: DetailDeviceScreen(
-                        deviceId: serialNumber,
-                        deviceName: extra['deviceName'] as String,
-                        pH: extra['pH'] as double,
-                        ppm: (extra['ppm'] as double).toInt(),
-                        deviceDescription: extra['deviceDescription'] as String?,
-                      ),
+                      child: const SearchDeviceScreen(),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
                         return FadeTransition(opacity: animation, child: child);
                       },
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      path: '/${ViewAllPlantSessionScreen.path}',
-                      name: ViewAllPlantSessionScreen.path,
-                      pageBuilder: (context, state) {
-                        final serialNumber = state.pathParameters['serialNumber']!;
-                        final extra = state.extra as Map<String, dynamic>;
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: ViewAllPlantSessionScreen(
-                            deviceId: extra['deviceId'] as String,
-                            deviceName: extra['deviceName'] as String,
-                            serialNumber: serialNumber,
-                          ),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(opacity: animation, child: child);
-                          },
-                        );
+                    ),
+                  ),
+                  GoRoute(
+                    path: '/${SearchCropCycleScreen.path}',
+                    name: SearchCropCycleScreen.path,
+                    pageBuilder: (context, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const SearchCropCycleScreen(),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(opacity: animation, child: child);
                       },
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/${DevicesScreen.path}',
+                name: DevicesScreen.path,
+                pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const DevicesScreen(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
                 ),
-              ],
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/${NotificationCenterScreen.path}',
-              name: NotificationCenterScreen.path,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const NotificationCenterScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+                routes: [
+                  GoRoute(
+                    path: '/:serialNumber',
+                    name: 'deviceDetail',
+                    pageBuilder: (context, state) {
+                      final serialNumber = state.pathParameters['serialNumber']!;
+                      final extra = state.extra as Map<String, dynamic>;
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: DetailDeviceScreen(
+                          deviceId: serialNumber,
+                          deviceName: extra['deviceName'] as String,
+                          pH: extra['pH'] as double,
+                          ppm: (extra['ppm'] as double).toInt(),
+                          deviceDescription: extra['deviceDescription'] as String?,
+                        ),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(opacity: animation, child: child);
+                        },
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: '/${ViewAllPlantSessionScreen.path}',
+                        name: ViewAllPlantSessionScreen.path,
+                        pageBuilder: (context, state) {
+                          final serialNumber = state.pathParameters['serialNumber']!;
+                          final extra = state.extra as Map<String, dynamic>;
+                          return CustomTransitionPage(
+                            key: state.pageKey,
+                            child: ViewAllPlantSessionScreen(
+                              deviceId: extra['deviceId'] as String,
+                              deviceName: extra['deviceName'] as String,
+                              serialNumber: serialNumber,
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/${ProfileScreen.path}',
-              name: ProfileScreen.path,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const ProfileScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/${NotificationCenterScreen.path}',
+                name: NotificationCenterScreen.path,
+                pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const NotificationCenterScreen(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  ],
-  observers: [routeObserver],
-  debugLogDiagnostics: true,
-  errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
-  redirect: (context, state) async {
-    final isLoggedIn = await Storage().readIsLoggedIn;
-    final role = await Storage().readRole();
-    debugPrint('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
-    final publicPaths = [
-      '/',
-      '/${LandingScreen.path}',
-      '/${AuthScreen.path}',
-      '/${LoginScreen.path}',
-      '/${RegisterScreen.path}',
-      '/${ChangePasswordScreen.path}',
-      '/${ForgotPasswordScreen.path}',
-      '/${OtpPasswordScreen.path}',
-    ];
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/${ProfileScreen.path}',
+                name: ProfileScreen.path,
+                pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ProfileScreen(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+    observers: [routeObserver],
+    debugLogDiagnostics: true,
+    errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error!.message),
+    refreshListenable: GoRouterRefreshNotifier(ref),
+    redirect: (context, state) async {
+      final isLoggedIn = await Storage().readIsLoggedIn;
+      final role = await Storage().readRole();
+      debugPrint('isLoggedIn: $isLoggedIn, role: $role, path: ${state.matchedLocation}');
+      final publicPaths = [
+        '/',
+        '/${LandingScreen.path}',
+        '/${AuthScreen.path}',
+        '/${LoginScreen.path}',
+        '/${RegisterScreen.path}',
+        '/${ChangePasswordScreen.path}',
+        '/${ForgotPasswordScreen.path}',
+        '/${OtpPasswordScreen.path}',
+      ];
 
-    if (isLoggedIn == null) {
-      return '/${LandingScreen.path}';
-    }
-    if (role == 'ADMIN' && isLoggedIn) {
-      await Storage().clearSession();
-      return '/${AuthScreen.path}';
-    }
-    if (!isLoggedIn && !publicPaths.contains(state.matchedLocation)) {
-      await Storage().clearSession();
-      return '/${AuthScreen.path}';
-    }
-    if (isLoggedIn && publicPaths.contains(state.matchedLocation)) {
-      return '/${DashboardScreen.path}';
-    }
-    return null;
-  },
-);
+      if (isLoggedIn == null) {
+        return '/${LandingScreen.path}';
+      }
+      if (role == 'ADMIN' && isLoggedIn) {
+        await Storage().clearSession();
+        return '/${AuthScreen.path}';
+      }
+      if (!isLoggedIn && !publicPaths.contains(state.matchedLocation)) {
+        await Storage().clearSession();
+        return '/${AuthScreen.path}';
+      }
+      if (isLoggedIn && publicPaths.contains(state.matchedLocation)) {
+        return '/${DashboardScreen.path}';
+      }
+      return null;
+    },
+  );
+});
 
 /// Route observer to use with RouteAware
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();

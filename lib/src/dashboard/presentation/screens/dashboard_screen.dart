@@ -4,7 +4,7 @@ import 'package:hydro_iot/core/components/crop_cycle_card.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
-import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/controllers/crop_cycle_controller.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
 import 'package:hydro_iot/src/dashboard/presentation/screens/search_crop_cycle_screen.dart';
@@ -14,6 +14,7 @@ import 'package:hydro_iot/src/dashboard/presentation/widgets/new_session_modal.d
 import 'package:hydro_iot/core/components/animated_refresh_button_widget.dart';
 import 'package:hydro_iot/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../auth/presentation/screens/auth_screen.dart';
 import '../../application/providers/crop_cycle_providers.dart';
 import '../../application/state/crop_cycle_state.dart';
 
@@ -39,9 +40,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(userControllerProvider, (previous, next) {
+      if (next.asData?.value == null) {
+        // User is logged out, navigate to auth screen
+        infoDialog(
+          context: context,
+          title: 'Session Expired',
+          content: 'Your session has expired. Please log in again.',
+          onConfirm: () {
+            context.pushReplacement('/${AuthScreen.path}');
+          },
+          confirmText: 'Go to Login',
+        );
+      }
+    });
     final local = AppLocalizations.of(context)!;
     final cropCycleState = ref.watch(cropCycleNotifierProvider);
-    final userProvider = ref.watch(authControllerProvider);
+    final userProvider = ref.watch(userControllerProvider);
 
     return Skeletonizer(
       enabled: cropCycleState.isLoading || userProvider.isLoading,
@@ -57,12 +72,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               bottom: false,
               sliver: SliverToBoxAdapter(
                 child: userProvider.when(
-                  data: (user) => ScreenHeader(
-                    username: user!.name.split(' ')[0],
-                    plantAsset: IconAssets.plant,
-                    line1: local.letsgrow,
-                    line2: local.amazing,
-                  ),
+                  data: (user) =>
+                      ScreenHeader(username: user!.name.split(' ')[0], plantAsset: IconAssets.plant, line1: local.letsgrow, line2: local.amazing),
                   loading: () => const SizedBox.shrink(),
                   error: (err, _) => Center(child: Text('${local.error}: $err')),
                 ),
@@ -213,9 +224,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ppmRangeValue: '${cropCycle.ppmMin.toStringAsFixed(0)}-${cropCycle.ppmMax.toStringAsFixed(0)}',
                   deviceStatus: cropCycle.device.status,
                   progressDay: DateTime.now().difference(cropCycle.startedAt).inDays,
-                  totalDay: cropCycle.expectedEnd != null
-                      ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays
-                      : 30,
+                  totalDay: cropCycle.expectedEnd != null ? cropCycle.expectedEnd!.difference(cropCycle.startedAt).inDays : 30,
                   onHistoryPressed: () {
                     context.push('/sensor-history', extra: {'cropCycleId': cropCycle.id});
                   },

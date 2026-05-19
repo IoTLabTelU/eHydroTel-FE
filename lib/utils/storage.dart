@@ -12,11 +12,7 @@ class Storage {
   static const _kLocale = 'LOCALE';
   static const _kFcmToken = 'FCM_TOKEN';
 
-  Future<void> writeTokens({
-    required String accessToken,
-    required String refreshToken,
-    required int expiresInSeconds,
-  }) async {
+  Future<void> writeTokens({required String accessToken, required String refreshToken, required int expiresInSeconds}) async {
     final now = DateTime.now().toUtc();
     final expiresAt = now.add(Duration(seconds: expiresInSeconds)).millisecondsSinceEpoch.toString();
     await Future.wait([

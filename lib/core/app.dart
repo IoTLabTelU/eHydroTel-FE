@@ -30,9 +30,13 @@ class _AppState extends ConsumerState<App> {
           themeAnimationCurve: Easing.emphasizedAccelerate,
           themeAnimationDuration: const Duration(milliseconds: 500),
           title: AppStrings.appName,
-          routeInformationParser: router.routeInformationParser,
-          routerDelegate: router.routerDelegate,
-          routeInformationProvider: router.routeInformationProvider,
+          routeInformationParser: ref
+              .watch(routerProvider)
+              .routeInformationParser,
+          routerDelegate: ref.watch(routerProvider).routerDelegate,
+          routeInformationProvider: ref
+              .watch(routerProvider)
+              .routeInformationProvider,
           locale: ref.watch(localeProvider),
           localizationsDelegates: const [
             AppLocalizations.delegate,

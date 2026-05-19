@@ -38,6 +38,8 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   // DownloadTaskStatus? _downloadStatus;
   // int _downloadProgress = 0;
   String? _downloadTaskId;
+  final TransformationController transformationController = TransformationController();
+  bool _isZoomMode = false;
 
   @override
   void initState() {
@@ -139,10 +141,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
             onPressed: context.pop,
           ),
         ),
-        title: Text(
-          local.sensorHistory,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
+        title: Text(local.sensorHistory, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
           const SizedBox(width: 48),
@@ -178,9 +177,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
             Future<void> pickDateRange() async {
               final picked = await showDateRangePicker(
                 context: context,
-                initialDateRange:
-                    _selectedRange ??
-                    DateTimeRange(start: DateTime.now().subtract(const Duration(days: 7)), end: DateTime.now()),
+                initialDateRange: _selectedRange ?? DateTimeRange(start: DateTime.now().subtract(const Duration(days: 7)), end: DateTime.now()),
                 firstDate: DateTime(2023, 1, 1),
                 lastDate: DateTime.now(),
                 helpText: local.selectDateRange,
@@ -196,48 +193,85 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
               }
             }
 
-            return CustomScrollView(
-              slivers: [
-                // ==== Header Info Section ====
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${local.deviceTimezone}: ${raw.timezone}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${local.dateRange}: $dateRangeStr',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
-                        ),
-                        const SizedBox(height: 8),
-
-                        // === Date Range Picker Button ===
-                        Align(
-                          alignment: Alignment.center,
-                          child: OutlinedButton.icon(
-                            icon: const Icon(Icons.date_range_rounded, size: 18),
-                            label: Text(local.selectDateRange, style: Theme.of(context).textTheme.bodySmall),
-                            onPressed: pickDateRange,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: ColorValues.green700,
-                              side: const BorderSide(color: ColorValues.green200),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              backgroundColor: ColorValues.green50,
+            return RefreshIndicator.adaptive(
+              notificationPredicate: (_) => !_isZoomMode, // Hanya aktifkan pull-to-refresh saat tidak dalam mode zoom
+              onRefresh: () async {
+                await ref
+                    .read(historyControllerProvider(widget.cropCycleId).notifier)
+                    .fetchHistory(cropCycleId: widget.cropCycleId, start: _selectedRange?.start, end: _selectedRange?.end);
+              },
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onVerticalDragStart: _isZoomMode
+                    ? (_) {
+                        Toast().showWarningToast(
+                          context: context,
+                          title: 'Zoom Mode Aktif!',
+                          description: "Scroll terkunci. Matikan 'Mode Zoom' untuk scroll halaman.",
+                        );
+                      }
+                    : null, // Kunci gesture vertical drag saat zoom mode aktif
+                child: CustomScrollView(
+                  physics: _isZoomMode ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    // ==== Header Info Section ====
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${local.deviceTimezone}: ${raw.timezone}',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
                             ),
-                          ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${local.dateRange}: $dateRangeStr',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.green900),
+                            ),
+                            const SizedBox(height: 8),
+
+                            // === Date Range Picker Button ===
+                            Align(
+                              alignment: Alignment.center,
+                              child: OutlinedButton.icon(
+                                icon: const Icon(Icons.date_range_rounded, size: 18),
+                                label: Text(local.selectDateRange, style: Theme.of(context).textTheme.bodySmall),
+                                onPressed: pickDateRange,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: ColorValues.green700,
+                                  side: const BorderSide(color: ColorValues.green200),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  backgroundColor: ColorValues.green50,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                      ],
+                      ),
                     ),
-                  ),
+                    SliverToBoxAdapter(child: _buildContent(context, raw, transformationController)),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, bottom: 12),
+                              child: Text(local.sensorData, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                            ),
+                            ...raw.history?.map(_buildHistoryCard) ?? [],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                SliverToBoxAdapter(child: _buildContent(context, raw)),
-              ],
+              ),
             );
           },
         ),
@@ -245,7 +279,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
     );
   }
 
-  Widget _buildContent(BuildContext context, HistoryModel history) {
+  Widget _buildContent(BuildContext context, HistoryModel history, TransformationController transformationController) {
     final local = AppLocalizations.of(context)!;
     final entries = history.history ?? [];
 
@@ -253,117 +287,115 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
       return Center(child: Text(local.noSensorDataFound, style: Theme.of(context).textTheme.bodyMedium));
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        await ref
-            .read(historyControllerProvider(widget.cropCycleId).notifier)
-            .fetchHistory(cropCycleId: widget.cropCycleId, start: _selectedRange?.start, end: _selectedRange?.end);
-      },
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(12),
-          children: [
-            Text(
-              local.swipeForMoreCharts,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: heightQuery(context) * 0.4,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: PageView(children: [_buildChart(entries, ChartType.ph), _buildChart(entries, ChartType.ppm)]),
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          // ==== BAGIAN TOMBOL TOGGLE MODE ZOOM ====
+          Text(
+            _isZoomMode ? 'Mode Zoom Aktif (Scroll Terkunci)' : local.swipeForMoreCharts,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: _isZoomMode ? Colors.orange.shade800 : Colors.black),
+          ),
+          const SizedBox(height: 8),
+
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: PageView(
+                // Kunci perpindahan halaman chart jika sedang melakukan zoom/pan grafis
+                physics: _isZoomMode ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+                children: [
+                  _buildChart(entries, ChartType.ph, transformationController),
+                  _buildChart(entries, ChartType.ppm, transformationController),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
-              child: Text(
-                local.sensorData,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
+          ),
+          ActionChip(
+            avatar: Icon(
+              _isZoomMode ? Icons.zoom_in_map_rounded : Icons.zoom_out_map_rounded,
+              size: 16,
+              color: _isZoomMode ? Colors.white : Colors.green,
             ),
-            ...entries.map(_buildHistoryCard),
-            SizedBox(height: heightQuery(context) * 0.3),
-          ],
-        ),
+            label: Text(
+              _isZoomMode ? '${local.finish} Zoom' : 'Zoom Chart',
+              style: TextStyle(fontSize: 12, color: _isZoomMode ? Colors.white : Colors.green),
+            ),
+            backgroundColor: _isZoomMode ? Colors.green : Colors.green.withAlpha(30),
+            side: BorderSide(color: Colors.green.withAlpha(50)),
+            onPressed: () {
+              setState(() {
+                _isZoomMode = !_isZoomMode;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildChart(List<HistoryEntity> entries, ChartType chartType) {
-    if (entries.isEmpty) {
-      return const SizedBox.shrink();
-    }
+  Widget _buildChart(List<HistoryEntity> entries, ChartType chartType, TransformationController? transformationController) {
+    if (entries.isEmpty) return const SizedBox.shrink();
 
     final dateFormat = DateFormat('dd/MM');
-    // pilih data sesuai chart type
     final values = entries.map((e) => chartType == ChartType.ph ? e.phAvg : e.ppmAvg).toList();
-
-    // buat spots berdasarkan index (0..n-1)
     final spots = List<FlSpot>.generate(values.length, (i) => FlSpot(i.toDouble(), values[i]));
 
-    // X range
     final minX = 0.0;
     final maxX = (entries.length - 1).toDouble();
 
-    // Y range dari data + padding kecil
     double minY = values.reduce((a, b) => a < b ? a : b);
     double maxY = values.reduce((a, b) => a > b ? a : b);
 
-    // jika semua nilainya sama, beri range minimal agar terlihat
     if ((maxY - minY).abs() < 0.0001) {
-      minY = minY - 1;
-      maxY = maxY + 1;
+      minY -= 1;
+      maxY += 1;
     } else {
-      final padding = (maxY - minY) * 0.12;
-      minY = minY - padding;
-      maxY = maxY + padding;
+      final padding = (maxY - minY) * 0.15; // Beri ruang vertikal sedikit lebih lega
+      minY -= padding;
+      maxY += padding;
     }
 
-    // interval untuk grid/left titles
     final yInterval = (maxY - minY) / 4;
-
-    // kecilkan legend text size
     final legendTextStyle = Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // small legend
+        // Legend Section
         Row(
           children: [
-            Container(width: 10, height: 4, color: chartType == ChartType.ph ? Colors.blueAccent : Colors.green),
+            Container(width: 12, height: 4, color: chartType == ChartType.ph ? Colors.blueAccent : Colors.green),
             const SizedBox(width: 8),
             Text(chartType == ChartType.ph ? 'pH Avg' : 'PPM Avg', style: legendTextStyle),
             const SizedBox(width: 12),
-            // optional show min/max as secondary small text
-            Text(
-              'min ${values.reduce((a, b) => a < b ? a : b).toStringAsFixed(2)}',
-              style: legendTextStyle.copyWith(color: Colors.grey[600]),
-            ),
+            Text('min ${values.reduce((a, b) => a < b ? a : b).toStringAsFixed(2)}', style: legendTextStyle.copyWith(color: Colors.grey[600])),
             const SizedBox(width: 8),
-            Text(
-              'max ${values.reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}',
-              style: legendTextStyle.copyWith(color: Colors.grey[600]),
-            ),
+            Text('max ${values.reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}', style: legendTextStyle.copyWith(color: Colors.grey[600])),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
 
-        // chart container
+        // Chart Container
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.only(top: 16, right: 16, left: 4, bottom: 8), // Sesuaikan padding agar teks sumbu tak terpotong
           decoration: BoxDecoration(
             color: ColorValues.whiteColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: ColorValues.neutral200),
           ),
           child: AspectRatio(
-            aspectRatio: 1.2,
+            aspectRatio: 1.4, // Sedikit disesuaikan agar proporsional saat di-zoom
             child: LineChart(
+              transformationConfig: FlTransformationConfig(
+                panEnabled: true,
+                scaleEnabled: true,
+                scaleAxis: FlScaleAxis.horizontal, // KUNCI: Zoom hanya melebar ke samping (X-axis)
+                transformationController: transformationController,
+              ),
               LineChartData(
                 minX: minX,
                 maxX: maxX,
@@ -373,11 +405,19 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                   show: true,
                   drawVerticalLine: true,
                   horizontalInterval: yInterval,
-                  getDrawingHorizontalLine: (value) =>
-                      FlLine(strokeWidth: 0.5, dashArray: [4, 4], color: Colors.grey.shade300),
-                  getDrawingVerticalLine: (value) => FlLine(strokeWidth: 0.5, color: Colors.grey.shade200),
+                  // Mengurangi kepadatan garis grid agar terlihat bersih
+                  getDrawingHorizontalLine: (value) => FlLine(strokeWidth: 0.5, color: Colors.grey.shade200),
+                  getDrawingVerticalLine: (value) => FlLine(strokeWidth: 0.5, color: Colors.grey.shade100),
                 ),
-                borderData: FlBorderData(show: true, border: Border.all(color: Colors.grey.shade300)),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+                    left: BorderSide(color: Colors.grey.shade300, width: 1),
+                    top: BorderSide.none,
+                    right: BorderSide.none,
+                  ),
+                ),
                 titlesData: FlTitlesData(
                   rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -387,20 +427,30 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                       interval: yInterval,
                       reservedSize: 40,
                       getTitlesWidget: (val, meta) {
-                        return Text(val.toStringAsFixed(2), style: const TextStyle(fontSize: 11));
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: Text(val.toStringAsFixed(1), style: TextStyle(fontSize: 10, color: Colors.grey.shade600)),
+                        );
                       },
                     ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 1,
-                      reservedSize: 30,
+                      // Mengatur interval dinamis berdasarkan jumlah data agar teks tidak tumpang tindih
+                      interval: (entries.length / 5).clamp(1.0, double.infinity),
+                      reservedSize: 28,
                       getTitlesWidget: (value, meta) {
                         final idx = value.round().clamp(0, entries.length - 1);
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Text(dateFormat.format(entries[idx].date), style: const TextStyle(fontSize: 10)),
+                        if (value % 1 != 0 && value != maxX) return const SizedBox.shrink(); // Hanya tampilkan angka bulat indeks
+
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: 8,
+                          child: Text(
+                            dateFormat.format(entries[idx].date),
+                            style: TextStyle(fontSize: 10, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                          ),
                         );
                       },
                     ),
@@ -409,14 +459,15 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                 lineTouchData: LineTouchData(
                   handleBuiltInTouches: true,
                   touchTooltipData: LineTouchTooltipData(
-                    getTooltipItems: (spots) {
-                      return spots.map((s) {
+                    getTooltipColor: (touchedSpot) => Colors.black.withOpacity(0.8),
+                    getTooltipItems: (touchedSpots) {
+                      return touchedSpots.map((s) {
                         final idx = s.spotIndex.clamp(0, entries.length - 1);
                         final e = entries[idx];
                         final label = chartType == ChartType.ph ? 'pH Avg' : 'PPM Avg';
                         return LineTooltipItem(
-                          '${DateFormat('yyyy-MM-dd').format(e.date)}\n$label: ${s.y.toStringAsFixed(2)}',
-                          const TextStyle(color: Colors.white, fontSize: 12),
+                          '${DateFormat('dd MMM yyyy').format(e.date)}\n$label: ${s.y.toStringAsFixed(2)}',
+                          const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                         );
                       }).toList();
                     },
@@ -426,17 +477,26 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
                   LineChartBarData(
                     spots: spots,
                     isCurved: true,
-                    preventCurveOverShooting: true, // penting supaya kurva gak keluar frame
+                    curveSmoothness: 0.35,
+                    preventCurveOverShooting: true,
                     color: chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600,
                     barWidth: 3,
-                    dotData: const FlDotData(show: true),
+                    dotData: FlDotData(
+                      show: entries.length < 20, // Otomatis sembunyikan titik bulat jika data terlalu padat agar tetap rapi
+                      getDotPainter: (spot, dbl, barData, it) => FlDotCirclePainter(
+                        radius: 4,
+                        color: chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600,
+                        strokeWidth: 1.5,
+                        strokeColor: Colors.white,
+                      ),
+                    ),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: (chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600).withAlpha(30),
+                      color: (chartType == ChartType.ph ? ColorValues.blueProgress : ColorValues.green600).withOpacity(0.1),
                     ),
                   ),
                 ],
-                clipData: const FlClipData.all(), // pastikan clipping diaktifkan (mencegah render keluar)
+                clipData: const FlClipData.all(), // Memotong garis agar tidak tembus keluar border saat di-zoom
               ),
             ),
           ),
@@ -446,10 +506,7 @@ class _SensorHistoryScreenState extends ConsumerState<SensorHistoryScreen> {
   }
 
   Widget _buildHistoryCard(HistoryEntity e) {
-    final df = DateFormat(
-      'EEEE, dd MMM yyyy',
-      '${ref.watch(localeProvider).languageCode}_${ref.watch(localeProvider).countryCode ?? ''}',
-    );
+    final df = DateFormat('EEEE, dd MMM yyyy', '${ref.watch(localeProvider).languageCode}_${ref.watch(localeProvider).countryCode ?? ''}');
     return Card(
       color: ColorValues.whiteColor,
       shape: RoundedRectangleBorder(

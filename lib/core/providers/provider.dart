@@ -5,7 +5,7 @@ import 'package:hydro_iot/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
+  return ApiClient(ref);
 });
 
 class LocaleNotifier extends StateNotifier<Locale> {

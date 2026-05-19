@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
+import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/crop_cycle_history_modal.dart';
 import 'package:hydro_iot/src/profile/presentation/modals/switch_language_modal.dart';
 // import 'package:hydro_iot/src/profile/presentation/modals/privacy_policy_modal.dart';
@@ -18,7 +19,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final local = AppLocalizations.of(context)!;
-    final userData = ref.watch(authControllerProvider);
+    final userData = ref.watch(userControllerProvider);
 
     List<Widget> pages = [const CropCycleHistoryModal(), const SizedBox(), const SwitchLanguageModal()];
     // List<Widget> legalPages = [const PrivacyPolicyModal(), const TermsConditionsModal()];
@@ -38,7 +39,7 @@ class ProfileScreen extends ConsumerWidget {
           builder: (context) => FancyLoadingDialog(title: local.loggingYouOut),
         ),
         data: (u) {
-          if (u == null && context.mounted) {
+          if (context.mounted) {
             context.pop();
           }
         },
@@ -65,7 +66,7 @@ class ProfileScreen extends ConsumerWidget {
       data: (data) {
         return RefreshIndicator.adaptive(
           onRefresh: () async {
-            return await ref.refresh(authControllerProvider.future);
+            return await ref.refresh(userControllerProvider.future);
           },
           child: CustomScrollView(
             slivers: [
@@ -81,10 +82,7 @@ class ProfileScreen extends ConsumerWidget {
                       SizedBox(height: 10.h),
                       Padding(
                         padding: EdgeInsets.only(left: 8.w),
-                        child: Text(
-                          local.settings,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                        ),
+                        child: Text(local.settings, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                       ),
                       SizedBox(height: 5.h),
                       Container(
@@ -123,10 +121,7 @@ class ProfileScreen extends ConsumerWidget {
                       SizedBox(height: 10.h),
                       Padding(
                         padding: EdgeInsets.only(left: 8.w),
-                        child: Text(
-                          'Legal',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                        ),
+                        child: Text('Legal', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                       ),
                       SizedBox(height: 5.h),
                       Container(
@@ -146,11 +141,7 @@ class ProfileScreen extends ConsumerWidget {
                               icon: item['icon'] ?? '',
                               iconColor: item['iconColor'] ?? ColorValues.neutral200,
                               onTap: () {
-                                Toast().showWarningToast(
-                                  context: context,
-                                  title: 'Sorry!',
-                                  description: 'This page is coming soon!',
-                                );
+                                Toast().showWarningToast(context: context, title: 'Sorry!', description: 'This page is coming soon!');
                               },
                               // showModalBottomSheet(
                               //   useRootNavigator: true,
@@ -173,12 +164,7 @@ class ProfileScreen extends ConsumerWidget {
                           border: Border.all(color: ColorValues.neutral200),
                           color: ColorValues.whiteColor,
                         ),
-                        child: ProfileItemWidget(
-                          title: local.logout,
-                          onTap: logout,
-                          icon: IconAssets.logout,
-                          iconColor: hexColorize('#FFBB3D'),
-                        ),
+                        child: ProfileItemWidget(title: local.logout, onTap: logout, icon: IconAssets.logout, iconColor: hexColorize('#FFBB3D')),
                       ),
                       SizedBox(height: heightQuery(context) * 0.2),
                     ],

@@ -1,6 +1,5 @@
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 import 'package:hydro_iot/src/auth/application/controllers/user_controller.dart';
 import 'package:hydro_iot/src/profile/presentation/widgets/edit_profile_content_widget.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -71,8 +70,6 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
         },
         data: (message) {
           if (context.mounted) {
-            ref.invalidate(authControllerProvider);
-            ref.read(authControllerProvider.notifier).checkSession();
             Toast().showSuccessToast(
               context: context,
               title: local.success,
@@ -134,10 +131,7 @@ class _EditProfileModalState extends ConsumerState<EditProfileModal> {
                   : context.pop,
             ),
           ),
-          title: Text(
-            local.editProfile,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          title: Text(local.editProfile, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: EditProfileContentWidget(

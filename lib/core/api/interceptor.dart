@@ -11,7 +11,7 @@ class DioInterceptor extends Interceptor {
   final Storage storage;
   final TokenRefreshFn onRefresh;
   final Dio dio;
-  final VoidCallback? onLogout;
+  final Function(String reason)? onLogout;
 
   bool _isRefreshing = false;
   final List<_PendingRequest> _queue = [];
@@ -56,13 +56,17 @@ class DioInterceptor extends Interceptor {
     }
 
     final response = err.response;
-    if (response == null || response.statusCode != 401) {
-      return handler.next(err);
+
+    // Cek 401 ATAU kondisi error signature
+    bool isAuthError = response?.statusCode == 401 || err.response?.data['message']?.toString().contains('signature') == true;
+
+    if (response == null || !isAuthError) {
+      return handler.next(err); // Biarkan error lain lewat
     }
 
     // avoid recursive refresh
     if (_isRefreshRequest(err.requestOptions)) {
-      await _forceLogout();
+      await _forceLogout('Attempted to refresh token while already refreshing');
       return handler.next(err);
     }
 
@@ -71,7 +75,7 @@ class DioInterceptor extends Interceptor {
     try {
       final newToken = await _enqueueRequest(options);
       if (newToken == null) {
-        return handler.next(err);
+        return handler.reject(DioException(requestOptions: err.requestOptions, error: 'Session Expired', type: DioExceptionType.cancel));
       }
 
       final newHeaders = Map<String, dynamic>.from(options.headers);
@@ -96,7 +100,9 @@ class DioInterceptor extends Interceptor {
       return handler.resolve(retryResponse);
     } catch (e, st) {
       debugPrint('AuthInterceptor retry failed: $e\n$st');
-      handler.next(err);
+      return handler.reject(
+        DioException(requestOptions: err.requestOptions, error: 'Something went wrong. Please login again!', type: DioExceptionType.cancel),
+      );
     }
   }
 
@@ -114,7 +120,7 @@ class DioInterceptor extends Interceptor {
       try {
         final refreshToken = await storage.readRefreshToken;
         if (refreshToken == null) {
-          await _forceLogout();
+          await _forceLogout('Refresh token not found');
           _completeAll(null);
           return null;
         }
@@ -123,7 +129,7 @@ class DioInterceptor extends Interceptor {
         try {
           refreshResp = await onRefresh(refreshToken);
         } catch (e) {
-          await _forceLogout();
+          await _forceLogout('Failed to refresh token');
           _completeAll(null);
           return null;
         }
@@ -135,7 +141,7 @@ class DioInterceptor extends Interceptor {
             : int.tryParse(refreshResp['expires_in']?.toString() ?? '0') ?? 0;
 
         if (newAccess == null) {
-          await _forceLogout();
+          await _forceLogout('Failed to obtain new access token');
           _completeAll(null);
           return null;
         }
@@ -160,11 +166,10 @@ class DioInterceptor extends Interceptor {
     _queue.clear();
   }
 
-  Future<void> _forceLogout() async {
-    await storage.clearSession();
+  Future<void> _forceLogout(String reason) async {
     if (onLogout != null) {
       try {
-        onLogout!();
+        onLogout!(reason);
       } catch (e) {
         debugPrint('onLogout callback error: $e');
       }
