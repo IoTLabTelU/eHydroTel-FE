@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -30,9 +31,9 @@ class DioInterceptor extends Interceptor {
     }
 
     if (kDebugMode) {
-      print('REQUEST[${options.method}] => PATH: ${options.path}');
-      print('Headers: ${options.headers}');
-      print('Data: ${options.data}');
+      log('REQUEST[${options.method}] => PATH: ${options.path}');
+      log('Headers: ${options.headers}');
+      log('Data: ${options.data}');
     }
 
     return super.onRequest(options, handler);
@@ -41,8 +42,8 @@ class DioInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
-      print('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-      print('Response Data: ${response.data}');
+      log('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+      log('Response Data: ${response.data}');
     }
 
     return super.onResponse(response, handler);
@@ -51,14 +52,21 @@ class DioInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (kDebugMode) {
-      print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
-      print('Error Data: ${err.response?.data}');
+      log('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+      log('Error Data: ${err.response?.data}');
     }
 
     final response = err.response;
 
-    // Cek 401 ATAU kondisi error signature
-    bool isAuthError = response?.statusCode == 401 || err.response?.data['message']?.toString().contains('signature') == true;
+    final message = response?.data is Map ? response?.data['message']?.toString().toLowerCase() ?? '' : '';
+
+    bool isAuthError =
+        response?.statusCode == 401 ||
+        response?.statusCode == 403 ||
+        message.contains('jwt expired') ||
+        message.contains('signature') ||
+        message.contains('token expired') ||
+        message.contains('unauthorized');
 
     if (response == null || !isAuthError) {
       return handler.next(err); // Biarkan error lain lewat
@@ -66,8 +74,8 @@ class DioInterceptor extends Interceptor {
 
     // avoid recursive refresh
     if (_isRefreshRequest(err.requestOptions)) {
-      await _forceLogout('Attempted to refresh token while already refreshing');
-      return handler.next(err);
+      await _forceLogout('Refresh token invalid or expired');
+      return handler.reject(DioException(requestOptions: err.requestOptions, error: 'Session expired', type: DioExceptionType.cancel));
     }
 
     final options = err.requestOptions;
@@ -99,7 +107,7 @@ class DioInterceptor extends Interceptor {
 
       return handler.resolve(retryResponse);
     } catch (e, st) {
-      debugPrint('AuthInterceptor retry failed: $e\n$st');
+      log('AuthInterceptor retry failed: $e\n$st');
       return handler.reject(
         DioException(requestOptions: err.requestOptions, error: 'Something went wrong. Please login again!', type: DioExceptionType.cancel),
       );

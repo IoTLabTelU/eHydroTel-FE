@@ -23,21 +23,32 @@ class AuthController extends _$AuthController {
   }
 
   Future<void> forceLogout({String? reason}) async {
+    // Guard: hindari double logout
+    if (state.isLoading) return;
+
     state = const AsyncValue.loading();
     try {
       debugPrint("Force logout triggered: ${reason ?? 'token invalid'}");
-
       await ref.read(authRepositoryProvider).signOut();
-
-      // Pastikan semua state user direset
       state = const AsyncValue.data(null);
 
-      // Gunakan navigatorKey global agar bisa navigasi tanpa context
-      NavigationService.rootNavigatorKey.currentContext?.pushReplacement('/${AuthScreen.path}');
+      final context = NavigationService.rootNavigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        // Gunakan pushNamedAndRemoveUntil agar semua route di-clear
+        Navigator.of(context).pushNamedAndRemoveUntil('/${AuthScreen.path}', (route) => false);
+      } else {
+        debugPrint('forceLogout: context is null, navigation skipped!');
+        // Fallback: jadwalkan ulang setelah frame berikutnya
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final ctx = NavigationService.rootNavigatorKey.currentContext;
+          if (ctx != null && ctx.mounted) {
+            Navigator.of(ctx).pushNamedAndRemoveUntil('/${AuthScreen.path}', (route) => false);
+          }
+        });
+      }
     } catch (e, st) {
       debugPrint('Error in forceLogout: $e');
       state = AsyncValue.error(e, st);
-      rethrow;
     }
   }
 }

@@ -43,7 +43,7 @@ class ApiClient {
       DioInterceptor(_dio, _storage, (refreshToken) async {
         final r = await _refreshDio.post('${BaseConfigs.baseUrl}/auth/refresh-token', data: {'refresh_token': refreshToken});
         return r.data['data'] ?? r.data;
-      }, (reason) => _ref.read(authControllerProvider.notifier).forceLogout(reason: reason)),
+      }, (reason) async => await _ref.read(authControllerProvider.notifier).forceLogout(reason: reason)),
     );
   }
 

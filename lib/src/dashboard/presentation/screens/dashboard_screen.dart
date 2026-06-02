@@ -42,16 +42,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     ref.listen(userControllerProvider, (previous, next) {
       if (next.asData?.value == null) {
-        // User is logged out, navigate to auth screen
-        infoDialog(
-          context: context,
-          title: 'Session Expired',
-          content: 'Your session has expired. Please log in again.',
-          onConfirm: () {
-            context.pushReplacement('/${AuthScreen.path}');
-          },
-          confirmText: 'Go to Login',
-        );
+        final wasLoggedIn = previous?.asData?.value != null;
+        final isNowNull = next.asData?.value == null && !next.isLoading;
+
+        if (wasLoggedIn && isNowNull) {
+          infoDialog(
+            context: context,
+            title: 'Session Expired',
+            content: 'Your session has expired. Please log in again.',
+            onConfirm: () => context.pushReplacement('/${AuthScreen.path}'),
+            confirmText: 'Go to Login',
+          );
+        }
       }
     });
     final local = AppLocalizations.of(context)!;
