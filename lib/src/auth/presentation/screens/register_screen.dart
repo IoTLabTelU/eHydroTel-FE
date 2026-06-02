@@ -90,12 +90,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ),
             ),
-            body: RegisterContentWidget(
-              nameController: nameController,
-              emailController: emailController,
-              passwordController: passwordController,
-              register: register,
-              formKey: formKey,
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: RegisterContentWidget(
+                nameController: nameController,
+                emailController: emailController,
+                passwordController: passwordController,
+                register: register,
+                formKey: formKey,
+              ),
             ),
           ),
         ],

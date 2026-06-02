@@ -46,7 +46,7 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral400),
+        labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorValues.neutral600),
         border: InputBorder.none,
         errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: ColorValues.danger600),
@@ -61,11 +61,11 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
           borderRadius: BorderRadius.all(Radius.circular(40)),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: ColorValues.neutral400),
+          borderSide: BorderSide(color: ColorValues.neutral500),
           borderRadius: BorderRadius.all(Radius.circular(40)),
         ),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral400),
+        hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral600),
         suffixIcon: Padding(
           padding: const EdgeInsets.only(right: 8),
           child: !widget.obscureText

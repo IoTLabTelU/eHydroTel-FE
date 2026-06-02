@@ -62,9 +62,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Toast().showErrorToast(context: context, title: local.error, description: local.fillAllFields);
         return;
       }
-      ref
-          .read(loginWithPasswordControllerProvider.notifier)
-          .loginWithEmailPassword(emailController.text, passwordController.text);
+      ref.read(loginWithPasswordControllerProvider.notifier).loginWithEmailPassword(emailController.text, passwordController.text);
     }
 
     return GestureDetector(
@@ -99,7 +97,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
             ),
-            body: LoginContentWidget(emailController: emailController, passwordController: passwordController, login: login),
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: LoginContentWidget(emailController: emailController, passwordController: passwordController, login: login),
+            ),
           ),
         ],
       ),
