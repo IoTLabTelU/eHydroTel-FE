@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hydro_iot/core/api/api.dart';
@@ -29,3 +32,40 @@ class LocaleNotifier extends StateNotifier<Locale> {
 final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
   return LocaleNotifier();
 });
+
+// Provider untuk status koneksi
+final connectivityProvider = StateNotifierProvider<ConnectivityNotifier, bool>((ref) {
+  return ConnectivityNotifier();
+});
+
+class ConnectivityNotifier extends StateNotifier<bool> {
+  ConnectivityNotifier() : super(true) {
+    _init();
+  }
+
+  late StreamSubscription<List<ConnectivityResult>> _subscription;
+
+  void _init() {
+    // Cek status awal
+    Connectivity().checkConnectivity().then(_updateState);
+
+    // Listen perubahan koneksi
+    _subscription = Connectivity().onConnectivityChanged.listen(_updateState);
+  }
+
+  void _updateState(List<ConnectivityResult> results) {
+    final isConnected = results.any((r) => r != ConnectivityResult.none);
+    state = isConnected;
+  }
+
+  Future<void> recheck() async {
+    final results = await Connectivity().checkConnectivity();
+    _updateState(results);
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}

@@ -30,6 +30,8 @@ import 'package:hydro_iot/src/profile/presentation/screens/change_password_verif
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
+import '../../utils/connectivity_wrapper.dart';
+
 class GoRouterRefreshNotifier extends ChangeNotifier {
   GoRouterRefreshNotifier(Ref ref) {
     // Ikut mendengarkan status dari AuthController
@@ -47,7 +49,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: LandingScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const LandingScreen(),
+          child: const ConnectivityWrapper(child: LandingScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -58,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: AuthScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const AuthScreen(),
+          child: const ConnectivityWrapper(child: AuthScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -69,7 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: LoginScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const LoginScreen(),
+          child: const ConnectivityWrapper(child: LoginScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -86,7 +88,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: RegisterScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const RegisterScreen(),
+          child: const ConnectivityWrapper(child: RegisterScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -103,7 +105,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: ForgotPasswordScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const ForgotPasswordScreen(),
+          child: const ConnectivityWrapper(child: ForgotPasswordScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -122,7 +124,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>?;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: OtpPasswordScreen(email: extra?['email'] as String),
+            child: ConnectivityWrapper(child: OtpPasswordScreen(email: extra?['email'] as String)),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -142,7 +144,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>?;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: ChangePasswordScreen(email: extra?['email'] as String, resetToken: extra?['resetToken'] as String),
+            child: ConnectivityWrapper(
+              child: ChangePasswordScreen(email: extra?['email'] as String, resetToken: extra?['resetToken'] as String),
+            ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -160,7 +164,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: AddDeviceScreen.path,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const AddDeviceScreen(),
+          child: const ConnectivityWrapper(child: AddDeviceScreen()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -178,7 +182,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: const SerialNumberScannerScreen(),
+                child: const ConnectivityWrapper(child: SerialNumberScannerScreen()),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   const begin = Offset(1.0, 0.0);
                   const end = Offset.zero;
@@ -198,7 +202,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               final extra = state.extra as Map<String, dynamic>?;
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: AddDeviceFormScreen(serialNumber: extra?['serialNumber'] as String? ?? ''),
+                child: ConnectivityWrapper(child: AddDeviceFormScreen(serialNumber: extra?['serialNumber'] as String? ?? '')),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   const begin = Offset(1.0, 0.0);
                   const end = Offset.zero;
@@ -218,10 +222,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               final extra = state.extra as Map<String, dynamic>?;
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: AddDevicePreparingScreen(
-                  serialNumber: extra?['serialNumber'] as String? ?? '',
-                  deviceName: extra?['deviceName'] as String? ?? '',
-                  deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                child: ConnectivityWrapper(
+                  child: AddDevicePreparingScreen(
+                    serialNumber: extra?['serialNumber'] as String? ?? '',
+                    deviceName: extra?['deviceName'] as String? ?? '',
+                    deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                  ),
                 ),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   const begin = Offset(1.0, 0.0);
@@ -242,10 +248,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               final extra = state.extra as Map<String, dynamic>?;
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: AddDevicePairingStepScreen(
-                  serialNumber: extra?['serialNumber'] as String? ?? '',
-                  deviceName: extra?['deviceName'] as String? ?? '',
-                  deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                child: ConnectivityWrapper(
+                  child: AddDevicePairingStepScreen(
+                    serialNumber: extra?['serialNumber'] as String? ?? '',
+                    deviceName: extra?['deviceName'] as String? ?? '',
+                    deviceDescription: extra?['deviceDescription'] as String? ?? '',
+                  ),
                 ),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   const begin = Offset(1.0, 0.0);
@@ -268,14 +276,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: SettingDeviceScreen(
-              deviceId: extra['deviceId'] as String,
-              deviceName: extra['deviceName'] as String,
-              deviceDescription: extra['deviceDescription'] as String,
-              addedAt: extra['addedAt'] as String,
-              updatedAt: extra['updatedAt'] as String,
-              ssid: extra['ssid'] as String,
-              serialNumber: extra['serialNumber'] as String,
+            child: ConnectivityWrapper(
+              child: SettingDeviceScreen(
+                deviceId: extra['deviceId'] as String,
+                deviceName: extra['deviceName'] as String,
+                deviceDescription: extra['deviceDescription'] as String,
+                addedAt: extra['addedAt'] as String,
+                updatedAt: extra['updatedAt'] as String,
+                ssid: extra['ssid'] as String,
+                serialNumber: extra['serialNumber'] as String,
+              ),
             ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
@@ -296,7 +306,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>?;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: ChangePasswordRequestScreen(email: extra?['email'] as String),
+            child: ConnectivityWrapper(child: ChangePasswordRequestScreen(email: extra?['email'] as String)),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -316,7 +326,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>?;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: ChangePasswordVerifyOtpScreen(email: extra?['email'] as String),
+            child: ConnectivityWrapper(child: ChangePasswordVerifyOtpScreen(email: extra?['email'] as String)),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -336,7 +346,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: AuthedChangePasswordScreen(email: extra['email'] as String, resetToken: extra['resetToken'] as String),
+            child: ConnectivityWrapper(
+              child: AuthedChangePasswordScreen(email: extra['email'] as String, resetToken: extra['resetToken'] as String),
+            ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -356,7 +368,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>;
           return CustomTransitionPage(
             key: state.pageKey,
-            child: SensorHistoryScreen(cropCycleId: extra['cropCycleId'] as String),
+            child: ConnectivityWrapper(child: SensorHistoryScreen(cropCycleId: extra['cropCycleId'] as String)),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
@@ -372,7 +384,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
           key: state.pageKey,
-          child: Navbar(navigationShell: navigationShell),
+          child: ConnectivityWrapper(child: Navbar(navigationShell: navigationShell)),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -385,7 +397,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: DashboardScreen.path,
                 pageBuilder: (context, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: const DashboardScreen(),
+                  child: const ConnectivityWrapper(child: DashboardScreen()),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(opacity: animation, child: child);
                   },
@@ -396,7 +408,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     name: SearchDeviceScreen.path,
                     pageBuilder: (context, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: const SearchDeviceScreen(),
+                      child: const ConnectivityWrapper(child: SearchDeviceScreen()),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
                         return FadeTransition(opacity: animation, child: child);
                       },
@@ -407,7 +419,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     name: SearchCropCycleScreen.path,
                     pageBuilder: (context, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: const SearchCropCycleScreen(),
+                      child: const ConnectivityWrapper(child: SearchCropCycleScreen()),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
                         return FadeTransition(opacity: animation, child: child);
                       },
@@ -424,7 +436,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: DevicesScreen.path,
                 pageBuilder: (context, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: const DevicesScreen(),
+                  child: const ConnectivityWrapper(child: DevicesScreen()),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(opacity: animation, child: child);
                   },
@@ -438,12 +450,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                       final extra = state.extra as Map<String, dynamic>;
                       return CustomTransitionPage(
                         key: state.pageKey,
-                        child: DetailDeviceScreen(
-                          deviceId: serialNumber,
-                          deviceName: extra['deviceName'] as String,
-                          pH: extra['pH'] as double,
-                          ppm: (extra['ppm'] as double).toInt(),
-                          deviceDescription: extra['deviceDescription'] as String?,
+                        child: ConnectivityWrapper(
+                          child: DetailDeviceScreen(
+                            deviceId: serialNumber,
+                            deviceName: extra['deviceName'] as String,
+                            pH: extra['pH'] as double,
+                            ppm: (extra['ppm'] as double).toInt(),
+                            deviceDescription: extra['deviceDescription'] as String?,
+                          ),
                         ),
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                           return FadeTransition(opacity: animation, child: child);
@@ -459,10 +473,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                           final extra = state.extra as Map<String, dynamic>;
                           return CustomTransitionPage(
                             key: state.pageKey,
-                            child: ViewAllPlantSessionScreen(
-                              deviceId: extra['deviceId'] as String,
-                              deviceName: extra['deviceName'] as String,
-                              serialNumber: serialNumber,
+                            child: ConnectivityWrapper(
+                              child: ViewAllPlantSessionScreen(
+                                deviceId: extra['deviceId'] as String,
+                                deviceName: extra['deviceName'] as String,
+                                serialNumber: serialNumber,
+                              ),
                             ),
                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
                               return FadeTransition(opacity: animation, child: child);
@@ -483,7 +499,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: NotificationCenterScreen.path,
                 pageBuilder: (context, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: const NotificationCenterScreen(),
+                  child: const ConnectivityWrapper(child: NotificationCenterScreen()),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(opacity: animation, child: child);
                   },
@@ -498,7 +514,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: ProfileScreen.path,
                 pageBuilder: (context, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: const ProfileScreen(),
+                  child: const ConnectivityWrapper(child: ProfileScreen()),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(opacity: animation, child: child);
                   },
