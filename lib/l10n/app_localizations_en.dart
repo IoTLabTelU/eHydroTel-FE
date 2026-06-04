@@ -581,4 +581,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chooseFormatAndGenerateExportFile =>
       'Choose format and we\'ll generate an export file for this crop cycle.';
+
+  @override
+  String get allDevicesLoaded => 'All Devices Loaded';
+
+  @override
+  String get allCropCyclesLoaded => 'All Crop Cycles Loaded';
 }

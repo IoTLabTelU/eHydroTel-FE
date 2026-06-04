@@ -1,33 +1,20 @@
-import '../../domain/entities/crop_cycle_response.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../domain/entities/crop_cycle_entity.dart';
 
-class CropCycleState {
-  final bool isLoading;
-  final CropCycleResponse? cropCycleResponse;
-  final String? error;
+part 'crop_cycle_state.freezed.dart';
 
-  const CropCycleState({this.isLoading = false, this.cropCycleResponse, this.error});
+@freezed
+sealed class CropCycleState with _$CropCycleState {
+  const factory CropCycleState({
+    @Default(false) bool isLoading,
+    @Default(false) bool isLoadingMore,
+    @Default(true) bool hasMore,
+    @Default([]) List<CropCycle> items,
+    Object? error,
+  }) = _CropCycleState;
 
-  CropCycleState copyWith({bool? isLoading, CropCycleResponse? cropCycleResponse, String? error}) {
-    return CropCycleState(
-      isLoading: isLoading ?? this.isLoading,
-      cropCycleResponse: cropCycleResponse ?? this.cropCycleResponse,
-      error: error ?? this.error,
-    );
-  }
-}
+  const CropCycleState._();
 
-class CropCycleStateInitial extends CropCycleState {
-  const CropCycleStateInitial() : super();
-}
-
-class CropCycleStateLoading extends CropCycleState {
-  const CropCycleStateLoading() : super(isLoading: true);
-}
-
-class CropCycleStateLoaded extends CropCycleState {
-  const CropCycleStateLoaded(CropCycleResponse response) : super(cropCycleResponse: response);
-}
-
-class CropCycleStateError extends CropCycleState {
-  const CropCycleStateError(String errorMessage) : super(error: errorMessage);
+  bool get isEmpty => !isLoading && error == null && items.isEmpty;
+  bool get hasData => items.isNotEmpty;
 }

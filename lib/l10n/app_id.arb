@@ -179,5 +179,7 @@
     "dateRange": "Rentang Tanggal",
     "selectDateRange": "Pilih rentang tanggal",
     "swipeForMoreCharts": "Tip: Geser untuk melihat lebih banyak grafik",
-    "chooseFormatAndGenerateExportFile": "Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini."
+    "chooseFormatAndGenerateExportFile": "Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini.",
+    "allDevicesLoaded": "Semua Perangkat Telah Dimuat",
+    "allCropCyclesLoaded": "Semua Sesi Tanam Telah Dimuat"
 }

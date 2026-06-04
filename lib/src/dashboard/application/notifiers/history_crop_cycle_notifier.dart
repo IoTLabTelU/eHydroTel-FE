@@ -5,15 +5,15 @@ import '../state/crop_cycle_state.dart';
 class HistoryCropCycleNotifier extends StateNotifier<CropCycleState> {
   final GetCropCyclesUsecase getCropCyclesUsecase;
 
-  HistoryCropCycleNotifier(this.getCropCyclesUsecase) : super(const CropCycleStateInitial());
+  HistoryCropCycleNotifier(this.getCropCyclesUsecase) : super(const CropCycleState());
 
   Future<void> fetchCropCycles(String status, bool active) async {
-    state = const CropCycleStateLoading();
+    state = const CropCycleState(isLoading: true);
     try {
-      final response = await getCropCyclesUsecase.call(status, active);
-      state = CropCycleStateLoaded(response);
+      final items = await getCropCyclesUsecase.call(status, active);
+      state = CropCycleState(items: items.data);
     } catch (e) {
-      state = CropCycleStateError(e.toString());
+      state = CropCycleState(error: e);
     }
   }
 }

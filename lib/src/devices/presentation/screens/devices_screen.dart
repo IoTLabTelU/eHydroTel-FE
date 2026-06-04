@@ -21,13 +21,33 @@ class DevicesScreen extends ConsumerStatefulWidget {
 }
 
 class _DevicesScreenState extends ConsumerState<DevicesScreen> {
+  late final ScrollController _scrollController;
+
   DeviceStatus? get filterDevices => ref.watch(filterDevicesProvider);
+
   @override
   void initState() {
     super.initState();
+
+    _scrollController = ScrollController()..addListener(_onScroll);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(filterDevicesProvider.notifier).setDeviceStatus(null);
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = _scrollController.position;
+    // Trigger load more saat 200px sebelum ujung bawah
+    if (pos.pixels >= pos.maxScrollExtent - 200) {
+      ref.read(devicesControllerProvider.notifier).loadMore();
+    }
   }
 
   @override
@@ -35,13 +55,16 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     final local = AppLocalizations.of(context)!;
     final devices = ref.watch(devicesControllerProvider);
     final userProvider = ref.watch(userControllerProvider);
+    final controller = ref.read(devicesControllerProvider.notifier);
+
     return Skeletonizer(
       enabled: devices.isLoading,
       child: RefreshIndicator.adaptive(
         onRefresh: () async {
-          return await ref.refresh(devicesControllerProvider.future);
+          await ref.read(devicesControllerProvider.notifier).fetchDevices();
         },
         child: CustomScrollView(
+          controller: _scrollController,
           shrinkWrap: true,
           slivers: [
             SliverSafeArea(
@@ -87,12 +110,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       child: SizedBox(
                         width: 40.w,
                         height: 40.h,
-                        child: addButton(
-                          context: context,
-                          onPressed: () {
-                            context.push('/create/scan');
-                          },
-                        ),
+                        child: addButton(context: context, onPressed: () => context.push('/create/scan')),
                       ),
                     ),
                   ],
@@ -108,8 +126,8 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     children: [
                       const SizedBox(height: 20),
                       devices.when(
-                        data: (device) {
-                          if (device.isEmpty) {
+                        data: (deviceList) {
+                          if (deviceList.isEmpty) {
                             return SizedBox(
                               height: heightQuery(context) * 0.65,
                               child: Center(
@@ -134,38 +152,60 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                               ),
                             );
                           }
+
+                          final filtered = deviceList.where((e) {
+                            if (filterDevices != null) {
+                              return e.status == getDeviceStatusText(filterDevices!);
+                            }
+                            return true;
+                          }).toList();
+
                           return Column(
-                            children: device
-                                .where((e) {
-                                  if (filterDevices != null) return e.status == getDeviceStatusText(filterDevices!);
-                                  return true;
-                                })
-                                .map((e) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 10.h),
-                                    child: DeviceCard(
-                                      deviceName: e.name,
-                                      serialNumber: e.serialNumber,
-                                      ssid: e.ssid ?? 'N/A',
-                                      status: e.status,
-                                      onSettingPressed: () {
-                                        context.push(
-                                          '/settings',
-                                          extra: {
-                                            'deviceName': e.name,
-                                            'deviceDescription': e.description,
-                                            'serialNumber': e.serialNumber,
-                                            'addedAt': DateFormat('dd MMM yyyy').format(e.createdAt),
-                                            'updatedAt': DateFormat('dd MMM yyyy').format(e.updatedAt),
-                                            'deviceId': e.id,
-                                            'ssid': e.ssid ?? '',
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  );
-                                })
-                                .toList(),
+                            children: [
+                              ...filtered.map(
+                                (e) => Padding(
+                                  padding: EdgeInsets.only(bottom: 10.h),
+                                  child: DeviceCard(
+                                    deviceName: e.name,
+                                    serialNumber: e.serialNumber,
+                                    ssid: e.ssid ?? 'N/A',
+                                    status: e.status,
+                                    onSettingPressed: () {
+                                      context.push(
+                                        '/settings',
+                                        extra: {
+                                          'deviceName': e.name,
+                                          'deviceDescription': e.description,
+                                          'serialNumber': e.serialNumber,
+                                          'addedAt': DateFormat('dd MMM yyyy').format(e.createdAt),
+                                          'updatedAt': DateFormat('dd MMM yyyy').format(e.updatedAt),
+                                          'deviceId': e.id,
+                                          'ssid': e.ssid ?? '',
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              // Loading indicator saat load more
+                              if (controller.isLoadingMore)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                                  child: const Center(child: CircularProgressIndicator.adaptive()),
+                                ),
+
+                              // Tanda sudah sampai akhir data
+                              if (!controller.hasMore && filtered.isNotEmpty)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                                  child: Text(
+                                    local.allDevicesLoaded,
+                                    style: dmSansSmallText(size: 13, weight: FontWeight.w500),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                            ],
                           );
                         },
                         error: (err, stk) {
@@ -193,9 +233,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                             ],
                           );
                         },
-                        loading: () {
-                          return const SizedBox.shrink();
-                        },
+                        loading: () => const SizedBox.shrink(),
                       ),
                       SizedBox(height: heightQuery(context) * 0.15),
                     ],

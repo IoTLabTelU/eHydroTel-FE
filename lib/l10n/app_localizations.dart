@@ -1195,6 +1195,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose format and we\'ll generate an export file for this crop cycle.'**
   String get chooseFormatAndGenerateExportFile;
+
+  /// No description provided for @allDevicesLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'All Devices Loaded'**
+  String get allDevicesLoaded;
+
+  /// No description provided for @allCropCyclesLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'All Crop Cycles Loaded'**
+  String get allCropCyclesLoaded;
 }
 
 class _AppLocalizationsDelegate

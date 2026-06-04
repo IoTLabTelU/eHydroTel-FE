@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/components/history_crop_cycle_card.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/crop_cycle_providers.dart';
 import 'package:hydro_iot/src/dashboard/application/providers/filter_devices_providers.dart';
+import 'package:hydro_iot/src/dashboard/application/state/crop_cycle_state.dart';
 
 import '../../../../core/components/animated_refresh_button_widget.dart';
 import '../../../../pkg.dart';
@@ -25,8 +26,9 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-    final cropCycleHistory = ref.watch(historyCropCycleNotifierProvider);
+    final state = ref.watch(historyCropCycleNotifierProvider);
     final filterHistory = ref.watch(filterHistoryCropCycleProvider);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -40,91 +42,116 @@ class _CropCycleHistoryModalState extends ConsumerState<CropCycleHistoryModal> {
           margin: EdgeInsets.only(left: 16.w),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
-            onPressed: () {
-              context.pop();
-            },
+            onPressed: () => context.pop(),
           ),
         ),
-        title: Text(
-          local.cropCycleHistory,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
+        title: Text(local.cropCycleHistory, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: cropCycleHistory.error != null ? MainAxisAlignment.center : MainAxisAlignment.start,
-            children: cropCycleHistory.error != null
-                ? [
-                    const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
-                    Text(
-                      local.error,
-                      style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      cropCycleHistory.error!,
-                      style: dmSansSmallText(size: 14, weight: FontWeight.w700),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 10),
-                    AnimatedRefreshButton(
-                      onRefresh: () async {
-                        await ref.read(cropCycleNotifierProvider.notifier).fetchCropCycles('finished', false);
-                      },
-                      loading: false,
-                    ),
-                  ]
-                : cropCycleHistory.cropCycleResponse != null && cropCycleHistory.cropCycleResponse!.data.isNotEmpty
-                ? cropCycleHistory.cropCycleResponse!.data
-                      .where((e) {
-                        if (filterHistory != null) {
-                          return e.status == getPlantStatusText(filterHistory);
-                        }
-                        return true;
-                      })
-                      .map((e) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 8.h),
-                          child: HistoryCropCycleCard(
-                            cropCycleName: e.name,
-                            cropCycleType: e.plant.name,
-                            plantedAt: e.startedAt,
-                            phValue: '-',
-                            ppmValue: '-',
-                            phRangeValue: '${e.phMin}-${e.phMax}',
-                            ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
-                            deviceStatus: e.device.status,
-                            deviceName: e.device.name,
-                            progressDay: DateTime.now().difference(e.startedAt).inDays,
-                            totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
-                            onHistoryPressed: () {
-                              context.push('/sensor-history', extra: {'cropCycleId': e.id});
-                            },
-                            harvestedAt: e.expectedEnd ?? DateTime.now(),
-                          ),
-                        );
-                      })
-                      .toList()
-                : [
-                    const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
-                    Text(
-                      local.warning,
-                      style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      local.noCropCyclesFound,
-                      style: dmSansSmallText(size: 14, weight: FontWeight.w700),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-          ),
-        ),
+        child: _buildBody(state, filterHistory, local),
       ),
+    );
+  }
+
+  Widget _buildBody(CropCycleState state, PlantStatus? filter, AppLocalizations local) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator.adaptive());
+    }
+
+    if (state.error != null) {
+      return _buildError(state.error.toString(), local);
+    }
+
+    if (state.items.isEmpty) {
+      return _buildEmpty(local);
+    }
+
+    return _buildList(state, filter, local);
+  }
+
+  Widget _buildError(String message, AppLocalizations local) {
+    final errorMessage = message.replaceAll('Exception: ', '');
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline_outlined, color: ColorValues.danger600, size: 50),
+          Text(
+            local.error,
+            style: jetBrainsMonoHeadText(color: ColorValues.danger600, size: 20),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            errorMessage,
+            style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          AnimatedRefreshButton(
+            onRefresh: () async {
+              await ref.read(historyCropCycleNotifierProvider.notifier).fetchCropCycles('finished', false);
+            },
+            loading: false,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmpty(AppLocalizations local) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.warning_amber, color: ColorValues.warning600, size: 50),
+          Text(
+            local.warning,
+            style: jetBrainsMonoHeadText(color: ColorValues.warning600, size: 20),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            local.noCropCyclesFound,
+            style: dmSansSmallText(size: 14, weight: FontWeight.w700),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(CropCycleState state, PlantStatus? filter, AppLocalizations local) {
+    final filtered = state.items.where((e) {
+      if (filter != null) return e.status == getPlantStatusText(filter);
+      return true;
+    }).toList();
+
+    if (filtered.isEmpty) return _buildEmpty(local);
+
+    return ListView.separated(
+      itemCount: filtered.length,
+      separatorBuilder: (_, __) => SizedBox(height: 8.h),
+      itemBuilder: (_, index) {
+        final e = filtered[index];
+        return HistoryCropCycleCard(
+          cropCycleName: e.name,
+          cropCycleType: e.plant.name,
+          plantedAt: e.startedAt,
+          phValue: '-',
+          ppmValue: '-',
+          phRangeValue: '${e.phMin}-${e.phMax}',
+          ppmRangeValue: '${e.ppmMin}-${e.ppmMax}',
+          deviceStatus: e.device.status,
+          deviceName: e.device.name,
+          progressDay: DateTime.now().difference(e.startedAt).inDays,
+          totalDay: e.expectedEnd?.difference(e.startedAt).inDays ?? 30,
+          onHistoryPressed: () {
+            context.push('/sensor-history', extra: {'cropCycleId': e.id});
+          },
+          harvestedAt: e.expectedEnd ?? DateTime.now(),
+        );
+      },
     );
   }
 }

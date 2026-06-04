@@ -182,5 +182,7 @@
   "dateRange": "Date Range",
   "selectDateRange": "Select date range",
   "swipeForMoreCharts": "Tip: Swipe for more charts",
-  "chooseFormatAndGenerateExportFile": "Choose format and we'll generate an export file for this crop cycle."
+  "chooseFormatAndGenerateExportFile": "Choose format and we'll generate an export file for this crop cycle.",
+  "allDevicesLoaded": "All Devices Loaded",
+  "allCropCyclesLoaded": "All Crop Cycles Loaded"
 }

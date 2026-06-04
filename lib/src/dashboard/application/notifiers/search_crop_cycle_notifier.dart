@@ -5,23 +5,23 @@ import '../state/crop_cycle_state.dart';
 class SearchCropCycleNotifier extends StateNotifier<CropCycleState> {
   final SearchCropCyclesUsecase searchCropCyclesUsecase;
 
-  SearchCropCycleNotifier(this.searchCropCyclesUsecase) : super(const CropCycleStateInitial());
+  SearchCropCycleNotifier(this.searchCropCyclesUsecase) : super(const CropCycleState());
 
   Future<void> searchCropCycles(String query) async {
     if (query.trim().isEmpty) {
-      state = const CropCycleStateInitial();
+      state = const CropCycleState();
       return;
     }
-    state = const CropCycleStateLoading();
+    state = const CropCycleState(isLoading: true);
     try {
-      final response = await searchCropCyclesUsecase.call(query);
-      state = CropCycleStateLoaded(response);
+      final cropCycle = await searchCropCyclesUsecase.call(query);
+      state = CropCycleState(items: cropCycle.data);
     } catch (e) {
-      state = CropCycleStateError(e.toString());
+      state = CropCycleState(error: e);
     }
   }
 
   void clearSearch() {
-    state = const CropCycleStateInitial();
+    state = const CropCycleState();
   }
 }

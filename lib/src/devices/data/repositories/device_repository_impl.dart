@@ -11,20 +11,10 @@ class DeviceRepositoryImpl implements DeviceRepository {
   DeviceRepositoryImpl(this.api);
 
   @override
-  Future<Responses<bool>> registerDevice({
-    required String name,
-    required String description,
-    required String serialNumber,
-  }) async {
+  Future<Responses<bool>> registerDevice({required String name, required String description, required String serialNumber}) async {
     final request = RegisterMyDeviceRequest(name: name, description: description, serialNumber: serialNumber);
     return api
-        .post<bool>(
-          Params<bool>(
-            path: EndpointStrings.registerMyDevice,
-            fromJson: (json) => json['success'] as bool,
-            body: request.toJson(),
-          ),
-        )
+        .post<bool>(Params<bool>(path: EndpointStrings.registerMyDevice, fromJson: (json) => json['success'] as bool, body: request.toJson()))
         .then((response) {
           if (!response.isSuccess) {
             throw Exception(response.message ?? 'Failed to register device');
@@ -34,11 +24,12 @@ class DeviceRepositoryImpl implements DeviceRepository {
   }
 
   @override
-  Future<Responses<List<DeviceEntity>>> getMyDevices() {
+  Future<Responses<List<DeviceEntity>>> getMyDevices({int page = 1, int limit = 10}) {
     return api
         .get<List<DeviceEntity>>(
           Params<List<DeviceEntity>>(
             path: EndpointStrings.getMyDevices,
+            queryParameters: {'page': page.toString(), 'limit': limit.toString()},
             fromJson: (json) => (json['data'] as List).map((item) => DeviceEntity.fromJson(item)).toList(),
           ),
         )
@@ -54,10 +45,7 @@ class DeviceRepositoryImpl implements DeviceRepository {
   Future<Responses<DeviceEntity>> getDeviceDetails(String deviceId) {
     return api
         .get<DeviceEntity>(
-          Params<DeviceEntity>(
-            path: '${EndpointStrings.devices}/$deviceId',
-            fromJson: (json) => DeviceEntity.fromJson(json['data']),
-          ),
+          Params<DeviceEntity>(path: '${EndpointStrings.devices}/$deviceId', fromJson: (json) => DeviceEntity.fromJson(json['data'])),
         )
         .then((response) {
           if (!response.isSuccess) {
@@ -75,12 +63,7 @@ class DeviceRepositoryImpl implements DeviceRepository {
     String? ssid,
     String? wifiPassword,
   }) async {
-    final request = {
-      'name': name,
-      'description': description,
-      if (ssid != null) 'ssid': ssid,
-      if (wifiPassword != null) 'password': wifiPassword,
-    };
+    final request = {'name': name, 'description': description, if (ssid != null) 'ssid': ssid, if (wifiPassword != null) 'password': wifiPassword};
     return api
         .patch<bool>(
           Params<bool>(

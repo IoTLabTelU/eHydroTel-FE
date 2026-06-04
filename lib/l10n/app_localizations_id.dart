@@ -587,4 +587,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get chooseFormatAndGenerateExportFile =>
       'Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini.';
+
+  @override
+  String get allDevicesLoaded => 'Semua Perangkat Telah Dimuat';
+
+  @override
+  String get allCropCyclesLoaded => 'Semua Sesi Tanam Telah Dimuat';
 }
