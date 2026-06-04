@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydro_iot/core/api/interceptor.dart';
-import 'package:hydro_iot/res/res.dart';
 import 'package:hydro_iot/src/auth/application/controllers/auth_controller.dart';
 
-import '../../utils/storage.dart';
-import '../config/config.dart';
+import '../../pkg.dart';
 
 class Params<T> {
   final String path;
@@ -68,6 +66,10 @@ class ApiClient {
   }
 
   Future<Responses<T>> _errorHandler<T>(DioException e) async {
+    if (e.type == DioExceptionType.cancel) {
+      return Responses<T>(data: null, statusCode: e.response?.statusCode, message: e.error?.toString() ?? AppStrings.errorMessage);
+    }
+
     dynamic errorMessage = AppStrings.errorMessage;
 
     try {
@@ -76,12 +78,12 @@ class ApiClient {
 
         if (responseData is String) {
           final decoded = json.decode(responseData);
-          errorMessage = decoded['message'] ?? decoded['message'] ?? AppStrings.errorMessage;
+          errorMessage = decoded['message'] ?? AppStrings.errorMessage;
         } else if (responseData is Map<String, dynamic>) {
-          errorMessage = responseData['message'] ?? responseData['message'] ?? AppStrings.errorMessage;
+          errorMessage = responseData['message'] ?? AppStrings.errorMessage;
         }
       } else {
-        errorMessage = ResponseStatus.connectionError;
+        errorMessage = AppStrings.networkErrorMessage;
       }
     } catch (_) {
       errorMessage = AppStrings.serverErrorMessage;

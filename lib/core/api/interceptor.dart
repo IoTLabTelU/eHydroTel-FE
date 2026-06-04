@@ -61,12 +61,13 @@ class DioInterceptor extends Interceptor {
     final message = response?.data is Map ? response?.data['message']?.toString().toLowerCase() ?? '' : '';
 
     bool isAuthError =
-        response?.statusCode == 401 ||
-        response?.statusCode == 403 ||
-        message.contains('jwt expired') ||
-        message.contains('signature') ||
-        message.contains('token expired') ||
-        message.contains('unauthorized');
+        (response?.statusCode == 401 ||
+            response?.statusCode == 403 ||
+            message.contains('jwt expired') ||
+            message.contains('signature') ||
+            message.contains('token expired') ||
+            message.contains('unauthorized')) &&
+        !_isPublicRequest(err.requestOptions);
 
     if (response == null || !isAuthError) {
       return handler.next(err); // Biarkan error lain lewat
@@ -117,6 +118,10 @@ class DioInterceptor extends Interceptor {
   bool _isRefreshRequest(RequestOptions options) {
     final path = options.path;
     return path.contains('${BaseConfigs.baseUrl}/auth/refresh-token') || path.contains('refresh-token');
+  }
+
+  bool _isPublicRequest(RequestOptions options) {
+    return options.path.contains('/auth/login') || options.path.contains('/auth/register') || options.path.contains('/auth/password/reset');
   }
 
   Future<String?> _enqueueRequest(RequestOptions requestOptions) async {
@@ -183,68 +188,6 @@ class DioInterceptor extends Interceptor {
       }
     }
   }
-
-  // Future<void> _handleTokenError(DioException err, ErrorInterceptorHandler handler) async {
-  //   if (err.response?.statusCode == 401) {
-  //     try {
-  //       final refreshToken = await Storage.readRefreshToken();
-  //       if (refreshToken != null) {
-  //         await _refreshToken();
-
-  //         final response = await _retryRequest(err.requestOptions);
-  //         return handler.resolve(response);
-  //       } else {
-  //         return handler.reject(err);
-  //       }
-  //     } catch (e) {
-  //       // Refresh token failed, redirect to login
-  //       await Storage.clearSession();
-  //       return handler.reject(err);
-  //     }
-  //   } else {
-  //     return super.onError(err, handler);
-  //   }
-  // }
-
-  // Future<void> _refreshToken() async {
-  //   final refreshToken = await Storage.readRefreshToken();
-
-  //   try {
-  //     final response = await dio.post(
-  //       '${BaseConfigs.baseUrl}/auth/refresh-token',
-  //       data: json.encode({'refresh_token': refreshToken}),
-  //     );
-
-  //     if (response.statusCode == 200 && response.data != null) {
-  //       final data = response.data['data'];
-  //       TokenEntity token = TokenEntity.fromJson(data);
-  //       if (data != null && data['access_token'] != null) {
-  //         await Storage.writeAccessToken(token.accessToken);
-  //         await Storage.writeRefreshToken(token.refreshToken);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     // If refresh fails, clear session and require re-login
-  //     await Storage.clearSession();
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<Response<dynamic>> _retryRequest(RequestOptions requestOptions) async {
-  //   final accessToken = await Storage.readAccessToken();
-
-  //   final options = Options(
-  //     method: requestOptions.method,
-  //     headers: {...requestOptions.headers, 'Authorization': 'Bearer $accessToken'},
-  //   );
-
-  //   return dio.request<dynamic>(
-  //     requestOptions.path,
-  //     data: requestOptions.data,
-  //     queryParameters: requestOptions.queryParameters,
-  //     options: options,
-  //   );
-  // }
 }
 
 class _PendingRequest {
