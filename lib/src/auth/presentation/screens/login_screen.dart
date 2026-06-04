@@ -28,6 +28,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       next.whenOrNull(
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
+          debugPrint('Login error: $errorMessage');
           if (context.mounted) {
             Toast().showErrorToast(context: context, title: local.error, description: errorMessage);
             context.pop();

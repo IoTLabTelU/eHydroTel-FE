@@ -102,11 +102,9 @@ class _OtpPasswordScreenState extends ConsumerState<OtpPasswordScreen> {
                 ),
               ),
             ),
-            body: OtpPasswordContentWidget(
-              email: widget.email,
-              verify: verifyCode,
-              controllers: otpController,
-              resendCode: resendCode,
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: OtpPasswordContentWidget(email: widget.email, verify: verifyCode, controllers: otpController, resendCode: resendCode),
             ),
           ),
         ],

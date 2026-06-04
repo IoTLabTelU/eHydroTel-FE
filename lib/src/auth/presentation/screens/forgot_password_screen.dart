@@ -71,7 +71,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
               ),
             ),
-            body: ForgotPasswordContentWidget(emailController: emailController, send: sendCode),
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: ForgotPasswordContentWidget(emailController: emailController, send: sendCode),
+            ),
           ),
         ],
       ),

@@ -90,10 +90,13 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 ),
               ),
             ),
-            body: ChangePasswordContentWidget(
-              newPasswordController: newPasswordController,
-              newConfirmController: newConfirmController,
-              reset: resetPassword,
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: ChangePasswordContentWidget(
+                newPasswordController: newPasswordController,
+                newConfirmController: newConfirmController,
+                reset: resetPassword,
+              ),
             ),
           ),
         ],
