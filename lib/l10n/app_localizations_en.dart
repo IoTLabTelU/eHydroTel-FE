@@ -587,4 +587,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allCropCyclesLoaded => 'All Crop Cycles Loaded';
+
+  @override
+  String get noConnectionTitle => 'No Connection';
+
+  @override
+  String get noConnectionMessage =>
+      'Looks like your device is offline.\nCheck your Wi-Fi or mobile data\nand try again.';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get calibrateDevice => 'Calibrate Device';
 }

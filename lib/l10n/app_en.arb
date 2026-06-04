@@ -184,5 +184,9 @@
   "swipeForMoreCharts": "Tip: Swipe for more charts",
   "chooseFormatAndGenerateExportFile": "Choose format and we'll generate an export file for this crop cycle.",
   "allDevicesLoaded": "All Devices Loaded",
-  "allCropCyclesLoaded": "All Crop Cycles Loaded"
+  "allCropCyclesLoaded": "All Crop Cycles Loaded",
+  "noConnectionTitle": "No Connection",
+  "noConnectionMessage": "Looks like your device is offline.\nCheck your Wi-Fi or mobile data\nand try again.",
+  "tryAgain": "Try Again",
+  "calibrateDevice": "Calibrate Device"
 }

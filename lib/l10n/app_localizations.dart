@@ -1207,6 +1207,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All Crop Cycles Loaded'**
   String get allCropCyclesLoaded;
+
+  /// No description provided for @noConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Connection'**
+  String get noConnectionTitle;
+
+  /// No description provided for @noConnectionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks like your device is offline.\nCheck your Wi-Fi or mobile data\nand try again.'**
+  String get noConnectionMessage;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @calibrateDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate Device'**
+  String get calibrateDevice;
 }
 
 class _AppLocalizationsDelegate

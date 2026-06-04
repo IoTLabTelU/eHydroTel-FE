@@ -593,4 +593,17 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get allCropCyclesLoaded => 'Semua Sesi Tanam Telah Dimuat';
+
+  @override
+  String get noConnectionTitle => 'Tidak Ada Koneksi';
+
+  @override
+  String get noConnectionMessage =>
+      'Sepertinya smartphone Anda offline.\nCek Wi-Fi atau data seluler Anda lalu coba lagi.';
+
+  @override
+  String get tryAgain => 'Coba Lagi';
+
+  @override
+  String get calibrateDevice => 'Kalibrasi Alat';
 }

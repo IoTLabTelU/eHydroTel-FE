@@ -181,5 +181,9 @@
     "swipeForMoreCharts": "Tip: Geser untuk melihat lebih banyak grafik",
     "chooseFormatAndGenerateExportFile": "Pilih format dan kami akan membuatkan berkas untuk siklus tanam ini.",
     "allDevicesLoaded": "Semua Perangkat Telah Dimuat",
-    "allCropCyclesLoaded": "Semua Sesi Tanam Telah Dimuat"
+    "allCropCyclesLoaded": "Semua Sesi Tanam Telah Dimuat",
+    "noConnectionTitle": "Tidak Ada Koneksi",
+    "noConnectionMessage": "Sepertinya smartphone Anda offline.\nCek Wi-Fi atau data seluler Anda lalu coba lagi.",
+    "tryAgain": "Coba Lagi",
+    "calibrateDevice": "Kalibrasi Alat"
 }

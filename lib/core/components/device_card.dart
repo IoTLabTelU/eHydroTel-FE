@@ -36,10 +36,7 @@ class DeviceCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    deviceName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-                  ),
+                  child: Text(deviceName, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                 ),
                 const SizedBox(width: 8),
                 SizedBox(
@@ -67,6 +64,13 @@ class DeviceCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (status == getDeviceStatusText(DeviceStatus.idle)) ...[
+              SizedBox(height: 12.h),
+              SizedBox(
+                width: double.infinity,
+                child: primaryButton(text: local.calibrateDevice, context: context, onPressed: () {}, color: ColorValues.green600),
+              ),
+            ],
           ],
         ),
       ),
@@ -75,13 +79,7 @@ class DeviceCard extends StatelessWidget {
 }
 
 class InfoCard extends StatelessWidget {
-  const InfoCard({
-    super.key,
-    required this.info,
-    required this.withBlinkingDot,
-    required this.iconPath,
-    required this.title,
-  });
+  const InfoCard({super.key, required this.info, required this.withBlinkingDot, required this.iconPath, required this.title});
   final String title;
   final String info;
   final bool withBlinkingDot;
