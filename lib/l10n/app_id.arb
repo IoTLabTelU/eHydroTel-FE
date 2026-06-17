@@ -185,5 +185,43 @@
     "noConnectionTitle": "Tidak Ada Koneksi",
     "noConnectionMessage": "Sepertinya smartphone Anda offline.\nCek Wi-Fi atau data seluler Anda lalu coba lagi.",
     "tryAgain": "Coba Lagi",
-    "calibrateDevice": "Kalibrasi Alat"
+    "calibrateDevice": "Kalibrasi Alat",
+    "deviceCalibration": "Kalibrasi Alat",
+    "getReadyToCalibrate": "Persiapan Kalibrasi",
+    "followGuidedSteps": "Ikuti langkah terpadu berikut untuk mengkalibrasi sensor Anda secara akurat.",
+    "getFamiliarwithSensor": "Kenal lebih dekat dengan sensor Anda",
+    "youUseBothDuringCalibration": "Anda akan menggunakan keduanya saat proses kalibrasi.",
+    "phSensor": "Sensor pH",
+    "ppmSensor": "Sensor PPM",
+    "estimatedTotalTime": "Estimasi Total Waktu",
+    "minutes": "menit",
+    "keepTheDevicePoweredOn": "Pastikan perangkat IoT menyala saat proses kalibrasi",
+    "startCalibration": "Mulai Kalibrasi",
+    "calibrate": "Kalibrasi",
+  "placeSensor": "Taruh sensor {type} di dalam cairan solvent {type} {calibration} sebelum dimulai.",
+  "@placeSensor": {
+    "description": "turu",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "pH"
+      },
+      "calibration": {
+        "type": "double",
+        "example": "1.0"
+      }
+    }
+  },
+  "keepTheSensorSubmerged": "Pastikan sensor sudah tercelup",
+  "calibrationInProgress": "Kalibrasi dalam proses",
+  "calibrationIsInProgress": "Kalibrasi sedang dalam proses\nJangan angkat sensor",
+  "beginCalibration": "Mulai Kalibrasi {time}-Menit",
+  "@beginCalibration": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  }
 }

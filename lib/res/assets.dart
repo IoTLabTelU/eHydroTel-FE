@@ -34,6 +34,8 @@ class IconAssets {
   static const String logout = 'assets/icons/Log Out.svg';
   static const String grassAvatar = 'assets/icons/GrassAvatar.svg';
   static const String multipleChoose = 'assets/icons/Multiple Choose.svg';
+  static const String info = 'assets/icons/Info.svg';
+  static const String close = 'assets/icons/Close.svg';
 }
 
 class ImageAssets {
@@ -45,6 +47,17 @@ class ImageAssets {
   static const String pairStep2 = 'assets/img/PairStep_2.png';
   static const String pairStep3 = 'assets/img/PairStep_3.png';
   static const String multipleChoose = 'assets/img/Multiple Choose.png';
+  static const String phStart = 'assets/img/PH_Start.png';
+  static const String ppmStart = 'assets/img/PPM_Start.png';
+  static const String pH7 = 'assets/img/pH_7.png';
+  static const String pH4 = 'assets/img/pH_4.png';
+  static const String pHRinse = 'assets/img/Rinse_pH.png';
+  static const String ppmRinse = 'assets/img/Rinse_PPM.png';
+  static const String ppm500 = 'assets/img/PPM_500.png';
+  static const String ppm1000 = 'assets/img/PPM_1000.png';
+  static const String ppm1382 = 'assets/img/PPM_1382.png';
+  static const String applypHCalibration = 'assets/img/pH Calibration Applied.png';
+  static const String applyPPMCalibration = 'assets/img/PPM Calibration Applied.png';
 }
 
 class LottieAssets {

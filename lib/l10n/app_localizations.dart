@@ -1231,6 +1231,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calibrate Device'**
   String get calibrateDevice;
+
+  /// No description provided for @deviceCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Calibration'**
+  String get deviceCalibration;
+
+  /// No description provided for @getReadyToCalibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Ready To Calibrate'**
+  String get getReadyToCalibrate;
+
+  /// No description provided for @followGuidedSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the guided steps to calibrate your sensors accurately.'**
+  String get followGuidedSteps;
+
+  /// No description provided for @getFamiliarwithSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Get familiar with your sensors'**
+  String get getFamiliarwithSensor;
+
+  /// No description provided for @youUseBothDuringCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll use both during calibration.'**
+  String get youUseBothDuringCalibration;
+
+  /// No description provided for @phSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'pH Sensor'**
+  String get phSensor;
+
+  /// No description provided for @ppmSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'PPM Sensor'**
+  String get ppmSensor;
+
+  /// No description provided for @estimatedTotalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Total Time'**
+  String get estimatedTotalTime;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @keepTheDevicePoweredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the device powered on during calibration'**
+  String get keepTheDevicePoweredOn;
+
+  /// No description provided for @startCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Calibration'**
+  String get startCalibration;
+
+  /// No description provided for @calibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate'**
+  String get calibrate;
+
+  /// No description provided for @placeSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the {type} sensor into the {type} {calibration} solution before starting.'**
+  String placeSensor(String type, double calibration);
+
+  /// No description provided for @keepTheSensorSubmerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the sensor submerged throughout calibration'**
+  String get keepTheSensorSubmerged;
+
+  /// No description provided for @calibrationInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration in progress'**
+  String get calibrationInProgress;
+
+  /// No description provided for @calibrationIsInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration is in progres\nDo not remove the sensor'**
+  String get calibrationIsInProgress;
+
+  /// No description provided for @beginCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Begin {time}-Minute Calibration'**
+  String beginCalibration(String time);
 }
 
 class _AppLocalizationsDelegate

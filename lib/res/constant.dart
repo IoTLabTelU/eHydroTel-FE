@@ -36,6 +36,7 @@ class EndpointStrings {
   static final notif = '$baseUrl/notif';
   static final registerFcmToken = '$notif/register-token';
   static final notifHistory = '$notif/history';
+  static final calibration = '$baseUrl/calibration';
 }
 
 enum DeviceStatus { active, idle, offline }

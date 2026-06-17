@@ -600,4 +600,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calibrateDevice => 'Calibrate Device';
+
+  @override
+  String get deviceCalibration => 'Device Calibration';
+
+  @override
+  String get getReadyToCalibrate => 'Get Ready To Calibrate';
+
+  @override
+  String get followGuidedSteps =>
+      'Follow the guided steps to calibrate your sensors accurately.';
+
+  @override
+  String get getFamiliarwithSensor => 'Get familiar with your sensors';
+
+  @override
+  String get youUseBothDuringCalibration =>
+      'You\'ll use both during calibration.';
+
+  @override
+  String get phSensor => 'pH Sensor';
+
+  @override
+  String get ppmSensor => 'PPM Sensor';
+
+  @override
+  String get estimatedTotalTime => 'Estimated Total Time';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get keepTheDevicePoweredOn =>
+      'Keep the device powered on during calibration';
+
+  @override
+  String get startCalibration => 'Start Calibration';
+
+  @override
+  String get calibrate => 'Calibrate';
+
+  @override
+  String placeSensor(String type, double calibration) {
+    return 'Place the $type sensor into the $type $calibration solution before starting.';
+  }
+
+  @override
+  String get keepTheSensorSubmerged =>
+      'Keep the sensor submerged throughout calibration';
+
+  @override
+  String get calibrationInProgress => 'Calibration in progress';
+
+  @override
+  String get calibrationIsInProgress =>
+      'Calibration is in progres\nDo not remove the sensor';
+
+  @override
+  String beginCalibration(String time) {
+    return 'Begin $time-Minute Calibration';
+  }
 }

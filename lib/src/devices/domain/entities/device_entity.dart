@@ -15,6 +15,7 @@ sealed class DeviceEntity with _$DeviceEntity {
     required String adminStatus,
     required String status,
     String? ssid,
+    required bool needsCalibration,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _DeviceEntity;

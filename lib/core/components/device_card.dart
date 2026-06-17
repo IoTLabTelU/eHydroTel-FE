@@ -1,5 +1,6 @@
 import 'package:vector_graphics/vector_graphics.dart';
 import '../../pkg.dart';
+import '../../src/devices/presentation/screens/start_calibration_screen.dart';
 import 'blinking_dot.dart';
 
 class DeviceCard extends StatelessWidget {
@@ -64,13 +65,18 @@ class DeviceCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (status == getDeviceStatusText(DeviceStatus.idle)) ...[
-              SizedBox(height: 12.h),
-              SizedBox(
-                width: double.infinity,
-                child: primaryButton(text: local.calibrateDevice, context: context, onPressed: () {}, color: ColorValues.green600),
+            SizedBox(height: 12.h),
+            SizedBox(
+              width: double.infinity,
+              child: primaryButton(
+                text: local.calibrateDevice,
+                context: context,
+                onPressed: () {
+                  context.push('/${StartCalibrationScreen.path}');
+                },
+                color: ColorValues.green600,
               ),
-            ],
+            ),
           ],
         ),
       ),

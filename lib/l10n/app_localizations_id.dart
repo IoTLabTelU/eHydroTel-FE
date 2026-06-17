@@ -606,4 +606,63 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get calibrateDevice => 'Kalibrasi Alat';
+
+  @override
+  String get deviceCalibration => 'Kalibrasi Alat';
+
+  @override
+  String get getReadyToCalibrate => 'Persiapan Kalibrasi';
+
+  @override
+  String get followGuidedSteps =>
+      'Ikuti langkah terpadu berikut untuk mengkalibrasi sensor Anda secara akurat.';
+
+  @override
+  String get getFamiliarwithSensor => 'Kenal lebih dekat dengan sensor Anda';
+
+  @override
+  String get youUseBothDuringCalibration =>
+      'Anda akan menggunakan keduanya saat proses kalibrasi.';
+
+  @override
+  String get phSensor => 'Sensor pH';
+
+  @override
+  String get ppmSensor => 'Sensor PPM';
+
+  @override
+  String get estimatedTotalTime => 'Estimasi Total Waktu';
+
+  @override
+  String get minutes => 'menit';
+
+  @override
+  String get keepTheDevicePoweredOn =>
+      'Pastikan perangkat IoT menyala saat proses kalibrasi';
+
+  @override
+  String get startCalibration => 'Mulai Kalibrasi';
+
+  @override
+  String get calibrate => 'Kalibrasi';
+
+  @override
+  String placeSensor(String type, double calibration) {
+    return 'Taruh sensor $type di dalam cairan solvent $type $calibration sebelum dimulai.';
+  }
+
+  @override
+  String get keepTheSensorSubmerged => 'Pastikan sensor sudah tercelup';
+
+  @override
+  String get calibrationInProgress => 'Kalibrasi dalam proses';
+
+  @override
+  String get calibrationIsInProgress =>
+      'Kalibrasi sedang dalam proses\nJangan angkat sensor';
+
+  @override
+  String beginCalibration(String time) {
+    return 'Mulai Kalibrasi $time-Menit';
+  }
 }

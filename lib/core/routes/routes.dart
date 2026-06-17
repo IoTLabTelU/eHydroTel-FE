@@ -21,6 +21,7 @@ import 'package:hydro_iot/src/devices/presentation/screens/detail_device_screen.
 import 'package:hydro_iot/src/devices/presentation/screens/devices_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/history/sensor_history_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/setting_device_screen.dart';
+import 'package:hydro_iot/src/devices/presentation/screens/start_calibration_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/view_all_session_screen.dart';
 import 'package:hydro_iot/src/devices/presentation/screens/add_device/serial_number_scanner_screen.dart';
 import 'package:hydro_iot/src/notification/presentation/screens/notification_screen.dart';
@@ -30,6 +31,7 @@ import 'package:hydro_iot/src/profile/presentation/screens/change_password_verif
 import 'package:hydro_iot/src/profile/presentation/screens/profile_screen.dart';
 import 'package:hydro_iot/utils/utils.dart';
 
+import '../../src/devices/presentation/screens/calibration/calibration_steps_screen.dart';
 import '../../utils/connectivity_wrapper.dart';
 
 class GoRouterRefreshNotifier extends ChangeNotifier {
@@ -380,6 +382,40 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           );
         },
+      ),
+      GoRoute(
+        path: '/${StartCalibrationScreen.path}',
+        name: StartCalibrationScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ConnectivityWrapper(child: StartCalibrationScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/${CalibrationsStepsScreen.path}',
+        name: CalibrationsStepsScreen.path,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ConnectivityWrapper(child: CalibrationsStepsScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            final tween = Tween(begin: begin, end: end);
+            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          },
+        ),
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) => CustomTransitionPage(

@@ -44,3 +44,42 @@ class SensorWebsocket {
     return channel;
   }
 }
+
+final calibrationWebsocketProvider = Provider((ref) {
+  ref.onDispose(() {
+    debugPrint('Disposing CalibrationWebsocket');
+  });
+  ref.onCancel(() {
+    debugPrint('CalibrationWebsocket connection cancelled');
+  });
+  ref.onResume(() {
+    debugPrint('CalibrationWebsocket connection resumed');
+  });
+  ref.onAddListener(() {
+    debugPrint('CalibrationWebsocket listener added');
+  });
+  ref.onRemoveListener(() {
+    debugPrint('CalibrationWebsocket listener removed');
+  });
+  return CalibrationWebsocket();
+}, isAutoDispose: true);
+
+class CalibrationWebsocket {
+  final url = BaseConfigs.baseUrl;
+
+  CalibrationWebsocket() {
+    debugPrint('CalibrationWebsocket initialized with URL: $url');
+  }
+
+  Future<socket.Socket> connect() async {
+    Map<String, dynamic> headers = {};
+    headers['Authorization'] = 'Bearer ${await Storage().readAccessToken}';
+    final channel = socket.io(
+      url?.replaceAll('/api', ''),
+      socket.OptionBuilder().setTransports(['websocket']).setExtraHeaders(headers).disableAutoConnect().build(),
+    );
+    log(url?.replaceAll('/api', '').toString() ?? 'No URL');
+    channel.connect();
+    return channel;
+  }
+}

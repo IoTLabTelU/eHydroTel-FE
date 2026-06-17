@@ -188,5 +188,42 @@
   "noConnectionTitle": "No Connection",
   "noConnectionMessage": "Looks like your device is offline.\nCheck your Wi-Fi or mobile data\nand try again.",
   "tryAgain": "Try Again",
-  "calibrateDevice": "Calibrate Device"
+  "calibrateDevice": "Calibrate Device",
+  "deviceCalibration": "Device Calibration",
+  "getReadyToCalibrate": "Get Ready To Calibrate",
+  "followGuidedSteps": "Follow the guided steps to calibrate your sensors accurately.",
+  "getFamiliarwithSensor": "Get familiar with your sensors",
+  "youUseBothDuringCalibration": "You'll use both during calibration.",
+  "phSensor": "pH Sensor",
+  "ppmSensor": "PPM Sensor",
+  "estimatedTotalTime": "Estimated Total Time",
+  "minutes": "minutes",
+  "keepTheDevicePoweredOn": "Keep the device powered on during calibration",
+  "startCalibration": "Start Calibration",
+  "calibrate": "Calibrate",
+  "placeSensor": "Place the {type} sensor into the {type} {calibration} solution before starting.",
+  "@placeSensor": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "pH"
+      },
+      "calibration": {
+        "type": "double",
+        "example": "1.0"
+      }
+    }
+  },
+  "keepTheSensorSubmerged": "Keep the sensor submerged throughout calibration",
+  "calibrationInProgress": "Calibration in progress",
+  "calibrationIsInProgress": "Calibration is in progres\nDo not remove the sensor",
+  "beginCalibration": "Begin {time}-Minute Calibration",
+  "@beginCalibration": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  }
 }
