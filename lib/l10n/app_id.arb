@@ -223,5 +223,54 @@
         "example": "30"
       }
     }
+  },
+  "calibrated": "Terkalibrasi",
+  "calibration": "Kalibrasi",
+  "readyToApplyCalibration": "Siap untuk menerapkan kalibrasi",
+  "readyForNextStep": "Siap untuk langkah berikutnya",
+  "continueTo": "Lanjut ke {label}",
+  "@continueTo": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "PPM 500"
+      }
+    }
+  },
+  "saving": "Menyimpan...",
+  "timeRemaining": "{time} tersisa",
+  "@timeRemaining": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "29:59"
+      }
+    }
+  },
+  "rinseBeforeNextStep": "Bilas sensor dengan air bersih sebelum melanjutkan ke langkah kalibrasi berikutnya",
+  "rinseAndReturnToHolder": "Bilas sensor dengan air bersih dan kembalikan ke tempatnya",
+  "cancelCalibrationTitle": "Batalkan Kalibrasi?",
+  "cancelCalibrationMessage": "Progres yang belum disimpan akan hilang.",
+  "calibrationCancelledMessage": "Kalibrasi dibatalkan.\nPerangkat Anda masih perlu dikalibrasi.",
+  "calibrationCompleteTitle": "Kalibrasi Selesai!",
+  "calibrationCompleteMessage": "Perangkat Anda sekarang sudah terkalibrasi dan siap untuk memulai siklus tanam baru.",
+  "calibrationAppliedTitle": "Kalibrasi {type}\nDiterapkan",
+  "@calibrationAppliedTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "pH"
+      }
+    }
+  },
+  "calibrationFullyAppliedMessage": "Kalibrasi perangkat Anda telah diterapkan dan siap digunakan",
+  "calibrationReadyForNextType": "Perangkat Anda siap untuk kalibrasi {label}",
+  "@calibrationReadyForNextType": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "PPM 500"
+      }
+    }
   }
 }

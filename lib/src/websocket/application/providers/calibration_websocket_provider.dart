@@ -11,7 +11,6 @@ CalibrationWebsocketRepositoryImpl calibrationWebsocketRepositoryImpl(Ref ref) {
   final calibrationWebsocketRepository = CalibrationWebsocketRepositoryImpl(websocket);
   ref.onDispose(() {
     calibrationWebsocketRepository.dispose();
-    ref.invalidate(calibrationWebsocketProvider);
   });
   return calibrationWebsocketRepository;
 }

@@ -660,4 +660,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String beginCalibration(String time) {
     return 'Begin $time-Minute Calibration';
   }
+
+  @override
+  String get calibrated => 'Calibrated';
+
+  @override
+  String get calibration => 'Calibration';
+
+  @override
+  String get readyToApplyCalibration => 'Ready to apply calibration';
+
+  @override
+  String get readyForNextStep => 'Ready for the next step';
+
+  @override
+  String continueTo(String label) {
+    return 'Continue to $label';
+  }
+
+  @override
+  String get saving => 'Saving...';
+
+  @override
+  String timeRemaining(String time) {
+    return '$time remaining';
+  }
+
+  @override
+  String get rinseBeforeNextStep =>
+      'Rinse the sensor with clean water before proceeding to the next calibration step';
+
+  @override
+  String get rinseAndReturnToHolder =>
+      'Rinse the sensor with clean water and return it to its holder';
+
+  @override
+  String get cancelCalibrationTitle => 'Cancel Calibration?';
+
+  @override
+  String get cancelCalibrationMessage => 'Unsaved progress will be lost.';
+
+  @override
+  String get calibrationCancelledMessage =>
+      'Calibration was cancelled.\nYour device still needs to be calibrated.';
+
+  @override
+  String get calibrationCompleteTitle => 'Calibration Complete!';
+
+  @override
+  String get calibrationCompleteMessage =>
+      'Your device is now calibrated and ready to start a new crop cycle.';
+
+  @override
+  String calibrationAppliedTitle(String type) {
+    return '$type Calibration\nApplied';
+  }
+
+  @override
+  String get calibrationFullyAppliedMessage =>
+      'Your device calibration is now applied and ready to use';
+
+  @override
+  String calibrationReadyForNextType(String label) {
+    return 'Your device is ready for $label calibration';
+  }
 }

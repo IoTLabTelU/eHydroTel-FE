@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:hydro_iot/src/devices/domain/entities/calibration_timer_entity.dart';
-import 'package:hydro_iot/src/devices/domain/entities/step_advance_result_entity.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket;
 
 import '../../../../core/providers/websocket_provider.dart';
+import '../../domain/entities/step_advance_socket_event_entity.dart';
 import '../../domain/repositories/calibration_websocket_repository.dart';
 
 class CalibrationWebsocketRepositoryImpl implements CalibrationWebsocketRepository {
@@ -27,7 +27,7 @@ class CalibrationWebsocketRepositoryImpl implements CalibrationWebsocketReposito
   // StreamController untuk masing-masing event. broadcast karena bisa ada
   // lebih dari satu listener (controller riverpod + widget lain jika perlu).
   final _timerStartController = StreamController<CalibrationTimerEntity>.broadcast();
-  final _stepAdvanceController = StreamController<StepAdvanceResultEntity>.broadcast();
+  final _stepAdvanceController = StreamController<StepAdvanceSocketEventEntity>.broadcast();
   final _reconnectController = StreamController<void>.broadcast();
 
   @override
@@ -61,7 +61,7 @@ class CalibrationWebsocketRepositoryImpl implements CalibrationWebsocketReposito
     // { session_id, completed_step, next_step, progress }
     channel?.on('calibration:$serial:step_advance', (data) {
       try {
-        final result = StepAdvanceResultEntity.fromJson(data as Map<String, dynamic>);
+        final result = StepAdvanceSocketEventEntity.fromJson(data as Map<String, dynamic>);
         _stepAdvanceController.add(result);
       } catch (e, st) {
         log('Failed to parse step_advance payload: $e\n$st');
@@ -119,7 +119,7 @@ class CalibrationWebsocketRepositoryImpl implements CalibrationWebsocketReposito
   Stream<CalibrationTimerEntity> get onTimerStart => _timerStartController.stream;
 
   @override
-  Stream<StepAdvanceResultEntity> get onStepAdvance => _stepAdvanceController.stream;
+  Stream<StepAdvanceSocketEventEntity> get onStepAdvance => _stepAdvanceController.stream;
 
   @override
   Stream<void> get onReconnect => _reconnectController.stream;

@@ -234,6 +234,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     context: context,
                     title: local.harvest,
                     content: local.confirmHarvest,
+                    confirmText: local.yes,
+                    cancelText: local.no,
                     onConfirm: () {
                       ref.read(cropCycleControllerProvider.notifier).endCropCycleSession(cropCycle.id);
                     },

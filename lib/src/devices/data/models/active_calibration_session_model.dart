@@ -13,10 +13,7 @@ sealed class ActiveCalibrationSessionModel with _$ActiveCalibrationSessionModel 
   const factory ActiveCalibrationSessionModel({
     required CalibrationSessionEntity session,
     required CalibrationProgressEntity progress,
-    required CalibrationTimerEntity? timer,
-
-    required bool isFinal,
-    required,
+    CalibrationTimerEntity? timer,
   }) = _ActiveCalibrationSessionModel;
 
   factory ActiveCalibrationSessionModel.fromJson(Map<String, dynamic> json) => _$ActiveCalibrationSessionModelFromJson(json);

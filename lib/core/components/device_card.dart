@@ -9,6 +9,7 @@ class DeviceCard extends StatelessWidget {
   final String status;
   final String ssid;
   final VoidCallback onSettingPressed;
+  final bool needCalibration;
 
   const DeviceCard({
     super.key,
@@ -17,6 +18,7 @@ class DeviceCard extends StatelessWidget {
     required this.ssid,
     required this.onSettingPressed,
     required this.status,
+    required this.needCalibration,
   });
 
   @override
@@ -65,18 +67,20 @@ class DeviceCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              width: double.infinity,
-              child: primaryButton(
-                text: local.calibrateDevice,
-                context: context,
-                onPressed: () {
-                  context.push('/${StartCalibrationScreen.path}');
-                },
-                color: ColorValues.green600,
+            if (needCalibration || status == getDeviceStatusText(DeviceStatus.idle) || status == getDeviceStatusText(DeviceStatus.offline)) ...[
+              SizedBox(height: 12.h),
+              SizedBox(
+                width: double.infinity,
+                child: primaryButton(
+                  text: local.calibrateDevice,
+                  context: context,
+                  onPressed: () {
+                    context.push('/${StartCalibrationScreen.path}', extra: {'serialNumber': serialNumber});
+                  },
+                  color: ColorValues.green600,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

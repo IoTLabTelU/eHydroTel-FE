@@ -1333,6 +1333,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Begin {time}-Minute Calibration'**
   String beginCalibration(String time);
+
+  /// No description provided for @calibrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrated'**
+  String get calibrated;
+
+  /// No description provided for @calibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration'**
+  String get calibration;
+
+  /// No description provided for @readyToApplyCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to apply calibration'**
+  String get readyToApplyCalibration;
+
+  /// No description provided for @readyForNextStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for the next step'**
+  String get readyForNextStep;
+
+  /// No description provided for @continueTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to {label}'**
+  String continueTo(String label);
+
+  /// No description provided for @saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get saving;
+
+  /// No description provided for @timeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} remaining'**
+  String timeRemaining(String time);
+
+  /// No description provided for @rinseBeforeNextStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Rinse the sensor with clean water before proceeding to the next calibration step'**
+  String get rinseBeforeNextStep;
+
+  /// No description provided for @rinseAndReturnToHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Rinse the sensor with clean water and return it to its holder'**
+  String get rinseAndReturnToHolder;
+
+  /// No description provided for @cancelCalibrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Calibration?'**
+  String get cancelCalibrationTitle;
+
+  /// No description provided for @cancelCalibrationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved progress will be lost.'**
+  String get cancelCalibrationMessage;
+
+  /// No description provided for @calibrationCancelledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration was cancelled.\nYour device still needs to be calibrated.'**
+  String get calibrationCancelledMessage;
+
+  /// No description provided for @calibrationCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration Complete!'**
+  String get calibrationCompleteTitle;
+
+  /// No description provided for @calibrationCompleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device is now calibrated and ready to start a new crop cycle.'**
+  String get calibrationCompleteMessage;
+
+  /// No description provided for @calibrationAppliedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} Calibration\nApplied'**
+  String calibrationAppliedTitle(String type);
+
+  /// No description provided for @calibrationFullyAppliedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device calibration is now applied and ready to use'**
+  String get calibrationFullyAppliedMessage;
+
+  /// No description provided for @calibrationReadyForNextType.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device is ready for {label} calibration'**
+  String calibrationReadyForNextType(String label);
 }
 
 class _AppLocalizationsDelegate

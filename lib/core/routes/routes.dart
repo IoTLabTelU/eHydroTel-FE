@@ -386,36 +386,42 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/${StartCalibrationScreen.path}',
         name: StartCalibrationScreen.path,
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ConnectivityWrapper(child: StartCalibrationScreen()),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ConnectivityWrapper(child: StartCalibrationScreen(serial: extra?['serialNumber'] as String? ?? '')),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        ),
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
       ),
       GoRoute(
-        path: '/${CalibrationsStepsScreen.path}',
-        name: CalibrationsStepsScreen.path,
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ConnectivityWrapper(child: CalibrationsStepsScreen()),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+        path: '/${CalibrationStepsScreen.path}',
+        name: CalibrationStepsScreen.path,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ConnectivityWrapper(child: CalibrationStepsScreen(serial: extra?['serialNumber'] as String? ?? '')),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
 
-            final tween = Tween(begin: begin, end: end);
-            final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          },
-        ),
+              final tween = Tween(begin: begin, end: end);
+              final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            },
+          );
+        },
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) => CustomTransitionPage(

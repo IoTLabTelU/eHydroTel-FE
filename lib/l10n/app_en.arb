@@ -225,5 +225,54 @@
         "example": "30"
       }
     }
+  },
+  "calibrated": "Calibrated",
+  "calibration": "Calibration",
+  "readyToApplyCalibration": "Ready to apply calibration",
+  "readyForNextStep": "Ready for the next step",
+  "continueTo": "Continue to {label}",
+  "@continueTo": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "PPM 500"
+      }
+    }
+  },
+  "saving": "Saving...",
+  "timeRemaining": "{time} remaining",
+  "@timeRemaining": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "29:59"
+      }
+    }
+  },
+  "rinseBeforeNextStep": "Rinse the sensor with clean water before proceeding to the next calibration step",
+  "rinseAndReturnToHolder": "Rinse the sensor with clean water and return it to its holder",
+  "cancelCalibrationTitle": "Cancel Calibration?",
+  "cancelCalibrationMessage": "Unsaved progress will be lost.",
+  "calibrationCancelledMessage": "Calibration was cancelled.\nYour device still needs to be calibrated.",
+  "calibrationCompleteTitle": "Calibration Complete!",
+  "calibrationCompleteMessage": "Your device is now calibrated and ready to start a new crop cycle.",
+  "calibrationAppliedTitle": "{type} Calibration\nApplied",
+  "@calibrationAppliedTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "pH"
+      }
+    }
+  },
+  "calibrationFullyAppliedMessage": "Your device calibration is now applied and ready to use",
+  "calibrationReadyForNextType": "Your device is ready for {label} calibration",
+  "@calibrationReadyForNextType": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "PPM 500"
+      }
+    }
   }
 }

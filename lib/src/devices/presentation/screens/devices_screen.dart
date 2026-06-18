@@ -184,6 +184,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                         },
                                       );
                                     },
+                                    needCalibration: e.needsCalibration ?? true,
                                   ),
                                 ),
                               ),

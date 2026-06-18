@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydro_iot/src/devices/application/providers/calibration_provider.dart';
 import 'package:hydro_iot/src/devices/presentation/widgets/cardlike_container_widget.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
@@ -5,7 +7,8 @@ import '../../../../pkg.dart';
 
 class StartCalibrationScreen extends StatelessWidget {
   static const String path = 'start-calibration';
-  const StartCalibrationScreen({super.key});
+  final String serial;
+  const StartCalibrationScreen({super.key, required this.serial});
 
   @override
   Widget build(BuildContext context) {
@@ -128,24 +131,32 @@ class StartCalibrationScreen extends StatelessWidget {
                           children: [
                             Text(local.estimatedTotalTime, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: ColorValues.neutral500)),
                             const SizedBox(height: 4),
-                            RichText(
-                              text: TextSpan(
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.blackColor),
-                                children: [
-                                  TextSpan(
-                                    text: '10',
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final estimate = ref.watch(calibrationEstimatedTotalMinProvider);
+                                final minutesText = estimate.maybeWhen(data: (min) => min.toString(), orElse: () => '--');
+                                return RichText(
+                                  text: TextSpan(
                                     style: Theme.of(
                                       context,
-                                    ).textTheme.displayMedium?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.blackColor),
+                                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.blackColor),
+                                    children: [
+                                      TextSpan(
+                                        text: minutesText,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.displayMedium?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.blackColor),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${local.minutes}',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.neutral500),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: ' ${local.minutes}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: ColorValues.neutral500),
-                                  ),
-                                ],
-                              ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -173,7 +184,7 @@ class StartCalibrationScreen extends StatelessWidget {
                   width: double.infinity,
                   child: primaryButton(
                     onPressed: () {
-                      context.push('/calibration-steps');
+                      context.push('/calibration-steps', extra: {'serialNumber': serial});
                     },
                     context: context,
                     text: local.startCalibration,

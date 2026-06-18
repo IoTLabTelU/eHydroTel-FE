@@ -1,5 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domain/entities/calibration_progress_entity.dart';
+import '../../domain/entities/calibration_session_entity.dart';
+import '../../domain/entities/calibration_step_def_entity.dart';
 import '../../../websocket/application/providers/calibration_websocket_provider.dart';
 import '../providers/calibration_provider.dart';
 import '../states/calibration_state.dart';
@@ -9,7 +12,14 @@ part 'calibration_controller.g.dart';
 @riverpod
 class CalibrationController extends _$CalibrationController {
   @override
-  CalibrationState build(String serial) => const CalibrationState();
+  CalibrationState build(String serial) {
+    // Watch (bukan read) di sini sengaja, supaya Riverpod menahan instance
+    // websocket repository ini hidup selama controller masih dipakai —
+    // mencegah dispose/recreate berulang setiap kali method lain di bawah
+    // memanggil ref.read(calibrationWebsocketRepositoryImplProvider).
+    ref.watch(calibrationWebsocketRepositoryImplProvider);
+    return const CalibrationState();
+  }
 
   Future<void> init(String serial) async {
     state = state.copyWith(phase: CalibrationPhase.loading);
@@ -19,22 +29,34 @@ class CalibrationController extends _$CalibrationController {
       ref.read(calibrationWebsocketRepositoryImplProvider).joinRoom(serial);
       _listenSocket(serial);
 
+      // Set allSteps dulu sebelum apapun, karena _advanceToDisplayStep
+      // butuh allSteps untuk mencari step berikutnya.
+      state = state.copyWith(allSteps: steps);
+
       if (session == null) {
-        // belum ada sesi aktif → mulai sesi baru otomatis, atau munculkan
-        // tombol "Mulai Kalibrasi" di luar screen ini (tergantung desain kamu)
+        // Belum ada sesi aktif → mulai sesi baru. /start otomatis
+        // mengeksekusi 'enter_cal', sehingga session.currentStep yang
+        // dikembalikan backend = 'enter_cal' (BUKAN step yang harus
+        // ditampilkan ke user). Majukan secara lokal ke step pertama
+        // yang benar-benar butuh aksi user (biasanya cal7).
         final newSession = await ref.read(calibrationRepositoryProvider).startSession(serial);
-        state = state.copyWith(phase: CalibrationPhase.loading, session: newSession, allSteps: steps);
+        state = state.copyWith(session: _advanceToDisplayStep(newSession));
         await _syncEstimate(serial);
         state = state.copyWith(phase: CalibrationPhase.idle);
         return;
       }
 
-      // RECONNECT: ada sesi aktif, cek apakah ada timer berjalan
-      state = state.copyWith(allSteps: steps, session: session.session, progress: session.progress);
+      // RECONNECT: ada sesi aktif. session.session.currentStep di sini
+      // juga masih merujuk ke step yang TERAKHIR dieksekusi backend, jadi
+      // tetap perlu dimajukan ke step yang harus ditampilkan — caranya
+      // sama persis dengan kasus fresh-start di atas.
+      final displaySession = _advanceToDisplayStep(session.session);
+      state = state.copyWith(session: displaySession, progress: session.progress);
 
-      if (session.timer != null && session.timer!.remainingSec! > 0) {
+      final remaining = session.timer?.remainingSec ?? 0;
+      if (session.timer != null && remaining > 0) {
         state = state.copyWith(phase: CalibrationPhase.soaking, activeTimer: session.timer);
-      } else if (session.timer != null && session.timer!.remainingSec == 0) {
+      } else if (session.timer != null && remaining == 0) {
         state = state.copyWith(phase: CalibrationPhase.readyToComplete);
       } else {
         await _syncEstimate(serial);
@@ -43,6 +65,24 @@ class CalibrationController extends _$CalibrationController {
     } catch (e) {
       state = state.copyWith(phase: CalibrationPhase.error, error: e);
     }
+  }
+
+  /// `rawSession.currentStep` selalu menunjuk ke step yang BARU SAJA
+  /// dieksekusi backend. UI butuh tahu step BERIKUTNYA yang harus
+  /// dikerjakan user — itu selalu ada di index (currentStepIndex + 1)
+  /// pada `allSteps`. Helper ini memajukan session secara lokal supaya
+  /// `state.currentStepDef` selalu konsisten dengan apa yang harus
+  /// ditampilkan, di SEMUA jalur (fresh start, reconnect, complete-step,
+  /// socket step_advance).
+  CalibrationSessionEntity _advanceToDisplayStep(CalibrationSessionEntity rawSession) {
+    final targetIndex = rawSession.currentStepIndex + 1;
+    for (final step in state.allSteps) {
+      if (step.index == targetIndex) {
+        return rawSession.copyWithNextStep(step);
+      }
+    }
+    // Tidak ketemu step berikutnya (sudah di langkah terakhir) — biarkan apa adanya.
+    return rawSession;
   }
 
   Future<void> _syncEstimate(String serial) async {
@@ -74,15 +114,12 @@ class CalibrationController extends _$CalibrationController {
         state = state.copyWith(phase: CalibrationPhase.done, isActionLoading: false);
         return;
       }
-      // Update session.currentStepIndex secara lokal, lalu kembali ke idle utk step baru
-      final updatedSession = state.session!.copyWithNextStep(result.nextStep!);
-      state = state.copyWith(
-        session: updatedSession,
-        progress: updatedSession.progress,
-        phase: CalibrationPhase.idle,
-        activeTimer: null,
-        isActionLoading: false,
-      );
+      // Majukan tampilan ke step berikutnya. progress dihitung dari
+      // current_step_index (yang baru saja dieksekusi, sebelum dimajukan)
+      // + 1, sesuai semantik `progress.current` pada dokumen.
+      final newProgress = CalibrationProgressEntity(current: result.session.currentStepIndex + 1, total: state.allSteps.length);
+      final updatedSession = result.session.copyWithNextStep(result.nextStep!);
+      state = state.copyWith(session: updatedSession, progress: newProgress, phase: CalibrationPhase.idle, activeTimer: null, isActionLoading: false);
       await _syncEstimate(serial);
     } catch (e) {
       state = state.copyWith(isActionLoading: false, phase: CalibrationPhase.error, error: e);
@@ -106,8 +143,9 @@ class CalibrationController extends _$CalibrationController {
 
       // Munculkan bottom sheet "X Calibration Applied" di luar sini —
       // screen yang listen state berubah ke `applying` lalu trigger ApplyCalibrationSheet.show(...)
-      final updatedSession = state.session!.copyWithNextStep(result.nextStep!);
-      state = state.copyWith(phase: CalibrationPhase.applying, session: updatedSession, progress: updatedSession.progress);
+      final newProgress = CalibrationProgressEntity(current: result.session.currentStepIndex + 1, total: state.allSteps.length);
+      final updatedSession = result.session.copyWithNextStep(result.nextStep!);
+      state = state.copyWith(phase: CalibrationPhase.applying, session: updatedSession, progress: newProgress);
     } catch (e) {
       state = state.copyWith(isActionLoading: false, phase: CalibrationPhase.error, error: e);
     }
@@ -135,22 +173,41 @@ class CalibrationController extends _$CalibrationController {
       state = state.copyWith(phase: CalibrationPhase.soaking, activeTimer: timer);
     });
 
-    ref.read(calibrationWebsocketRepositoryImplProvider).onStepAdvance.listen((result) {
-      // Sinkronisasi jika event datang dari device lain / tab lain
-      if (result.isFinal) {
-        state = state.copyWith(phase: CalibrationPhase.done);
+    ref.read(calibrationWebsocketRepositoryImplProvider).onStepAdvance.listen((event) {
+      // Sinkronisasi jika step diselesaikan dari device/tab lain.
+      if (event.isFinal || state.session == null) {
+        if (event.isFinal) state = state.copyWith(phase: CalibrationPhase.done);
         return;
       }
-      state = state.copyWith(progress: result.progress, phase: CalibrationPhase.idle, activeTimer: null);
+
+      // Payload socket cuma punya step ref ringan (tanpa requiresSoak),
+      // jadi cari definisi lengkapnya di allSteps berdasarkan action name
+      // sebelum dipakai untuk copyWithNextStep.
+      CalibrationStepDefEntity? fullNextStep;
+      for (final s in state.allSteps) {
+        if (s.action == event.nextStep!.action) {
+          fullNextStep = s;
+          break;
+        }
+      }
+      if (fullNextStep == null) return;
+
+      final updatedSession = state.session!.copyWithNextStep(fullNextStep);
+      state = state.copyWith(session: updatedSession, progress: event.progress, phase: CalibrationPhase.idle, activeTimer: null);
     });
 
     ref.read(calibrationWebsocketRepositoryImplProvider).onReconnect.listen((_) async {
       // PENTING: wajib resync — lihat best practice no. 4 di dokumen
       final session = await ref.read(calibrationRepositoryProvider).getActiveSession(serial);
-      if (session?.timer != null && session!.timer!.remainingSec! > 0) {
-        state = state.copyWith(phase: CalibrationPhase.soaking, activeTimer: session.timer, session: session.session, progress: session.progress);
-      } else if (session != null) {
-        state = state.copyWith(phase: CalibrationPhase.readyToComplete, session: session.session, progress: session.progress);
+      if (session == null) return;
+
+      final displaySession = _advanceToDisplayStep(session.session);
+      final remaining = session.timer?.remainingSec ?? 0;
+
+      if (session.timer != null && remaining > 0) {
+        state = state.copyWith(phase: CalibrationPhase.soaking, activeTimer: session.timer, session: displaySession, progress: session.progress);
+      } else {
+        state = state.copyWith(phase: CalibrationPhase.readyToComplete, session: displaySession, progress: session.progress);
       }
     });
   }

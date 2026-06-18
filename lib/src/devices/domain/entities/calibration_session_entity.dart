@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'calibration_step_def_entity.dart';
 import 'device_entity.dart';
 
 part 'calibration_session_entity.freezed.dart';
@@ -23,4 +24,10 @@ sealed class CalibrationSessionEntity with _$CalibrationSessionEntity {
   }) = _CalibrationSessionEntity;
 
   factory CalibrationSessionEntity.fromJson(Map<String, dynamic> json) => _$CalibrationSessionEntityFromJson(json);
+}
+
+extension CalibrationSessionAdvance on CalibrationSessionEntity {
+  CalibrationSessionEntity copyWithNextStep(CalibrationStepDefEntity nextStep) {
+    return copyWith(currentStep: nextStep.action, currentStepIndex: nextStep.index);
+  }
 }

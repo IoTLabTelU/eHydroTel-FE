@@ -39,7 +39,7 @@ class EndpointStrings {
   static final calibration = '$baseUrl/calibration';
 }
 
-enum DeviceStatus { active, idle, offline }
+enum DeviceStatus { active, idle, offline, calibrating }
 
 String getDeviceStatusText(DeviceStatus status) {
   switch (status) {
@@ -49,6 +49,8 @@ String getDeviceStatusText(DeviceStatus status) {
       return 'IDLE';
     case DeviceStatus.offline:
       return 'OFFLINE';
+    case DeviceStatus.calibrating:
+      return 'CALIBRATING';
   }
 }
 

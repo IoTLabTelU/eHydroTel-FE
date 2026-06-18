@@ -665,4 +665,69 @@ class AppLocalizationsId extends AppLocalizations {
   String beginCalibration(String time) {
     return 'Mulai Kalibrasi $time-Menit';
   }
+
+  @override
+  String get calibrated => 'Terkalibrasi';
+
+  @override
+  String get calibration => 'Kalibrasi';
+
+  @override
+  String get readyToApplyCalibration => 'Siap untuk menerapkan kalibrasi';
+
+  @override
+  String get readyForNextStep => 'Siap untuk langkah berikutnya';
+
+  @override
+  String continueTo(String label) {
+    return 'Lanjut ke $label';
+  }
+
+  @override
+  String get saving => 'Menyimpan...';
+
+  @override
+  String timeRemaining(String time) {
+    return '$time tersisa';
+  }
+
+  @override
+  String get rinseBeforeNextStep =>
+      'Bilas sensor dengan air bersih sebelum melanjutkan ke langkah kalibrasi berikutnya';
+
+  @override
+  String get rinseAndReturnToHolder =>
+      'Bilas sensor dengan air bersih dan kembalikan ke tempatnya';
+
+  @override
+  String get cancelCalibrationTitle => 'Batalkan Kalibrasi?';
+
+  @override
+  String get cancelCalibrationMessage =>
+      'Progres yang belum disimpan akan hilang.';
+
+  @override
+  String get calibrationCancelledMessage =>
+      'Kalibrasi dibatalkan.\nPerangkat Anda masih perlu dikalibrasi.';
+
+  @override
+  String get calibrationCompleteTitle => 'Kalibrasi Selesai!';
+
+  @override
+  String get calibrationCompleteMessage =>
+      'Perangkat Anda sekarang sudah terkalibrasi dan siap untuk memulai siklus tanam baru.';
+
+  @override
+  String calibrationAppliedTitle(String type) {
+    return 'Kalibrasi $type\nDiterapkan';
+  }
+
+  @override
+  String get calibrationFullyAppliedMessage =>
+      'Kalibrasi perangkat Anda telah diterapkan dan siap digunakan';
+
+  @override
+  String calibrationReadyForNextType(String label) {
+    return 'Perangkat Anda siap untuk kalibrasi $label';
+  }
 }

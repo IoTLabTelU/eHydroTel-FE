@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hydro_iot/core/components/device_card.dart';
 import 'package:hydro_iot/core/components/fancy_loading.dart';
 import 'package:hydro_iot/core/core.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
@@ -89,13 +88,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: searchButton(
-                        onPressed: () {},
-                        context: context,
-                        enabled: true,
-                        controller: searchController,
-                        text: local.searchDevices,
-                      ),
+                      child: searchButton(onPressed: () {}, context: context, enabled: true, controller: searchController, text: local.searchDevices),
                     ),
                     SizedBox(width: 8.w),
                     Flexible(
@@ -216,6 +209,7 @@ class _SearchDeviceScreenState extends ConsumerState<SearchDeviceScreen> {
                   },
                 ),
                 status: device.status,
+                needCalibration: device.needsCalibration ?? true,
               ),
             );
           },
