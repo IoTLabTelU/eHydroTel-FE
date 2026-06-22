@@ -274,5 +274,6 @@
         "example": "PPM 500"
       }
     }
-  }
+  },
+  "apply": "Apply"
 }

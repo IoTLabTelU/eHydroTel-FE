@@ -46,8 +46,19 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
     // Tick tiap detik hanya untuk memaksa rebuild text countdown.
     _tickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
-      final phase = ref.read(calibrationControllerProvider(widget.serial)).phase;
-      if (phase == CalibrationPhase.soaking) setState(() {});
+      final state = ref.read(calibrationControllerProvider(widget.serial));
+      if (state.phase == CalibrationPhase.soaking) {
+        setState(() {});
+
+        // Trigger transisi ke readyToComplete saat timer habis
+        final timer = state.activeTimer;
+        if (timer != null) {
+          final remaining = timer.endsAt.difference(DateTime.now()).inSeconds;
+          if (remaining <= 0) {
+            _controller.onSoakCompleted(widget.serial);
+          }
+        }
+      }
     });
   }
 
@@ -186,7 +197,10 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
               style: dmSansSmallText(size: 14, weight: FontWeight.w700),
             ),
             const SizedBox(height: 16),
-            primaryButton(text: local.tryAgain, context: context, onPressed: () => _controller.init(widget.serial)),
+            SizedBox(
+              width: double.infinity,
+              child: primaryButton(text: local.tryAgain, context: context, onPressed: () => _controller.init(widget.serial)),
+            ),
           ],
         ),
       ),
@@ -204,7 +218,10 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
             const SizedBox(height: 8),
             Text(local.calibrationCancelledMessage, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            primaryButton(text: local.back, context: context, onPressed: () => context.pop()),
+            SizedBox(
+              width: double.infinity,
+              child: primaryButton(text: local.back, context: context, onPressed: () => context.pop()),
+            ),
           ],
         ),
       ),
@@ -273,7 +290,11 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         controller: _scrollController,
-        child: Row(children: [for (final step in visibleSteps) _buildStepChip(step, currentIndex, state.phase)]),
+        child: Row(
+          children: [
+            for (final step in visibleSteps) step.action.contains('calc') ? const SizedBox.shrink() : _buildStepChip(step, currentIndex, state.phase),
+          ],
+        ),
       ),
     );
   }
@@ -306,7 +327,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(step.phase == 'PH' ? Icons.science_outlined : Icons.water_drop_outlined, size: 18, color: ColorValues.blueProgress),
+          VectorGraphic(loader: AssetBytesLoader(step.phase == 'PH' ? IconAssets.phMax : IconAssets.ppmMax), width: 18, height: 18),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 2.0),
             child: Text(
@@ -369,11 +390,16 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
   Widget _buildImageCard(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local) {
     final isRinseState = state.phase == CalibrationPhase.readyToComplete || state.phase == CalibrationPhase.applying;
+    final isSoaking = state.phase == CalibrationPhase.soaking;
     final type = _typeOf(step);
 
     final imageAsset = isRinseState ? (type == 'pH' ? ImageAssets.pHRinse : ImageAssets.ppmRinse) : _getStepImage(step.action);
 
-    final caption = isRinseState ? (!state.isLastOfType ? local.rinseBeforeNextStep : local.rinseAndReturnToHolder) : local.keepTheSensorSubmerged;
+    final caption = isRinseState
+        ? (!state.isLastOfType ? local.rinseBeforeNextStep : local.rinseAndReturnToHolder)
+        : isSoaking
+        ? local.calibrationIsInProgress
+        : local.keepTheSensorSubmerged;
 
     return CardLikeContainerWidget(
       child: Column(
@@ -407,11 +433,11 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
     return switch (action) {
       'cal7' => ImageAssets.pH7,
       'cal4' => ImageAssets.pH4,
-      'calc' => ImageAssets.pH7,
+      'calc' => ImageAssets.pHRinse,
       'cal500' => ImageAssets.ppm500,
       'cal1000' => ImageAssets.ppm1000,
       'cal1382' => ImageAssets.ppm1382,
-      'calctds' => ImageAssets.ppm1382,
+      'calctds' => ImageAssets.ppmRinse,
       _ => ImageAssets.pH7,
     };
   }
@@ -471,7 +497,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
       // Step tanpa soak (calc/calctds) → langsung Apply
       CalibrationPhase.idle => primaryButton(
-        text: '${local.calibrate} ${_typeOf(step)} ${local.calibration}',
+        text: '${local.apply} ${_typeOf(step)} ${local.calibration}',
         onPressed: isLoading ? () {} : () => controller.applyStep(widget.serial),
         context: context,
       ),
@@ -486,7 +512,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
       // Timer habis → lanjut ke step berikutnya (atau Apply jika ini akhir tipe)
       CalibrationPhase.readyToComplete => primaryButton(
-        text: state.isLastOfType ? '${local.calibrate} ${_typeOf(step)} ${local.calibration}' : local.continueTo(state.nextStepShortLabel ?? ''),
+        text: state.isLastOfType ? '${local.apply} ${_typeOf(step)} ${local.calibration}' : local.continueTo(state.nextStepShortLabel ?? ''),
         onPressed: isLoading
             ? () {}
             : state.isLastOfType

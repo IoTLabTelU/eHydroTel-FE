@@ -166,6 +166,13 @@ class CalibrationController extends _$CalibrationController {
     }
   }
 
+  Future<void> onSoakCompleted(String serial) async {
+    // Guard: hanya jalankan jika masih di fase soaking
+    if (state.phase != CalibrationPhase.soaking) return;
+
+    state = state.copyWith(phase: CalibrationPhase.readyToComplete);
+  }
+
   void leaveRoom(String serial) => ref.read(calibrationWebsocketRepositoryImplProvider).leaveRoom(serial);
 
   void _listenSocket(String serial) {

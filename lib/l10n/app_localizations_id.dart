@@ -730,4 +730,7 @@ class AppLocalizationsId extends AppLocalizations {
   String calibrationReadyForNextType(String label) {
     return 'Perangkat Anda siap untuk kalibrasi $label';
   }
+
+  @override
+  String get apply => 'Terapkan';
 }

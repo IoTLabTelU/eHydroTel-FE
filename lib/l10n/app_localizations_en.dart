@@ -724,4 +724,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String calibrationReadyForNextType(String label) {
     return 'Your device is ready for $label calibration';
   }
+
+  @override
+  String get apply => 'Apply';
 }
