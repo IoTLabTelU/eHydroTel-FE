@@ -36,6 +36,7 @@ class IconAssets {
   static const String multipleChoose = 'assets/icons/Multiple Choose.svg';
   static const String info = 'assets/icons/Info.svg';
   static const String close = 'assets/icons/Close.svg';
+  static const String timer = 'assets/icons/Timer.svg';
 }
 
 class ImageAssets {

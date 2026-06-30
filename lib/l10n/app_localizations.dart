@@ -1441,6 +1441,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apply'**
   String get apply;
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @actionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Action Required'**
+  String get actionRequired;
+
+  /// No description provided for @calibrationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration Required'**
+  String get calibrationRequired;
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydro_iot/l10n/app_localizations.dart';
 import 'package:hydro_iot/res/res.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hydro_iot/utils/fcm_helper.dart';
 import 'core.dart';
 
 class App extends ConsumerStatefulWidget {
@@ -13,6 +14,14 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
+  @override
+  void initState() {
+    super.initState();
+    // Expose ProviderScope container ke FcmHelper supaya bisa invalidate
+    // provider device card dari luar widget tree (notif background/terminated).
+    fcmProviderContainer = ProviderScope.containerOf(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -30,13 +39,9 @@ class _AppState extends ConsumerState<App> {
           themeAnimationCurve: Easing.emphasizedAccelerate,
           themeAnimationDuration: const Duration(milliseconds: 500),
           title: AppStrings.appName,
-          routeInformationParser: ref
-              .watch(routerProvider)
-              .routeInformationParser,
+          routeInformationParser: ref.watch(routerProvider).routeInformationParser,
           routerDelegate: ref.watch(routerProvider).routerDelegate,
-          routeInformationProvider: ref
-              .watch(routerProvider)
-              .routeInformationProvider,
+          routeInformationProvider: ref.watch(routerProvider).routeInformationProvider,
           locale: ref.watch(localeProvider),
           localizationsDelegates: const [
             AppLocalizations.delegate,

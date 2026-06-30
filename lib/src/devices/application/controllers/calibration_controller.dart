@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/entities/calibration_progress_entity.dart';
 import '../../domain/entities/calibration_session_entity.dart';
 import '../../domain/entities/calibration_step_def_entity.dart';
+import '../../domain/entities/step_advance_result_entity.dart';
 import '../../../websocket/application/providers/calibration_websocket_provider.dart';
 import '../providers/calibration_provider.dart';
 import '../states/calibration_state.dart';
@@ -110,20 +111,61 @@ class CalibrationController extends _$CalibrationController {
     state = state.copyWith(isActionLoading: true);
     try {
       final result = await ref.read(calibrationRepositoryProvider).completeStep(serial); // POST /:serial/complete-step
-      if (result.isFinal) {
-        state = state.copyWith(phase: CalibrationPhase.done, isActionLoading: false);
-        return;
-      }
-      // Majukan tampilan ke step berikutnya. progress dihitung dari
-      // current_step_index (yang baru saja dieksekusi, sebelum dimajukan)
-      // + 1, sesuai semantik `progress.current` pada dokumen.
-      final newProgress = CalibrationProgressEntity(current: result.session.currentStepIndex + 1, total: state.allSteps.length);
-      final updatedSession = result.session.copyWithNextStep(result.nextStep!);
-      state = state.copyWith(session: updatedSession, progress: newProgress, phase: CalibrationPhase.idle, activeTimer: null, isActionLoading: false);
-      await _syncEstimate(serial);
+      await _handleCompleteStepResult(serial, result);
     } catch (e) {
       state = state.copyWith(isActionLoading: false, phase: CalibrationPhase.error, error: e);
     }
+  }
+
+  /// Per dokumen integrasi, `complete-step` boleh dipanggil dua kali berturut-
+  /// turut TANPA soak di antaranya selama langkah berikutnya memang
+  /// `requiresSoak == false` (contoh: cal4 -> calc, atau cal1382 -> calctds).
+  ///
+  /// Atas permintaan UX, langkah calc/calctds ("Save pH"/"Save TDS") TIDAK
+  /// PERNAH ditampilkan sebagai langkah interaktif terpisah ke user. Begitu
+  /// user menekan tombol di langkah soak TERAKHIR suatu tipe (cal4/cal1382),
+  /// kita otomatis memanggil complete-step SEKALI LAGI di belakang layar
+  /// untuk mengeksekusi calc/calctds, baru kemudian transisi ke fase
+  /// `applying` (memicu ApplyCalibrationSheet) atau `done` jika itu memang
+  /// langkah terakhir dari keseluruhan kalibrasi.
+  Future<void> _handleCompleteStepResult(String serial, StepAdvanceResultEntity result) async {
+    if (result.isFinal) {
+      state = state.copyWith(phase: CalibrationPhase.done, isActionLoading: false);
+      return;
+    }
+
+    final nextStep = result.nextStep!;
+
+    if (!nextStep.requiresSoak) {
+      // nextStep adalah step "simpan" (calc/calctds) — eksekusi langsung,
+      // jangan tampilkan dulu ke user sebagai step idle terpisah.
+      try {
+        final chainedResult = await ref.read(calibrationRepositoryProvider).completeStep(serial);
+
+        if (chainedResult.isFinal) {
+          // Sengaja TIDAK mengupdate `session` di sini (konsisten dengan
+          // pola applyStep) — screen sudah punya listener yang menangkap
+          // transisi langsung ke `done` ini untuk tetap menampilkan
+          // ApplyCalibrationSheet dengan tombol "Finish".
+          state = state.copyWith(phase: CalibrationPhase.done, isActionLoading: false);
+          return;
+        }
+
+        final newProgress = CalibrationProgressEntity(current: chainedResult.session.currentStepIndex + 1, total: state.allSteps.length);
+        final updatedSession = chainedResult.session.copyWithNextStep(chainedResult.nextStep!);
+        state = state.copyWith(phase: CalibrationPhase.applying, session: updatedSession, progress: newProgress, isActionLoading: false);
+      } catch (e) {
+        state = state.copyWith(isActionLoading: false, phase: CalibrationPhase.error, error: e);
+      }
+      return;
+    }
+
+    // Langkah berikutnya masih butuh soak (alur normal, misal cal7 -> cal4) —
+    // lanjut tampilkan sebagai step idle seperti biasa.
+    final newProgress = CalibrationProgressEntity(current: result.session.currentStepIndex + 1, total: state.allSteps.length);
+    final updatedSession = result.session.copyWithNextStep(nextStep);
+    state = state.copyWith(session: updatedSession, progress: newProgress, phase: CalibrationPhase.idle, activeTimer: null, isActionLoading: false);
+    await _syncEstimate(serial);
   }
 
   /// Dipanggil utk step tanpa soak (calc/calctds) ATAU saat user tap

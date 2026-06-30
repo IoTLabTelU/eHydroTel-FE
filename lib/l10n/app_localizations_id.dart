@@ -733,4 +733,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get apply => 'Terapkan';
+
+  @override
+  String get view => 'Lihat';
+
+  @override
+  String get actionRequired => 'Tindakan Diperlukan';
+
+  @override
+  String get calibrationRequired => 'Kalibrasi Diperlukan';
 }

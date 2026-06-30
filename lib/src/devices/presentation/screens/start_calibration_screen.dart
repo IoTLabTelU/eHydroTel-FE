@@ -4,14 +4,15 @@ import 'package:hydro_iot/src/devices/presentation/widgets/cardlike_container_wi
 import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../../../pkg.dart';
+import '../../application/controllers/devices_controller.dart';
 
-class StartCalibrationScreen extends StatelessWidget {
+class StartCalibrationScreen extends ConsumerWidget {
   static const String path = 'start-calibration';
   final String serial;
   const StartCalibrationScreen({super.key, required this.serial});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final local = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () {
@@ -183,8 +184,11 @@ class StartCalibrationScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: primaryButton(
-                    onPressed: () {
-                      context.push('/calibration-steps', extra: {'serialNumber': serial});
+                    onPressed: () async {
+                      final result = await context.push('/calibration-steps', extra: {'serialNumber': serial});
+                      if (result == true) {
+                        ref.invalidate(devicesControllerProvider);
+                      }
                     },
                     context: context,
                     text: local.startCalibration,

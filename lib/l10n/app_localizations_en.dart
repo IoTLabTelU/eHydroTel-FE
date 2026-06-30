@@ -727,4 +727,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get apply => 'Apply';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get actionRequired => 'Action Required';
+
+  @override
+  String get calibrationRequired => 'Calibration Required';
 }

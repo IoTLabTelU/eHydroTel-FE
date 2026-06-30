@@ -273,5 +273,8 @@
       }
     }
   },
-  "apply": "Terapkan"
+  "apply": "Terapkan",
+  "view": "Lihat",
+  "actionRequired": "Tindakan Diperlukan",
+  "calibrationRequired": "Kalibrasi Diperlukan"
 }

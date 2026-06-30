@@ -5,10 +5,12 @@ import 'package:vector_graphics/vector_graphics.dart';
 import '../../../../../core/components/fancy_loading.dart';
 import '../../../../../pkg.dart';
 import '../../../application/controllers/calibration_controller.dart';
+import '../../../application/controllers/devices_controller.dart';
 import '../../../application/states/calibration_state.dart';
 import '../../../domain/entities/calibration_step_def_entity.dart';
 import '../../../domain/entities/calibration_timer_entity.dart';
 import '../../widgets/cardlike_container_widget.dart';
+import '../devices_screen.dart';
 
 class CalibrationStepsScreen extends ConsumerStatefulWidget {
   static const String path = 'calibration-steps';
@@ -48,16 +50,15 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
       if (!mounted) return;
       final state = ref.read(calibrationControllerProvider(widget.serial));
       if (state.phase == CalibrationPhase.soaking) {
-        setState(() {});
-
         // Trigger transisi ke readyToComplete saat timer habis
         final timer = state.activeTimer;
         if (timer != null) {
-          final remaining = timer.endsAt.difference(DateTime.now()).inSeconds;
-          if (remaining <= 0) {
+          final isExpired = timer.endsAt.isBefore(DateTime.now());
+          if (isExpired) {
             _controller.onSoakCompleted(widget.serial);
           }
         }
+        setState(() {});
       }
     });
   }
@@ -108,7 +109,9 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
       // bottom sheet "X Calibration Applied". Pakai `prev` (state SEBELUM
       // session di-advance) untuk tahu tipe yang baru saja di-apply, karena
       // `next.currentStepDef` sudah menunjuk ke step berikutnya.
-      final justEnteredApplying = next.phase == CalibrationPhase.applying && prev?.phase != CalibrationPhase.applying;
+      final justEnteredApplying =
+          next.phase == CalibrationPhase.applying && prev?.phase != CalibrationPhase.applying ||
+          next.phase == CalibrationPhase.done && prev?.phase != CalibrationPhase.done;
       if (justEnteredApplying) {
         final appliedStep = prev?.currentStepDef;
         final upcomingStep = next.currentStepDef;
@@ -119,6 +122,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
           context,
           type: appliedType,
           nextStepLabel: _shortLabel(upcomingStep),
+          isLast: next.isLastStep,
           image: appliedType == 'pH' ? ImageAssets.applypHCalibration : ImageAssets.applyPPMCalibration,
           onContinue: () {
             Navigator.of(context).pop();
@@ -143,7 +147,13 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: ColorValues.blackColor),
             // Jangan biarkan keluar tanpa konfirmasi saat soak berjalan
-            onPressed: state.phase == CalibrationPhase.soaking ? () => _onCancelPressed(local) : () => context.pop(),
+            onPressed: state.phase == CalibrationPhase.soaking
+                ? () {
+                    context.pop();
+                    context.pushReplacement('/${DevicesScreen.path}');
+                    ref.invalidate(devicesControllerProvider);
+                  }
+                : () => context.pop(),
           ),
         ),
         title: Text(local.deviceCalibration, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
@@ -164,7 +174,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
         CalibrationPhase.loading => const Center(child: FancyLoading(title: 'Initializing calibration...')),
         CalibrationPhase.error => _buildErrorView(state, local),
         CalibrationPhase.cancelled => _buildCancelledView(local),
-        CalibrationPhase.done => _buildDoneView(local),
+
         _ => _buildStepView(state, local),
       },
     );
@@ -228,34 +238,13 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
     );
   }
 
-  Widget _buildDoneView(AppLocalizations local) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.check_circle, color: ColorValues.green500, size: 64),
-            const SizedBox(height: 16),
-            Text(local.calibrationCompleteTitle, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(local.calibrationCompleteMessage, textAlign: TextAlign.center),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: primaryButton(text: local.finish, context: context, onPressed: () => context.pop(true)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // ─── Main Step View ──────────────────────────────────────────────────────────
 
   Widget _buildStepView(CalibrationState state, AppLocalizations local) {
     final stepDef = state.currentStepDef;
     if (stepDef == null) return const SizedBox.shrink();
+
+    final chainToApply = _willChainToApply(state, stepDef);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -265,15 +254,29 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
           children: [
             _buildStepIndicator(state),
             const SizedBox(height: 16),
-            _buildTitleCard(state, stepDef, local),
+            _buildTitleCard(state, stepDef, local, chainToApply),
             const SizedBox(height: 16),
-            _buildImageCard(state, stepDef, local),
+            _buildImageCard(state, stepDef, local, chainToApply),
             const SizedBox(height: 16),
-            SizedBox(width: double.infinity, child: _buildButton(state, stepDef, local)),
+            SizedBox(width: double.infinity, child: _buildButton(state, stepDef, local, chainToApply)),
           ],
         ),
       ),
     );
+  }
+
+  /// True jika step SAAT INI adalah langkah soak terakhir dari tipenya —
+  /// yaitu step berikutnya dalam urutan `allSteps` adalah langkah "simpan"
+  /// tanpa soak (calc/calctds). Dipakai untuk menyembunyikan langkah
+  /// "Continue to Save pH/TDS" dari UI: tombol langsung jadi
+  /// "Apply X Calibration", dan controller akan mengeksekusi calc/calctds
+  /// otomatis di belakang layar saat tombol itu ditekan.
+  bool _willChainToApply(CalibrationState state, CalibrationStepDefEntity step) {
+    final targetIndex = step.index + 1;
+    for (final s in state.allSteps) {
+      if (s.index == targetIndex) return !s.requiresSoak;
+    }
+    return false;
   }
 
   // ─── Step Indicator (chip row — visual sama seperti versi Figma) ─────────────
@@ -346,17 +349,18 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
   // ─── Title Card ────────────────────────────────────────────────────────────
 
-  Widget _buildTitleCard(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local) {
+  Widget _buildTitleCard(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local, bool chainToApply) {
     final label = _displayLabel(step.action);
 
     final (title, subtitle) = switch (state.phase) {
       CalibrationPhase.idle when step.requiresSoak => ('${local.calibrate} $label', local.placeSensor(_typeOf(step), _valueOf(step))),
-      CalibrationPhase.idle => ('${local.calibrate} $label', local.readyToApplyCalibration),
+      CalibrationPhase.idle => ('$label ${local.calibrated}', local.readyToApplyCalibration),
       CalibrationPhase.soaking => ('${local.calibrate} $label', local.calibrationInProgress),
       CalibrationPhase.readyToComplete => (
         '$label ${local.calibrated}',
-        state.isLastOfType && !state.isLastStep ? local.readyToApplyCalibration : local.readyForNextStep,
+        chainToApply && !state.isLastStep ? local.readyToApplyCalibration : local.readyForNextStep,
       ),
+
       CalibrationPhase.applying => ('$label ${local.calibrated}', local.readyToApplyCalibration),
       _ => (label, ''),
     };
@@ -388,7 +392,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
   // ─── Image Card ────────────────────────────────────────────────────────────
 
-  Widget _buildImageCard(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local) {
+  Widget _buildImageCard(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local, bool chainToApply) {
     final isRinseState = state.phase == CalibrationPhase.readyToComplete || state.phase == CalibrationPhase.applying;
     final isSoaking = state.phase == CalibrationPhase.soaking;
     final type = _typeOf(step);
@@ -396,7 +400,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
     final imageAsset = isRinseState ? (type == 'pH' ? ImageAssets.pHRinse : ImageAssets.ppmRinse) : _getStepImage(step.action);
 
     final caption = isRinseState
-        ? (!state.isLastOfType ? local.rinseBeforeNextStep : local.rinseAndReturnToHolder)
+        ? (!chainToApply ? local.rinseBeforeNextStep : local.rinseAndReturnToHolder)
         : isSoaking
         ? local.calibrationIsInProgress
         : local.keepTheSensorSubmerged;
@@ -429,7 +433,6 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
   }
 
   String _getStepImage(String action) {
-    // TODO: sesuaikan dengan ImageAssets yang kamu punya
     return switch (action) {
       'cal7' => ImageAssets.pH7,
       'cal4' => ImageAssets.pH4,
@@ -472,7 +475,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
     return switch (action) {
       'cal7' => 'pH 7.0',
       'cal4' => 'pH 4.0',
-      'calc' => 'pH',
+      'calc' => 'pH Calibrated',
       'cal500' => 'PPM 500',
       'cal1000' => 'PPM 1000',
       'cal1382' => 'PPM 1382',
@@ -483,7 +486,7 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
 
   // ─── Button ────────────────────────────────────────────────────────────────
 
-  Widget _buildButton(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local) {
+  Widget _buildButton(CalibrationState state, CalibrationStepDefEntity step, AppLocalizations local, bool chainToApply) {
     final controller = _controller;
     final isLoading = state.isActionLoading;
 
@@ -495,7 +498,9 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
         context: context,
       ),
 
-      // Step tanpa soak (calc/calctds) → langsung Apply
+      // Step tanpa soak (calc/calctds) — fallback untuk kasus reconnect yang
+      // mendarat tepat di step ini (di luar alur normal yang sudah di-chain
+      // otomatis dari readyToComplete di bawah).
       CalibrationPhase.idle => primaryButton(
         text: '${local.apply} ${_typeOf(step)} ${local.calibration}',
         onPressed: isLoading ? () {} : () => controller.applyStep(widget.serial),
@@ -510,14 +515,14 @@ class _CalibrationStepsScreenState extends ConsumerState<CalibrationStepsScreen>
         color: ColorValues.neutral200,
       ),
 
-      // Timer habis → lanjut ke step berikutnya (atau Apply jika ini akhir tipe)
+      // Timer habis → SELALU panggil completeCurrentStep. Kalau step ini
+      // adalah soak terakhir suatu tipe (chainToApply true), controller akan
+      // otomatis chain ke calc/calctds di belakang layar dan langsung
+      // memunculkan ApplyCalibrationSheet — user tidak pernah melihat
+      // "Continue to Save pH/TDS" sebagai langkah terpisah.
       CalibrationPhase.readyToComplete => primaryButton(
-        text: state.isLastOfType ? '${local.apply} ${_typeOf(step)} ${local.calibration}' : local.continueTo(state.nextStepShortLabel ?? ''),
-        onPressed: isLoading
-            ? () {}
-            : state.isLastOfType
-            ? () => controller.applyStep(widget.serial)
-            : () => controller.completeCurrentStep(widget.serial),
+        text: chainToApply ? '${local.apply} ${_typeOf(step)} ${local.calibration}' : local.continueTo(state.nextStepShortLabel ?? ''),
+        onPressed: isLoading ? () {} : () => controller.completeCurrentStep(widget.serial),
         context: context,
       ),
 
@@ -545,8 +550,16 @@ class ApplyCalibrationSheet extends StatelessWidget {
   final String nextStepLabel;
   final VoidCallback onContinue;
   final String image;
+  final bool isLast;
 
-  const ApplyCalibrationSheet({super.key, required this.type, required this.nextStepLabel, required this.onContinue, required this.image});
+  const ApplyCalibrationSheet({
+    super.key,
+    required this.type,
+    required this.nextStepLabel,
+    required this.onContinue,
+    required this.image,
+    required this.isLast,
+  });
 
   static void show(
     BuildContext context, {
@@ -554,6 +567,7 @@ class ApplyCalibrationSheet extends StatelessWidget {
     required String nextStepLabel,
     required String image,
     required VoidCallback onContinue,
+    required bool isLast,
   }) {
     showModalBottomSheet(
       context: context,
@@ -563,14 +577,13 @@ class ApplyCalibrationSheet extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: ColorValues.whiteColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-      builder: (ctx) => ApplyCalibrationSheet(type: type, nextStepLabel: nextStepLabel, image: image, onContinue: onContinue),
+      builder: (ctx) => ApplyCalibrationSheet(type: type, nextStepLabel: nextStepLabel, image: image, onContinue: onContinue, isLast: isLast),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-    final isLast = nextStepLabel.isEmpty;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(24, 20, 24, 32 + MediaQuery.of(context).viewInsets.bottom),
