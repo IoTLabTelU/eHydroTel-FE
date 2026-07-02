@@ -7,12 +7,7 @@ import '../../widgets/pairing_step_header_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddDevicePairingStepScreen extends ConsumerStatefulWidget {
-  const AddDevicePairingStepScreen({
-    super.key,
-    required this.serialNumber,
-    required this.deviceName,
-    required this.deviceDescription,
-  });
+  const AddDevicePairingStepScreen({super.key, required this.serialNumber, required this.deviceName, required this.deviceDescription});
 
   final String serialNumber;
   final String deviceName;
@@ -108,10 +103,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                 },
               ),
             ),
-            title: Text(
-              local.newDevice,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            title: Text(local.newDevice, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             centerTitle: true,
             actions: [
               Padding(
@@ -123,9 +115,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                   },
                   child: Text(
                     local.skip,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleSmall?.copyWith(color: ColorValues.neutral500, fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(color: ColorValues.neutral500, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -165,10 +155,9 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                               children: [
                                 TextSpan(
                                   text: ' "${widget.serialNumber}"',
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: ColorValues.blueProgress,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(color: ColorValues.blueProgress, fontWeight: FontWeight.bold),
                                 ),
                                 TextSpan(
                                   text: '.',
@@ -216,10 +205,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                               child: primaryButton(
                                 text: local.continues,
                                 onPressed: () {
-                                  pageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                                   buttonPageController.jumpToPage(1);
                                 },
                                 context: context,
@@ -237,10 +223,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                 text: local.back,
                                 context: context,
                                 onPressed: () {
-                                  pageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                                   buttonPageController.jumpToPage(0);
                                 },
                                 color: ColorValues.neutral200,
@@ -252,10 +235,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                               child: primaryButton(
                                 text: local.continues,
                                 onPressed: () {
-                                  pageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                                   buttonPageController.jumpToPage(2);
                                 },
                                 context: context,
@@ -273,10 +253,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                                 text: local.back,
                                 context: context,
                                 onPressed: () {
-                                  pageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                                   buttonPageController.jumpToPage(1);
                                 },
                                 color: ColorValues.neutral200,
@@ -286,7 +263,7 @@ class _AddDevicePairingStepScreenState extends ConsumerState<AddDevicePairingSte
                             Expanded(
                               flex: 5,
                               child: primaryButton(
-                                text: 'Finish',
+                                text: local.finish,
                                 onPressed: registerDevice,
                                 context: context,
                                 color: ColorValues.green500,

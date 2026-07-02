@@ -67,4 +67,21 @@ class Toast {
       displayCloseButton: false,
     ).show(context);
   }
+
+  void showInfoToast({required BuildContext context, required String title, String description = ''}) {
+    CherryToast.info(
+      animationType: AnimationType.fromTop,
+      title: Text(title, style: dmSansNormalText(color: ColorValues.blackColor)),
+      description: Text(
+        description,
+        style: dmSansNormalText(color: ColorValues.blackColor, weight: FontWeight.w300, size: 12),
+      ),
+      animationCurve: Curves.fastOutSlowIn,
+      toastDuration: const Duration(seconds: 5),
+      animationDuration: const Duration(milliseconds: 50),
+      width: widthQuery(context) * 0.5,
+      borderRadius: 40,
+      displayCloseButton: true,
+    ).show(context);
+  }
 }

@@ -86,10 +86,7 @@ class _AddDeviceFormScreenState extends State<AddDeviceFormScreen> {
                 },
               ),
             ),
-            title: Text(
-              local.newDevice,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            title: Text(local.newDevice, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             centerTitle: true,
           ),
           body: Padding(

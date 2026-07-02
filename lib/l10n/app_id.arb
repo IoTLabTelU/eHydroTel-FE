@@ -117,7 +117,7 @@
     "rangeAvailable": "Rentang Tersedia",
     "customizeValues": "Sesuaikan nilai",
     "revertToAutoValues": "Kembalikan ke nilai otomatis",
-    "editSession": "Ubah Sesi",
+    "editSession": "Ubah Sesi Tanam",
     "keepYourDevices": "Jaga perangkat Anda",
     "connected": "terhubung",
     "heresYourLatest": "Ini pembaruan tanaman",
@@ -125,7 +125,7 @@
     "noDevicesFound": "Tidak ada perangkat ditemukan. Silakan daftarkan perangkat untuk memulai.",
     "scanQrCode": "Pindai Kode QR",
     "scanTheQrCode": "Pindai kode QR pada bodi perangkat.",
-    "inputYourDeviceSerial": "Masukkan Seri Perangkat anda",
+    "inputYourDeviceSerial": "Masukan seri perangkat",
     "newDevice": "Perangkat Baru",
     "preparingNextStep": "Mempersiapkan langkah berikutnya",
     "skip": "Lewati",
@@ -152,8 +152,11 @@
     "continues": "Lanjut",
     "logoutConfirmation": "Anda akan keluar dari akun Anda. Apakah Anda yakin ingin melanjutkan?",
     "discardChanges": "Buang Ubahan",
+    "discardEntries": "Buang Masukan",
     "anyUnsavedChangesWillBeLost": "Setiap perubahan yang belum disimpan akan hilang.",
+    "anyUnsavedEntriesWillBeLost": "Setiap masukan yang belum disimpan akan hilang.",
     "discardYourChanges": "Buang ubahan Anda?",
+    "discardYourEntries": "Buang masukan Anda?",
     "editProfile": "Ubah Profil",
     "changePicture": "Ganti Foto",
     "name": "Nama",
@@ -185,8 +188,8 @@
     "noConnectionTitle": "Tidak Ada Koneksi",
     "noConnectionMessage": "Sepertinya smartphone Anda offline.\nCek Wi-Fi atau data seluler Anda lalu coba lagi.",
     "tryAgain": "Coba Lagi",
-    "calibrateDevice": "Kalibrasi Alat",
-    "deviceCalibration": "Kalibrasi Alat",
+    "calibrateDevice": "Kalibrasi Perangkat",
+    "deviceCalibration": "Kalibrasi Perangkat",
     "getReadyToCalibrate": "Persiapan Kalibrasi",
     "followGuidedSteps": "Ikuti langkah terpadu berikut untuk mengkalibrasi sensor Anda secara akurat.",
     "getFamiliarwithSensor": "Kenal lebih dekat dengan sensor Anda",
@@ -276,5 +279,28 @@
   "apply": "Terapkan",
   "view": "Lihat",
   "actionRequired": "Tindakan Diperlukan",
-  "calibrationRequired": "Kalibrasi Diperlukan"
+  "calibrationRequired": "Kalibrasi Diperlukan",
+  "deleteDevice": "Hapus Perangkat",
+  "deleteDeviceName": "Hapus {device}?",
+  "@deleteDeviceName": {
+    "placeholders": {
+      "device": {
+        "type": "String",
+        "example": "Area Sawi"
+      }
+    }
+  },
+  "thisDeviceWillBePermanentlyRemoved": "Perangkat ini akan dihapus secara permanen dari akun Anda.",
+  "deviceDeletedSuccessfully": "Perangkat berhasil terhapus",
+  "deletingDevice": "Menghapus perangkat...",
+  "manualInput": "Input Manual",
+  "hideManualInput": "Sembunyikan Input Manual",
+  "selectDevice": "Pilih perangkat",
+  "sessionName": "Nama sesi tanam",
+  "nameYourSession": "Beri nama sesi tanam Anda",
+  "selectPlant": "Pilih jenis tanaman Anda",
+  "addingCropCycleSession": "Menambahkan sesi tanam...",
+  "cropCycleAdded": "Sesi tanam telah ditambahkan",
+  "updatingCropCycleSession": "Memperbarui sesi tanam...",
+  "cropCycleUpdated": "Sesi tanam telah diperbarui"
 }

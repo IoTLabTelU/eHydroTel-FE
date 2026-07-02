@@ -12,6 +12,7 @@ class AppThemeData {
       scaffoldBackgroundColor: ColorValues.whiteColor,
       textTheme: GoogleFonts.interTextTheme(Typography.blackCupertino),
       colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.whiteColor, brightness: Brightness.light),
+      appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent, scrolledUnderElevation: 0.0),
     );
   }
 
@@ -24,6 +25,7 @@ class AppThemeData {
       scaffoldBackgroundColor: ColorValues.blackColor,
       textTheme: GoogleFonts.interTextTheme(Typography.whiteCupertino),
       colorScheme: ColorScheme.fromSeed(seedColor: ColorValues.blackColor, brightness: Brightness.dark),
+      appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent, scrolledUnderElevation: 0.0),
     );
   }
 }

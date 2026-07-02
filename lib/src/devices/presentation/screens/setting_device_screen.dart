@@ -88,6 +88,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
     ref.listen(devicesControllerProvider, (_, next) {
+      final operation = ref.read(devicesControllerProvider.notifier).currentOperation;
       next.whenOrNull(
         error: (err, _) {
           final errorMessage = (err as Exception).toString().replaceAll('Exception: ', '');
@@ -96,23 +97,40 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
             context.pop();
           }
         },
-        data: (data) {
-          if (context.mounted) {
-            Toast().showSuccessToast(context: context, title: local.success, description: local.deviceUpdatedSuccessfully);
-            context.pop();
-            context.pop();
-            ref.read(devicesControllerProvider.notifier).fetchDevices();
+        data: (_) {
+          switch (operation) {
+            case DeviceOperation.update:
+              Toast().showSuccessToast(context: context, title: local.success, description: local.deviceUpdatedSuccessfully);
+              break;
+
+            case DeviceOperation.delete:
+              Toast().showSuccessToast(context: context, title: local.success, description: local.deviceDeletedSuccessfully);
+              break;
+
+            default:
+              break;
           }
+
+          context.pop();
+          context.pop();
+          ref.read(devicesControllerProvider.notifier).fetchDevices();
         },
         loading: () {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => FancyLoadingDialog(title: local.updatingDevice),
+            builder: (_) => FancyLoadingDialog(
+              title: switch (operation) {
+                DeviceOperation.update => local.updatingDevice,
+                DeviceOperation.delete => local.deletingDevice,
+                _ => 'Loading...',
+              },
+            ),
           );
         },
       );
     });
+
     void saveDevice() {
       if (!_formKey.currentState!.validate()) {
         return;
@@ -123,9 +141,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
             deviceId: widget.deviceId,
             name: _deviceNameController.text,
             description: _deviceDescriptionController.text,
-            ssid: _wifiSsidController.text.isNotEmpty && _wifiSsidController.text != widget.ssid
-                ? _wifiSsidController.text
-                : null,
+            ssid: _wifiSsidController.text.isNotEmpty && _wifiSsidController.text != widget.ssid ? _wifiSsidController.text : null,
             wifiPassword: _wifiPasswordController.text.isNotEmpty ? _wifiPasswordController.text : null,
           );
     }
@@ -135,7 +151,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
       child: Scaffold(
         backgroundColor: ColorValues.whiteColor,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: ColorValues.whiteColor,
           elevation: 0,
           leading: Container(
             decoration: BoxDecoration(
@@ -166,10 +182,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                   : context.pop,
             ),
           ),
-          title: Text(
-            local.editDevice,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          title: Text(local.editDevice, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -187,10 +200,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                       children: [
                         Text('${local.addedOn}  ', style: Theme.of(context).textTheme.labelSmall),
                         const VectorGraphic(loader: AssetBytesLoader(IconAssets.dot)),
-                        Text(
-                          '  ${widget.addedAt}',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral600),
-                        ),
+                        Text('  ${widget.addedAt}', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral600)),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -199,10 +209,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                       children: [
                         Text('${local.updatedOn}  ', style: Theme.of(context).textTheme.labelSmall),
                         const VectorGraphic(loader: AssetBytesLoader(IconAssets.dot)),
-                        Text(
-                          '  ${widget.updatedAt}',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral600),
-                        ),
+                        Text('  ${widget.updatedAt}', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral600)),
                       ],
                     ),
                   ],
@@ -245,10 +252,7 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
               const SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.only(left: 12.w),
-                child: Text(
-                  local.wifiConfiguration,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500),
-                ),
+                child: Text(local.wifiConfiguration, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.neutral500)),
               ),
               const SizedBox(height: 8),
               CardLikeContainerWidget(
@@ -316,6 +320,40 @@ class _SettingDeviceScreenState extends ConsumerState<SettingDeviceScreen> {
                   ),
                 ],
               ),
+              SizedBox(height: 12.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: widthQuery(context) * 0.06),
+                child: const Divider(color: ColorValues.neutral200, thickness: 1),
+              ),
+              SizedBox(height: 12.h),
+              // Delete Device Button
+              SizedBox(
+                width: double.infinity,
+                child: primaryButton(
+                  text: local.deleteDevice,
+                  side: const BorderSide(color: ColorValues.danger300),
+                  onPressed: () async {
+                    await showAdaptiveDialog(
+                      context: context,
+                      builder: (_) {
+                        return alertDialog(
+                          context: context,
+                          title: local.deleteDeviceName(widget.deviceName),
+                          content: local.thisDeviceWillBePermanentlyRemoved,
+                          confirmText: local.deleteDevice,
+                          onConfirm: () {
+                            ref.read(devicesControllerProvider.notifier).deleteDevice(widget.deviceId);
+                          },
+                        );
+                      },
+                    );
+                  },
+                  context: context,
+                  color: ColorValues.danger200,
+                  textColor: ColorValues.danger700,
+                ),
+              ),
+              SizedBox(height: 24.h),
             ],
           ),
         ),

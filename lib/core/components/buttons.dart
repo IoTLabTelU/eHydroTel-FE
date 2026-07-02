@@ -14,12 +14,13 @@ Widget primaryButton({
   Color? color,
   Color textColor = ColorValues.whiteColor,
   double? elevation,
+  BorderSide? side,
 }) {
   return ElevatedButton(
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
       backgroundColor: color ?? ColorValues.blackColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0), side: side ?? BorderSide.none),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 5.w),
       elevation: elevation ?? 0,
     ),
@@ -122,10 +123,7 @@ Widget addButton({required BuildContext context, required VoidCallback onPressed
       shape: const CircleBorder(),
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
     ),
-    child: const VectorGraphic(
-      loader: AssetBytesLoader(IconAssets.add),
-      colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn),
-    ),
+    child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.add), colorFilter: ColorFilter.mode(ColorValues.whiteColor, BlendMode.srcIn)),
   );
 }
 
@@ -138,10 +136,7 @@ Widget editButton({required BuildContext context, required VoidCallback onPresse
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
       elevation: 0,
     ),
-    child: const VectorGraphic(
-      loader: AssetBytesLoader(IconAssets.edit),
-      colorFilter: ColorFilter.mode(ColorValues.warning700, BlendMode.srcIn),
-    ),
+    child: const VectorGraphic(loader: AssetBytesLoader(IconAssets.edit), colorFilter: ColorFilter.mode(ColorValues.warning700, BlendMode.srcIn)),
   );
 }
 
@@ -188,9 +183,7 @@ Widget harvestButton({required BuildContext context, required VoidCallback onPre
       children: [
         Text(
           local.harvest,
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.w600),
         ),
         const SizedBox(width: 4),
         const VectorGraphic(loader: AssetBytesLoader(IconAssets.harvest), width: 20, height: 20),
@@ -241,20 +234,12 @@ Widget iconTextButtonWidget({
     label: Text(
       label,
       style: buttonType == ButtonType.small
-          ? Theme.of(
-              context,
-            ).textTheme.labelMedium?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
+          ? Theme.of(context).textTheme.labelMedium?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
           : buttonType == ButtonType.medium
-          ? Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
+          ? Theme.of(context).textTheme.titleSmall?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
           : buttonType == ButtonType.large
-          ? Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
-          : Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold),
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold)
+          : Theme.of(context).textTheme.titleLarge?.copyWith(color: foregroundColor ?? ColorValues.neutral500, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     ),
     onPressed: onPressed,

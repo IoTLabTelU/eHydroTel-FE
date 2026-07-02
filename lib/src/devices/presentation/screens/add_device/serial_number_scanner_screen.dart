@@ -19,12 +19,13 @@ class _SerialNumberScannerScreenState extends State<SerialNumberScannerScreen> {
     facing: CameraFacing.back,
     autoZoom: true,
   );
-  Widget _barcodePreview(Barcode? value) {
+  Widget _barcodePreview(Barcode? value, BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     if (value == null) {
-      return const Text(
-        'Input Your Device Serial',
+      return Text(
+        local.inputYourDeviceSerial,
         overflow: TextOverflow.fade,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       );
     }
 
@@ -41,19 +42,11 @@ class _SerialNumberScannerScreenState extends State<SerialNumberScannerScreen> {
       _barcode = barcodes.barcodes.first;
       final displayValue = _barcode?.displayValue;
       if (displayValue == null) {
-        Toast().showErrorToast(
-          context: context,
-          title: 'Error',
-          description: 'No display value found in the scanned barcode.',
-        );
+        Toast().showErrorToast(context: context, title: 'Error', description: 'No display value found in the scanned barcode.');
         return;
       }
       if (!displayValue.contains('EHT-')) {
-        Toast().showErrorToast(
-          context: context,
-          title: 'Error',
-          description: 'Invalid barcode. Please scan a valid device serial number barcode.',
-        );
+        Toast().showErrorToast(context: context, title: 'Error', description: 'Invalid barcode. Please scan a valid device serial number barcode.');
         return;
       }
       await showDialog(
@@ -103,9 +96,7 @@ class _SerialNumberScannerScreenState extends State<SerialNumberScannerScreen> {
             ),
             title: Text(
               local.scanQrCode,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.whiteColor, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
           ),
@@ -152,10 +143,7 @@ class _SerialNumberScannerScreenState extends State<SerialNumberScannerScreen> {
                       children: [
                         Align(
                           alignment: Alignment.topLeft,
-                          child: Text(
-                            'Scan the QR code in the device body.',
-                            style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.whiteColor),
-                          ),
+                          child: Text(local.scanTheQrCode, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ColorValues.whiteColor)),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
@@ -175,7 +163,7 @@ class _SerialNumberScannerScreenState extends State<SerialNumberScannerScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          _barcodePreview(_barcode),
+                          _barcodePreview(_barcode, context),
                           SizedBox(width: 8.w),
                           const VectorGraphic(
                             loader: AssetBytesLoader(IconAssets.moreInfo),

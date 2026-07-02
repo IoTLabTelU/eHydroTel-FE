@@ -380,7 +380,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get revertToAutoValues => 'Kembalikan ke nilai otomatis';
 
   @override
-  String get editSession => 'Ubah Sesi';
+  String get editSession => 'Ubah Sesi Tanam';
 
   @override
   String get keepYourDevices => 'Jaga perangkat Anda';
@@ -405,7 +405,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get scanTheQrCode => 'Pindai kode QR pada bodi perangkat.';
 
   @override
-  String get inputYourDeviceSerial => 'Masukkan Seri Perangkat anda';
+  String get inputYourDeviceSerial => 'Masukan seri perangkat';
 
   @override
   String get newDevice => 'Perangkat Baru';
@@ -491,20 +491,21 @@ class AppLocalizationsId extends AppLocalizations {
   String get discardYourChanges => 'Buang ubahan Anda?';
 
   @override
-  String get discardYourEntries => 'Discard your entries?';
+  String get discardYourEntries => 'Buang masukan Anda?';
 
   @override
   String get anyUnsavedChangesWillBeLost =>
       'Setiap perubahan yang belum disimpan akan hilang.';
 
   @override
-  String get anyUnsavedEntriesWillBeLost => 'Any unsaved entries will be lost.';
+  String get anyUnsavedEntriesWillBeLost =>
+      'Setiap masukan yang belum disimpan akan hilang.';
 
   @override
   String get discardChanges => 'Buang Ubahan';
 
   @override
-  String get discardEntries => 'Discard Entries';
+  String get discardEntries => 'Buang Masukan';
 
   @override
   String get editProfile => 'Ubah Profil';
@@ -605,10 +606,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get tryAgain => 'Coba Lagi';
 
   @override
-  String get calibrateDevice => 'Kalibrasi Alat';
+  String get calibrateDevice => 'Kalibrasi Perangkat';
 
   @override
-  String get deviceCalibration => 'Kalibrasi Alat';
+  String get deviceCalibration => 'Kalibrasi Perangkat';
 
   @override
   String get getReadyToCalibrate => 'Persiapan Kalibrasi';
@@ -742,4 +743,52 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get calibrationRequired => 'Kalibrasi Diperlukan';
+
+  @override
+  String get deleteDevice => 'Hapus Perangkat';
+
+  @override
+  String deleteDeviceName(String device) {
+    return 'Hapus $device?';
+  }
+
+  @override
+  String get thisDeviceWillBePermanentlyRemoved =>
+      'Perangkat ini akan dihapus secara permanen dari akun Anda.';
+
+  @override
+  String get deviceDeletedSuccessfully => 'Perangkat berhasil terhapus';
+
+  @override
+  String get deletingDevice => 'Menghapus perangkat...';
+
+  @override
+  String get manualInput => 'Input Manual';
+
+  @override
+  String get hideManualInput => 'Sembunyikan Input Manual';
+
+  @override
+  String get selectDevice => 'Pilih perangkat';
+
+  @override
+  String get sessionName => 'Nama sesi tanam';
+
+  @override
+  String get nameYourSession => 'Beri nama sesi tanam Anda';
+
+  @override
+  String get selectPlant => 'Pilih jenis tanaman Anda';
+
+  @override
+  String get addingCropCycleSession => 'Menambahkan sesi tanam...';
+
+  @override
+  String get cropCycleAdded => 'Sesi tanam telah ditambahkan';
+
+  @override
+  String get updatingCropCycleSession => 'Memperbarui sesi tanam...';
+
+  @override
+  String get cropCycleUpdated => 'Sesi tanam telah diperbarui';
 }

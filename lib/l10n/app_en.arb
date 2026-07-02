@@ -278,5 +278,28 @@
   "apply": "Apply",
   "view": "View",
   "actionRequired": "Action Required",
-  "calibrationRequired": "Calibration Required"
+  "calibrationRequired": "Calibration Required",
+  "deleteDevice": "Delete Device",
+  "deleteDeviceName": "Delete {device}?",
+  "@deleteDeviceName": {
+    "placeholders": {
+      "device": {
+        "type": "String",
+        "example": "Area Sawi"
+      }
+    }
+  },
+  "thisDeviceWillBePermanentlyRemoved": "This device will be permanently removed from your account.",
+  "deviceDeletedSuccessfully": "Device deleted successfully",
+  "deletingDevice": "Deleting device...",
+  "manualInput": "Manual Input",
+  "hideManualInput": "Hide Manual Input",
+  "selectDevice": "Select device",
+  "sessionName": "Session name",
+  "nameYourSession": "Name your session",
+  "selectPlant": "Select plant to grow",
+  "addingCropCycleSession": "Adding New Crop Cycle Session...",
+  "cropCycleAdded": "Crop Cycle Session Added",
+  "updatingCropCycleSession": "Updating crop cycle session...",
+  "cropCycleUpdated": "Crop cycle session updated"
 }

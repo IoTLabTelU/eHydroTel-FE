@@ -1459,6 +1459,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calibration Required'**
   String get calibrationRequired;
+
+  /// No description provided for @deleteDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Device'**
+  String get deleteDevice;
+
+  /// No description provided for @deleteDeviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {device}?'**
+  String deleteDeviceName(String device);
+
+  /// No description provided for @thisDeviceWillBePermanentlyRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'This device will be permanently removed from your account.'**
+  String get thisDeviceWillBePermanentlyRemoved;
+
+  /// No description provided for @deviceDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Device deleted successfully'**
+  String get deviceDeletedSuccessfully;
+
+  /// No description provided for @deletingDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting device...'**
+  String get deletingDevice;
+
+  /// No description provided for @manualInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Input'**
+  String get manualInput;
+
+  /// No description provided for @hideManualInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Manual Input'**
+  String get hideManualInput;
+
+  /// No description provided for @selectDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Select device'**
+  String get selectDevice;
+
+  /// No description provided for @sessionName.
+  ///
+  /// In en, this message translates to:
+  /// **'Session name'**
+  String get sessionName;
+
+  /// No description provided for @nameYourSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Name your session'**
+  String get nameYourSession;
+
+  /// No description provided for @selectPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Select plant to grow'**
+  String get selectPlant;
+
+  /// No description provided for @addingCropCycleSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding New Crop Cycle Session...'**
+  String get addingCropCycleSession;
+
+  /// No description provided for @cropCycleAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop Cycle Session Added'**
+  String get cropCycleAdded;
+
+  /// No description provided for @updatingCropCycleSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating crop cycle session...'**
+  String get updatingCropCycleSession;
+
+  /// No description provided for @cropCycleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop cycle session updated'**
+  String get cropCycleUpdated;
 }
 
 class _AppLocalizationsDelegate

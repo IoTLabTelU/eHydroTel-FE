@@ -81,4 +81,16 @@ class DeviceRepositoryImpl implements DeviceRepository {
           return response;
         });
   }
+
+  @override
+  Future<Responses<bool>> deleteDevice(String deviceId) async {
+    return api.post<bool>(Params<bool>(path: '${EndpointStrings.devices}/$deviceId/unregister', fromJson: (json) => json['success'] as bool)).then((
+      response,
+    ) {
+      if (!response.isSuccess) {
+        throw Exception(response.message ?? 'Failed to delete device');
+      }
+      return response;
+    });
+  }
 }

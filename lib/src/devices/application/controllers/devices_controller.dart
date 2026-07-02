@@ -6,8 +6,11 @@ part 'devices_controller.g.dart';
 
 const _kLimit = 10;
 
+enum DeviceOperation { none, update, delete }
+
 @riverpod
 class DevicesController extends _$DevicesController {
+  DeviceOperation currentOperation = DeviceOperation.none;
   int _currentPage = 1;
   bool _hasMore = true;
   bool _isLoadingMore = false;
@@ -86,6 +89,7 @@ class DevicesController extends _$DevicesController {
   }
 
   Future<void> updateDevice({required String deviceId, required String name, required String description, String? ssid, String? wifiPassword}) async {
+    currentOperation = DeviceOperation.update;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await ref
@@ -93,5 +97,16 @@ class DevicesController extends _$DevicesController {
           .updateDevice(deviceId: deviceId, name: name, description: description, ssid: ssid, wifiPassword: wifiPassword);
       return state.value ?? [];
     });
+    currentOperation = DeviceOperation.none;
+  }
+
+  Future<void> deleteDevice(String deviceId) async {
+    currentOperation = DeviceOperation.delete;
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(devicesRepositoryProvider).deleteDevice(deviceId);
+      return state.value ?? [];
+    });
+    currentOperation = DeviceOperation.none;
   }
 }

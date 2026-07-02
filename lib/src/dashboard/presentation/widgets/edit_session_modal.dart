@@ -4,6 +4,7 @@ import 'package:hydro_iot/src/dashboard/data/models/edit_session_data.dart';
 import 'package:hydro_iot/utils/pill_shape_rangeslider_thumb_shape.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import '../../../../pkg.dart';
+import '../../domain/entities/plant_entity.dart';
 
 class EditSessionModal extends ConsumerStatefulWidget {
   final String cropCycleId;
@@ -39,6 +40,15 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
   late RangeValues _phRange;
   late RangeValues _ppmRange;
 
+  late TextEditingController phMinController;
+  late TextEditingController phMaxController;
+
+  late TextEditingController ppmMinController;
+  late TextEditingController ppmMaxController;
+
+  ThresholdInputMode phMode = ThresholdInputMode.slider;
+  ThresholdInputMode ppmMode = ThresholdInputMode.slider;
+
   void _saveDevice() {
     if (_nameController.text.isEmpty) {
       Toast().showErrorToast(context: context, title: 'Error', description: 'Please enter session name');
@@ -64,6 +74,13 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
     devices = TextEditingController(text: widget.device);
     _phRange = widget.phRange;
     _ppmRange = widget.ppmRange;
+    phMinController = TextEditingController(text: widget.phRange.start.toStringAsFixed(1));
+
+    phMaxController = TextEditingController(text: widget.phRange.end.toStringAsFixed(1));
+
+    ppmMinController = TextEditingController(text: widget.ppmRange.start.round().toString());
+
+    ppmMaxController = TextEditingController(text: widget.ppmRange.end.round().toString());
   }
 
   @override
@@ -71,6 +88,10 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
     _nameController.dispose();
     plants.dispose();
     devices.dispose();
+    phMinController.dispose();
+    phMaxController.dispose();
+    ppmMinController.dispose();
+    ppmMaxController.dispose();
     super.dispose();
   }
 
@@ -85,7 +106,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
       next.whenOrNull(
         loading: () => showDialog(
           context: context,
-          builder: (context) => const FancyLoadingDialog(title: 'Updating crop cycle session...'),
+          builder: (context) => FancyLoadingDialog(title: local.updatingCropCycleSession),
         ),
         error: (error, stackTrace) {
           context.pop();
@@ -93,7 +114,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
         },
         data: (_) {
           context.pop();
-          Toast().showSuccessToast(context: context, title: 'Success', description: 'Crop cycle session updated');
+          Toast().showSuccessToast(context: context, title: local.success, description: local.cropCycleUpdated);
           EditSessionData sessionData = EditSessionData(
             name: _nameController.text,
             phMin: _phRange.start,
@@ -141,10 +162,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                   : context.pop,
             ),
           ),
-          title: Text(
-            local.editSession,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          title: Text(local.editSession, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -180,7 +198,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                           TextFormFieldComponent(
                             label: '',
                             controller: plants,
-                            hintText: 'Select plant',
+                            hintText: local.selectPlant,
                             obscureText: false,
                             readOnly: true,
                             suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
@@ -188,9 +206,9 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
 
                           const SizedBox(height: 8),
                           TextFormFieldComponent(
-                            label: 'Session Name',
+                            label: local.sessionName,
                             controller: _nameController,
-                            hintText: 'Name your session',
+                            hintText: local.nameYourSession,
                             obscureText: false,
                             onChanged: (str) {
                               if (str != widget.sessionName) {
@@ -208,7 +226,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                           TextFormFieldComponent(
                             label: '',
                             controller: devices,
-                            hintText: 'Select device',
+                            hintText: local.selectDevice,
                             obscureText: false,
                             readOnly: true,
                             suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
@@ -233,10 +251,7 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(local.thresholdSettings, style: Theme.of(context).textTheme.titleMedium),
-                          Text(
-                            local.autoSetBasedOnPlantType,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500),
-                          ),
+                          Text(local.autoSetBasedOnPlantType, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500)),
                           const SizedBox(height: 8),
                           Row(
                             children: [
@@ -286,48 +301,122 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  const VectorGraphic(
-                                                    loader: AssetBytesLoader(IconAssets.phMin),
-                                                    width: 18,
-                                                    height: 18,
-                                                  ),
+                                                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.phMin), width: 18, height: 18),
                                                   Expanded(
                                                     child: RangeSlider(
                                                       values: _phRange,
                                                       min: 0.0,
                                                       max: 14.0,
                                                       divisions: 28,
-                                                      labels: RangeLabels(
-                                                        _phRange.start.toStringAsFixed(1),
-                                                        _phRange.end.toStringAsFixed(1),
-                                                      ),
+                                                      labels: RangeLabels(_phRange.start.toStringAsFixed(1), _phRange.end.toStringAsFixed(1)),
                                                       onChanged: (RangeValues values) {
                                                         if (widget.phRange != values) {
                                                           setState(() {
                                                             _phRange = values;
+                                                            phMinController.text = values.start.toStringAsFixed(1);
+                                                            phMaxController.text = values.end.toStringAsFixed(1);
                                                             isEdited = true;
                                                           });
                                                         } else {
                                                           setState(() {
                                                             _phRange = values;
+                                                            phMinController.text = values.start.toStringAsFixed(1);
+                                                            phMaxController.text = values.end.toStringAsFixed(1);
                                                             isEdited = false;
                                                           });
                                                         }
                                                       },
                                                     ),
                                                   ),
-                                                  const VectorGraphic(
-                                                    loader: AssetBytesLoader(IconAssets.phMax),
-                                                    width: 18,
-                                                    height: 18,
-                                                  ),
+                                                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.phMax), width: 18, height: 18),
                                                 ],
                                               ),
                                             ),
                                           ),
-                                          Text(
-                                            '${local.rangeAvailable}: 0.0 - 14.0 pH',
-                                            style: Theme.of(context).textTheme.bodySmall,
+                                          Text('${local.rangeAvailable}: 0.0 - 14.0 pH', style: Theme.of(context).textTheme.bodySmall),
+                                          const SizedBox(height: 8),
+
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                phMode = phMode == ThresholdInputMode.slider ? ThresholdInputMode.manual : ThresholdInputMode.slider;
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  phMode == ThresholdInputMode.manual ? Icons.keyboard_arrow_up : Icons.edit_outlined,
+                                                  color: ColorValues.blueLink,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  phMode == ThresholdInputMode.manual ? local.hideManualInput : local.manualInput,
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink, fontWeight: FontWeight.w600),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 250),
+                                            child: phMode != ThresholdInputMode.manual
+                                                ? const SizedBox.shrink()
+                                                : Padding(
+                                                    padding: const EdgeInsets.only(top: 12),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextFormFieldComponent(
+                                                            label: 'Min pH',
+                                                            controller: phMinController,
+                                                            hintText: '0.0',
+                                                            obscureText: false,
+                                                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+
+                                                            onChanged: (value) {
+                                                              final min = double.tryParse(value);
+
+                                                              if (min == null) return;
+
+                                                              if (min >= 0 && min <= _phRange.end && min <= 14) {
+                                                                setState(() {
+                                                                  _phRange = RangeValues(min, _phRange.end);
+                                                                });
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+
+                                                        SizedBox(width: 12.w),
+
+                                                        Expanded(
+                                                          child: TextFormFieldComponent(
+                                                            label: 'Max pH',
+                                                            controller: phMaxController,
+                                                            hintText: '14.0',
+                                                            obscureText: false,
+                                                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+
+                                                            onChanged: (value) {
+                                                              final max = double.tryParse(value);
+
+                                                              if (max == null) return;
+
+                                                              if (max <= 14 && max >= _phRange.start) {
+                                                                setState(() {
+                                                                  _phRange = RangeValues(_phRange.start, max);
+                                                                });
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                           ),
                                           const SizedBox(height: 16),
                                           GestureDetector(
@@ -355,10 +444,9 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   local.revertToAutoValues,
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                    color: ColorValues.blueLink,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink, fontWeight: FontWeight.w600),
                                                 ),
                                               ],
                                             ),
@@ -380,48 +468,128 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  const VectorGraphic(
-                                                    loader: AssetBytesLoader(IconAssets.ppmMin),
-                                                    width: 24,
-                                                    height: 24,
-                                                  ),
+                                                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.ppmMin), width: 24, height: 24),
                                                   Expanded(
                                                     child: RangeSlider(
                                                       values: _ppmRange,
                                                       min: 400,
                                                       max: 2500,
                                                       divisions: 100,
-                                                      labels: RangeLabels(
-                                                        _ppmRange.start.round().toString(),
-                                                        _ppmRange.end.round().toString(),
-                                                      ),
+                                                      labels: RangeLabels(_ppmRange.start.round().toString(), _ppmRange.end.round().toString()),
                                                       onChanged: (RangeValues values) {
                                                         if (widget.ppmRange != values) {
                                                           setState(() {
                                                             _ppmRange = values;
+                                                            ppmMinController.text = values.start.round().toString();
+                                                            ppmMaxController.text = values.end.round().toString();
                                                             isEdited = true;
                                                           });
                                                         } else {
                                                           setState(() {
                                                             _ppmRange = values;
+                                                            ppmMinController.text = values.start.round().toString();
+                                                            ppmMaxController.text = values.end.round().toString();
                                                             isEdited = false;
                                                           });
                                                         }
                                                       },
                                                     ),
                                                   ),
-                                                  const VectorGraphic(
-                                                    loader: AssetBytesLoader(IconAssets.ppmMax),
-                                                    width: 24,
-                                                    height: 24,
-                                                  ),
+                                                  const VectorGraphic(loader: AssetBytesLoader(IconAssets.ppmMax), width: 24, height: 24),
                                                 ],
                                               ),
                                             ),
                                           ),
-                                          Text(
-                                            '${local.rangeAvailable}: 400 - 2500 PPM',
-                                            style: Theme.of(context).textTheme.bodySmall,
+                                          Text('${local.rangeAvailable}: 400 - 2500 PPM', style: Theme.of(context).textTheme.bodySmall),
+                                          const SizedBox(height: 8),
+
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                ppmMode = ppmMode == ThresholdInputMode.slider
+                                                    ? ThresholdInputMode.manual
+                                                    : ThresholdInputMode.slider;
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  ppmMode == ThresholdInputMode.manual ? Icons.keyboard_arrow_up : Icons.edit_outlined,
+                                                  color: ColorValues.blueLink,
+                                                  size: 18,
+                                                ),
+
+                                                const SizedBox(width: 4),
+
+                                                Text(
+                                                  ppmMode == ThresholdInputMode.manual ? local.hideManualInput : local.manualInput,
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink, fontWeight: FontWeight.w600),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 250),
+
+                                            child: ppmMode != ThresholdInputMode.manual
+                                                ? const SizedBox.shrink()
+                                                : Padding(
+                                                    padding: const EdgeInsets.only(top: 12),
+
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextFormFieldComponent(
+                                                            label: 'Min PPM',
+                                                            controller: ppmMinController,
+                                                            hintText: '500',
+                                                            obscureText: false,
+                                                            keyboardType: TextInputType.number,
+
+                                                            onChanged: (value) {
+                                                              final min = double.tryParse(value);
+
+                                                              if (min == null) return;
+
+                                                              if (min >= 500 && min <= _ppmRange.end && min <= 2500) {
+                                                                setState(() {
+                                                                  _ppmRange = RangeValues(min, _ppmRange.end);
+                                                                });
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+
+                                                        SizedBox(width: 12.w),
+
+                                                        Expanded(
+                                                          child: TextFormFieldComponent(
+                                                            label: 'Max PPM',
+                                                            controller: ppmMaxController,
+                                                            hintText: '2500',
+                                                            obscureText: false,
+                                                            keyboardType: TextInputType.number,
+
+                                                            onChanged: (value) {
+                                                              final max = double.tryParse(value);
+
+                                                              if (max == null) return;
+
+                                                              if (max <= 2500 && max >= _ppmRange.start) {
+                                                                setState(() {
+                                                                  _ppmRange = RangeValues(_ppmRange.start, max);
+                                                                });
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                           ),
                                           const SizedBox(height: 16),
                                           GestureDetector(
@@ -449,10 +617,9 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   'Revert to auto values',
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                    color: ColorValues.blueLink,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink, fontWeight: FontWeight.w600),
                                                 ),
                                               ],
                                             ),
@@ -471,10 +638,9 @@ class _EditSessionModalState extends ConsumerState<EditSessionModal> {
                                     children: [
                                       Text(
                                         local.customizeValues,
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: ColorValues.blueLink,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall?.copyWith(color: ColorValues.blueLink, fontWeight: FontWeight.w600),
                                       ),
                                       const VectorGraphic(
                                         loader: AssetBytesLoader(IconAssets.moreInfo),

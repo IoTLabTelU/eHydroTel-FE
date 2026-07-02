@@ -1,13 +1,7 @@
 import '../../../../pkg.dart';
 
 class NotificationCardWidget extends StatelessWidget {
-  const NotificationCardWidget({
-    super.key,
-    required this.title,
-    required this.body,
-    required this.time,
-    required this.onDelete,
-  });
+  const NotificationCardWidget({super.key, required this.title, required this.body, required this.time, required this.onDelete});
 
   final String title;
   final String body;
@@ -46,28 +40,27 @@ class NotificationCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
                 children: [
-                  Text(
-                    title,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: ColorValues.green600, fontWeight: FontWeight.w600),
+                  SizedBox(
+                    width: widthQuery(context) * 0.5,
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ColorValues.green600, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     time,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500, fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ColorValues.neutral500, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
               SizedBox(height: 8.h),
               Text(
                 body,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelSmall?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ColorValues.blackColor, fontWeight: FontWeight.w600),
               ),
             ],
           ),

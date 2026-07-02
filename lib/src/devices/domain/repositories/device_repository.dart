@@ -13,4 +13,5 @@ abstract class DeviceRepository {
     String? ssid,
     String? wifiPassword,
   });
+  Future<Responses<bool>> deleteDevice(String deviceId);
 }

@@ -736,4 +736,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calibrationRequired => 'Calibration Required';
+
+  @override
+  String get deleteDevice => 'Delete Device';
+
+  @override
+  String deleteDeviceName(String device) {
+    return 'Delete $device?';
+  }
+
+  @override
+  String get thisDeviceWillBePermanentlyRemoved =>
+      'This device will be permanently removed from your account.';
+
+  @override
+  String get deviceDeletedSuccessfully => 'Device deleted successfully';
+
+  @override
+  String get deletingDevice => 'Deleting device...';
+
+  @override
+  String get manualInput => 'Manual Input';
+
+  @override
+  String get hideManualInput => 'Hide Manual Input';
+
+  @override
+  String get selectDevice => 'Select device';
+
+  @override
+  String get sessionName => 'Session name';
+
+  @override
+  String get nameYourSession => 'Name your session';
+
+  @override
+  String get selectPlant => 'Select plant to grow';
+
+  @override
+  String get addingCropCycleSession => 'Adding New Crop Cycle Session...';
+
+  @override
+  String get cropCycleAdded => 'Crop Cycle Session Added';
+
+  @override
+  String get updatingCropCycleSession => 'Updating crop cycle session...';
+
+  @override
+  String get cropCycleUpdated => 'Crop cycle session updated';
 }
